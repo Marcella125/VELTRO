@@ -9,6 +9,7 @@ import { CloseButton } from "@/components/ui/close-button";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
+import { assetPath } from "@/lib/asset-path";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import type { Car } from "@/models/car.model";
 
@@ -55,31 +56,31 @@ const brandFilters: BrandFilter[] = [
   { id: "all", alt: "All brands", carBrands: [] },
   {
     id: "porsche",
-    logoSrc: "/platinum-brandsArtboard-4.png",
+    logoSrc: assetPath("/platinum-brandsArtboard-4.png"),
     alt: "Porsche logo",
     carBrands: ["Aurelia"],
   },
   {
     id: "mercedes",
-    logoSrc: "/platinum-brandsArtboard-3.png",
+    logoSrc: assetPath("/platinum-brandsArtboard-3.png"),
     alt: "Mercedes logo",
     carBrands: ["Velvetis"],
   },
   {
     id: "ferrari",
-    logoSrc: "/platinum-brandsArtboard-1.png",
+    logoSrc: assetPath("/platinum-brandsArtboard-1.png"),
     alt: "Ferrari logo",
     carBrands: ["Nocturne"],
   },
   {
     id: "bmw",
-    logoSrc: "/platinum-brandsArtboard-5.png",
+    logoSrc: assetPath("/platinum-brandsArtboard-5.png"),
     alt: "BMW logo",
     carBrands: ["Maison Valtor"],
   },
   {
     id: "lamborghini",
-    logoSrc: "/platinum-brandsArtboard-2.png",
+    logoSrc: assetPath("/platinum-brandsArtboard-2.png"),
     alt: "Lamborghini logo",
     carBrands: ["Solenne", "Imperium"],
   },
@@ -87,32 +88,32 @@ const brandFilters: BrandFilter[] = [
 
 const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   "obsidian-gt": {
-    imageSrc: "/images/cars.png",
+    imageSrc: assetPath("/images/cars.png"),
     acceleration: "2.9 s",
     topSpeed: "332 km/h",
   },
   "crimson-eclipse": {
-    imageSrc: "/images/cars.png",
+    imageSrc: assetPath("/images/cars.png"),
     acceleration: "3.1 s",
     topSpeed: "325 km/h",
   },
   "onyx-sabre": {
-    imageSrc: "/images/cars.png",
+    imageSrc: assetPath("/images/cars.png"),
     acceleration: "3.7 s",
     topSpeed: "305 km/h",
   },
   "velour-phantom": {
-    imageSrc: "/images/cars.png",
+    imageSrc: assetPath("/images/cars.png"),
     acceleration: "4.6 s",
     topSpeed: "285 km/h",
   },
   "ember-revenant": {
-    imageSrc: "/images/cars.png",
+    imageSrc: assetPath("/images/cars.png"),
     acceleration: "2.7 s",
     topSpeed: "338 km/h",
   },
   "midnight-regal": {
-    imageSrc: "/images/cars.png",
+    imageSrc: assetPath("/images/cars.png"),
     acceleration: "4.3 s",
     topSpeed: "296 km/h",
   },
@@ -217,7 +218,7 @@ export function FleetView({ cars }: FleetViewProps) {
       <AnimatePresence>{overlay}</AnimatePresence>
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/images/bgcar.png"
+          src={assetPath("/images/bgcar.png")}
           alt="Platinum fleet background"
           fill
           priority
@@ -319,7 +320,7 @@ export function FleetView({ cars }: FleetViewProps) {
                       <div className="grid auto-rows-fr grid-cols-1 content-center gap-3.5 md:grid-cols-2 xl:grid-cols-4 xl:gap-4">
                           {group.map((car, index) => {
                             const presentation = fleetPresentationBySlug[car.slug] ?? {
-                              imageSrc: "/images/cars.png",
+                              imageSrc: assetPath("/images/cars.png"),
                               acceleration: getSpecValue(car, "0-60") || "3.0 s",
                               topSpeed: "320 km/h",
                             };
@@ -396,7 +397,7 @@ export function FleetView({ cars }: FleetViewProps) {
 
                                   <div className="mt-[calc(0.3cm+0.875rem)] flex items-end gap-1.5">
                                     <Image
-                                      src="/DubaiCurrency.svg"
+                                      src={assetPath("/DubaiCurrency.svg")}
                                       alt="Dubai currency"
                                       width={18}
                                       height={18}

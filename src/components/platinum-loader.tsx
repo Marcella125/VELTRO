@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { AnimatedSpinner } from "@/components/ui/animated-spinner";
 
 interface PlatinumLoaderProps {
@@ -54,7 +55,7 @@ export default function PlatinumLoader({
               }}
             >
               <Image
-                src="/icons/Platinumlogo.svg"
+                src={assetPath("/icons/Platinumlogo.svg")}
                 alt="Platinum"
                 width={140}
                 height={28}

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import clsx from "clsx";
 import Image from "next/image";
 import * as THREE from "three";
+import { assetPath } from "@/lib/asset-path";
 import {
   BloomEffect,
   EffectComposer,
@@ -1162,7 +1163,7 @@ export function Hyperspeed({
         style={{ transform: "translate(-50%, -50%) scale(0.94)" }}
       >
         <Image
-          src="/icons/Platinumlogo.svg"
+          src={assetPath("/icons/Platinumlogo.svg")}
           alt=""
           width={180}
           height={36}

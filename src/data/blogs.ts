@@ -1,3 +1,5 @@
+import { assetPath } from "@/lib/asset-path";
+
 export type BlogEntry = {
   id: string;
   title: string;
@@ -20,7 +22,7 @@ export const blogEntries: BlogEntry[] = [
     title: "Discipline, Control, and the Ronaldo Image",
     summary:
       "Cristiano Ronaldo's public image is built on discipline: repetition, intent, and control.",
-    heroImage: "/images/cr7.png",
+    heroImage: assetPath("/images/cr7.png"),
     body: [
       "Cristiano Ronaldo's public image is built around precision, repetition, and discipline. Every detail, from his physical preparation to the way he presents himself publicly, reinforces a clear sense of intent and control.",
       "That consistency is what makes the image memorable. The message is never scattered or accidental. It is structured, deliberate, and shaped by routine as much as by performance.",
@@ -28,7 +30,7 @@ export const blogEntries: BlogEntry[] = [
     ],
     car: {
       name: "Lamborghini Urus",
-      image: "/images/cars.png",
+      image: assetPath("/images/cars.png"),
       horsepower: "Performance",
       topSpeed: "Control",
       ctaLabel: "WhatsApp",
@@ -40,7 +42,7 @@ export const blogEntries: BlogEntry[] = [
     title: "Leadership Through Vision",
     summary:
       "Sheikh Mohammed bin Rashid Al Maktoum represents a leadership style shaped by long-term vision, stability, ambition, and authority.",
-    heroImage: "/images/sheikh.png",
+    heroImage: assetPath("/images/sheikh.png"),
     body: [
       "Sheikh Mohammed bin Rashid Al Maktoum represents a leadership style shaped by long-term vision, stability, ambition, and authority. His public presence communicates direction and confidence.",
       "The strength of that image comes from consistency. It frames leadership as something calm, measured, and future-facing rather than reactive or performative.",
@@ -48,7 +50,7 @@ export const blogEntries: BlogEntry[] = [
     ],
     car: {
       name: "Mercedes G60",
-      image: "/images/cars.png",
+      image: assetPath("/images/cars.png"),
       horsepower: "Command",
       topSpeed: "Endurance",
       ctaLabel: "WhatsApp",
@@ -60,7 +62,7 @@ export const blogEntries: BlogEntry[] = [
     title: "Expression, Confidence, and Presence",
     summary:
       "Lady Gaga's public identity is built on expression, confidence, reinvention, and presence.",
-    heroImage: "/images/ladygaga.png",
+    heroImage: assetPath("/images/ladygaga.png"),
     body: [
       "Lady Gaga's public identity is built on expression, confidence, reinvention, and presence. Her image demonstrates how originality and consistency can create a memorable global brand.",
       "What stands out is not only boldness but control over transformation. Reinvention becomes effective because it still feels intentional, coherent, and unmistakably hers.",
@@ -68,7 +70,7 @@ export const blogEntries: BlogEntry[] = [
     ],
     car: {
       name: "Lamborghini Huracan EVO Spyder",
-      image: "/images/cars.png",
+      image: assetPath("/images/cars.png"),
       horsepower: "Open-top",
       topSpeed: "Presence",
       ctaLabel: "WhatsApp",

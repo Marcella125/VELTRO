@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { assetPath } from "@/lib/asset-path";
 import { MenuWordToggle } from "@/views/components/MenuWordToggle";
 
 type SiteHeaderProps = {
@@ -53,7 +54,7 @@ export function SiteHeader({
           }}
         >
           <Image
-            src="/icons/Platinumlogo.svg"
+            src={assetPath("/icons/Platinumlogo.svg")}
             alt="Platinum"
             width={120}
             height={24}

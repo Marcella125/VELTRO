@@ -1,7 +1,9 @@
 "use client";
 
+import { assetPath } from "@/lib/asset-path";
+
 const ENABLE_TEMP_HYPERSPEED_AUDIO = true;
-const INTRO_AUDIO_SRC = "/Intro%20Sound.mp3";
+const INTRO_AUDIO_SRC = assetPath("/Intro%20Sound.mp3");
 
 let introAudio: HTMLAudioElement | null = null;
 let activePlayback:

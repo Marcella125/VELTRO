@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { motion, type Variants } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { ActionLink } from "@/components/ui/action-link";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { usePageTransition } from "@/hooks/use-page-transition";
@@ -58,7 +59,7 @@ export function BlogDetailView() {
     >
       <div className="pointer-events-none fixed inset-0">
         <Image
-          src="/images/bgcar.png"
+          src={assetPath("/images/bgcar.png")}
           alt="Platinum blog background"
           fill
           priority
@@ -174,7 +175,10 @@ export function BlogDetailView() {
                       <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_70%_20%,rgba(255,255,255,0.12),transparent_55%)]" />
                       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.65)_0%,rgba(0,0,0,0.10)_45%,rgba(0,0,0,0.55)_100%)]" />
                       <div className="absolute inset-0 mix-blend-soft-light opacity-30">
-                        <div className="h-full w-full bg-[url('/images/noise.png')] bg-cover bg-center" />
+                        <div
+                          className="h-full w-full bg-cover bg-center"
+                          style={{ backgroundImage: `url(${assetPath("/images/noise.png")})` }}
+                        />
                       </div>
 
                     {/* Title plate removed per request */}

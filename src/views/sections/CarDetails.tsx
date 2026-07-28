@@ -4,27 +4,28 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 
 const carSlides = [
-  "/images/lamboevospyder.jpeg",
-  "/images/lamboevospyderback.jpeg",
+  assetPath("/images/lamboevospyder.jpeg"),
+  assetPath("/images/lamboevospyderback.jpeg"),
 ];
 
 const socialIcons = [
   {
     id: "instagram",
-    icon: "/icons/instagram.svg",
+    icon: assetPath("/icons/instagram.svg"),
     href: "https://www.instagram.com/platinumeditionofficial?igsh=MTJ4bzNjeWk2cDZoYQ%3D%3D",
   },
   {
     id: "tiktok",
-    icon: "/icons/tiktok.svg",
+    icon: assetPath("/icons/tiktok.svg"),
     href: "https://www.tiktok.com/@platinumeditionofficial?_r=1&_t=ZS-92Jxmr9Bg5S",
   },
-  { id: "x", icon: "/icons/X.svg", href: "#" },
+  { id: "x", icon: assetPath("/icons/X.svg"), href: "#" },
 ];
 
 type FeatureStat = {

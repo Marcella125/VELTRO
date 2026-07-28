@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
@@ -101,7 +102,7 @@ export function ContactView() {
       <AnimatePresence>{overlay}</AnimatePresence>
       <div className="pointer-events-none fixed inset-0">
         <Image
-          src="/images/bgcar.png"
+          src={assetPath("/images/bgcar.png")}
           alt="Platinum contact background"
           fill
           priority

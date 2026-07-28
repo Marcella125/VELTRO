@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { cn } from "@/lib/utils";
 
 type DockItem = {
@@ -18,12 +19,12 @@ type TopBarDockProps = {
 };
 
 const items: DockItem[] = [
-  { id: "home", label: "Home", icon: "/icons/Home.svg", iconColor: "#ffffff" },
-  { id: "blogs", label: "Blogs", icon: "/icons/Acceleration.svg", iconColor: "#ffffff" },
-  { id: "fleet", label: "Fleet", icon: "/icons/fleet.svg", iconColor: "#ffffff" },
-  { id: "mission", label: "Mission", icon: "/icons/mission.svg", iconColor: "#ffffff" },
-  { id: "contact", label: "Contact", icon: "/icons/contactus.svg", iconColor: "#ffffff" },
-  { id: "faq", label: "FAQ", icon: "/icons/FAQ.svg", iconColor: "#ffffff" },
+  { id: "home", label: "Home", icon: assetPath("/icons/Home.svg"), iconColor: "#ffffff" },
+  { id: "blogs", label: "Blogs", icon: assetPath("/icons/Acceleration.svg"), iconColor: "#ffffff" },
+  { id: "fleet", label: "Fleet", icon: assetPath("/icons/fleet.svg"), iconColor: "#ffffff" },
+  { id: "mission", label: "Mission", icon: assetPath("/icons/mission.svg"), iconColor: "#ffffff" },
+  { id: "contact", label: "Contact", icon: assetPath("/icons/contactus.svg"), iconColor: "#ffffff" },
+  { id: "faq", label: "FAQ", icon: assetPath("/icons/FAQ.svg"), iconColor: "#ffffff" },
 ];
 
 export function TopBarDock({

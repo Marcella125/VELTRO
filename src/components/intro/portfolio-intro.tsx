@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { PrimaryButton } from "@/components/ui/primary-button";
 
 type PortfolioIntroProps = {
@@ -30,7 +31,7 @@ export function PortfolioIntro({
     >
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src="/Platinum Intro.png"
+          src={assetPath("/Platinum Intro.png")}
           alt=""
           fill
           priority
@@ -42,7 +43,7 @@ export function PortfolioIntro({
       <div className="relative flex min-h-dvh w-full flex-col px-6 pt-6 sm:px-10">
         <div className="flex items-center justify-between">
           <Image
-            src="/icons/Platinumlogo.svg"
+            src={assetPath("/icons/Platinumlogo.svg")}
             alt="Platinum"
             width={120}
             height={24}

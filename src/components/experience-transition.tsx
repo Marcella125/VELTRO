@@ -4,6 +4,7 @@ import Image from "next/image";
 import { type ReactNode, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
+import { assetPath } from "@/lib/asset-path";
 import {
   ENABLE_TEMP_HYPERSPEED_AUDIO,
   playHyperspeedAudioDemo,
@@ -264,7 +265,7 @@ export function ExperienceTransition({
             }}
           >
             <Image
-              src="/icons/Platinumlogo.svg"
+              src={assetPath("/icons/Platinumlogo.svg")}
               alt=""
               width={180}
               height={36}

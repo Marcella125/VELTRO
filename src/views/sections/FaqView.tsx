@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { assetPath } from "@/lib/asset-path";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 
@@ -69,7 +70,7 @@ export function FaqView() {
       <AnimatePresence>{overlay}</AnimatePresence>
       <div className="pointer-events-none fixed inset-0">
         <Image
-          src="/images/bgcar.png"
+          src={assetPath("/images/bgcar.png")}
           alt="Platinum FAQ background"
           fill
           priority

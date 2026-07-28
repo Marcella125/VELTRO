@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   basePath: isGitHubPages ? `/${repoName}` : "",
   assetPrefix: isGitHubPages ? `/${repoName}/` : undefined,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGitHubPages ? `/${repoName}` : "",
+  },
   reactCompiler: true,
   turbopack: {
     root: __dirname,

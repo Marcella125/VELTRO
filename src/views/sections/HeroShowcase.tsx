@@ -9,25 +9,26 @@ import { CloseButton } from "@/components/ui/close-button";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
+import { assetPath } from "@/lib/asset-path";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 
 
 const heroSlides = [
-  "/images/lamboevospyder.jpeg",
-  "/images/lamboevospyderback.jpeg",
-  "/images/lamboevospyder.jpeg",
+  assetPath("/images/lamboevospyder.jpeg"),
+  assetPath("/images/lamboevospyderback.jpeg"),
+  assetPath("/images/lamboevospyder.jpeg"),
 ];
 
 const detailSlides = [
-  "/images/CBLambo.jpeg",
-  "/images/CBLambo.jpeg",
-  "/images/CBLambo.jpeg",
+  assetPath("/images/CBLambo.jpeg"),
+  assetPath("/images/CBLambo.jpeg"),
+  assetPath("/images/CBLambo.jpeg"),
 ];
 
 const socialIcons = [
-  { id: "instagram", icon: "/icons/instagram.svg" },
-  { id: "tiktok", icon: "/icons/tiktok.svg" },
-  { id: "x", icon: "/icons/X.svg" },
+  { id: "instagram", icon: assetPath("/icons/instagram.svg") },
+  { id: "tiktok", icon: assetPath("/icons/tiktok.svg") },
+  { id: "x", icon: assetPath("/icons/X.svg") },
 ];
 
 type FeatureStat = {
@@ -289,12 +290,12 @@ export function HeroShowcase() {
     };
 
   const dockItems = [
-    { id: "home" as const, label: "Home", icon: "/icons/Home.svg" },
-    { id: "performance" as const, label: "Performance", icon: "/icons/Acceleration.svg" },
-    { id: "car" as const, label: "Car", icon: "/icons/fleet.svg" },
-    { id: "settings" as const, label: "Controls", icon: "/icons/mission.svg" },
-    { id: "contact" as const, label: "Contact", icon: "/icons/contactus.svg" },
-    { id: "help" as const, label: "Help", icon: "/icons/FAQ.svg" },
+    { id: "home" as const, label: "Home", icon: assetPath("/icons/Home.svg") },
+    { id: "performance" as const, label: "Performance", icon: assetPath("/icons/Acceleration.svg") },
+    { id: "car" as const, label: "Car", icon: assetPath("/icons/fleet.svg") },
+    { id: "settings" as const, label: "Controls", icon: assetPath("/icons/mission.svg") },
+    { id: "contact" as const, label: "Contact", icon: assetPath("/icons/contactus.svg") },
+    { id: "help" as const, label: "Help", icon: assetPath("/icons/FAQ.svg") },
   ];
 
   const enterRideIt = () =>
@@ -403,7 +404,7 @@ export function HeroShowcase() {
       {/* Mobile background */}
       <div className="fixed inset-0 sm:hidden">
         <Image
-          src="/back1.jpg"
+          src={assetPath("/back1.jpg")}
           alt=""
           fill
           priority
@@ -488,7 +489,7 @@ export function HeroShowcase() {
 
                 <div className="relative mt-[22vh]">
                   <Image
-                    src="/pattern1.svg"
+                    src={assetPath("/pattern1.svg")}
                     alt=""
                     width={600}
                     height={380}
@@ -565,7 +566,7 @@ export function HeroShowcase() {
 
                 <div className="relative mt-0 flex w-105 shrink-0 items-center justify-end gap-6">
                   <Image
-                    src="/pattern1.svg"
+                    src={assetPath("/pattern1.svg")}
                     alt=""
                     width={800}
                     height={600}
