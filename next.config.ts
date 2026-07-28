@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 
+const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
+const repoName = "Platinum_Edition";
+
 const nextConfig: NextConfig = {
-  /* config options here */
   output: "export",
+  trailingSlash: true,
+  basePath: isGitHubPages ? `/${repoName}` : "",
+  assetPrefix: isGitHubPages ? `/${repoName}/` : undefined,
   reactCompiler: true,
   turbopack: {
     root: __dirname,
