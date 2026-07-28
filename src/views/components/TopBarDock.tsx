@@ -113,9 +113,9 @@ export function TopBarDock({
                     "relative flex items-center justify-center",
                     isPanelVariant
                       ? cn(
-                          "h-[72px] w-full min-w-0 translate-y-[0.7cm] flex-col items-center justify-center gap-1 px-4 text-center transition-[color,background-color,border-color,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] hover:text-[var(--brand-red)]",
+                          "min-h-[112px] w-full min-w-0 flex-col items-center justify-center gap-3 px-4 py-5 text-center transition-[color,background-color,border-color,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] hover:text-[var(--brand-red)] sm:min-h-[72px] sm:translate-y-[0.7cm] sm:gap-1 sm:py-0",
                           isActive
-                            ? "bg-white text-[var(--brand-red)]"
+                            ? "bg-transparent text-white/88"
                             : panelHovered
                               ? "bg-white/[0.05] text-[var(--brand-red)]"
                             : "bg-transparent text-white/88"
@@ -124,7 +124,16 @@ export function TopBarDock({
                   )}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  onClick={() => handleSelect(item.id)}
+                  onPointerDown={(event) => {
+                    event.preventDefault();
+                    handleSelect(item.id);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      handleSelect(item.id);
+                    }
+                  }}
                   style={backgroundColor ? { backgroundColor } : undefined}
                 >
                   <span
@@ -146,7 +155,7 @@ export function TopBarDock({
                   {isPanelVariant && (
                     <span
                       className={cn(
-                        "font-display text-[11px] leading-none tracking-[0.01em]",
+                        "font-display text-[13px] leading-none tracking-[0.01em] sm:text-[11px]",
                         panelTextClassName
                       )}
                     >

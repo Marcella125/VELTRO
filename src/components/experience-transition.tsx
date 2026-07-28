@@ -191,7 +191,7 @@ export function ExperienceTransition({
     stage === "fade-out-portfolio" || stage === "fade-out-hyperspeed" ? 1 : 0;
 
   if (!isHydrated) {
-    return null;
+    return <div className="fixed inset-0 z-[9999] bg-black" aria-hidden="true" />;
   }
 
   return (

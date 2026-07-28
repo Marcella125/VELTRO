@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ActionLink } from "@/components/ui/action-link";
 import { CloseButton } from "@/components/ui/close-button";
@@ -11,6 +12,7 @@ import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 
 const heroSlides = [
@@ -158,6 +160,7 @@ export function HeroShowcase() {
   const [currentApp, setCurrentApp] = useState<"home" | "rideit">("home");
   const [activeTab, setActiveTab] = useState<AppTab>("car");
   const [isHudOpen, setIsHudOpen] = useState(false);
+  const [isMobileSpecMenuOpen, setIsMobileSpecMenuOpen] = useState(false);
   const [activeSpecCategory, setActiveSpecCategory] = useState<SpecCategory>("Performance");
   const swipeStartY = useRef<number | null>(null);
   const swipeDeltaY = useRef(0);
@@ -217,6 +220,7 @@ export function HeroShowcase() {
     allSpecSections.find((section) => section.title === activeSpecCategory) ?? allSpecSections[0];
 
   const handleViewFeatures = () => {
+    setIsMobileSpecMenuOpen(false);
     setActiveSpecCategory("Performance");
     setIsHudOpen(true);
   };
@@ -298,11 +302,10 @@ export function HeroShowcase() {
     { id: "help" as const, label: "Help", icon: assetPath("/icons/FAQ.svg") },
   ];
 
-  const enterRideIt = () =>
-    runTransition(() => {
-      setCurrentApp("rideit");
-      setActiveTab("car");
-    }, { awaitNavigation: false });
+  const enterRideIt = () => {
+    setCurrentApp("rideit");
+    setActiveTab("car");
+  };
 
   const closeRideIt = () => {
     setCurrentApp("home");
@@ -403,14 +406,25 @@ export function HeroShowcase() {
       </div>
       {/* Mobile background */}
       <div className="fixed inset-0 sm:hidden">
-        <Image
-          src={assetPath("/back1.jpg")}
-          alt=""
-          fill
-          priority
-          quality={90}
-          className="object-cover object-center"
-        />
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={currentApp === "rideit" ? "rideit-mobile-bg" : "home-mobile-bg"}
+            className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28, ease: "easeInOut" }}
+          >
+            <Image
+              src={assetPath(currentApp === "rideit" ? "/back3.jpg" : "/back1.jpg")}
+              alt=""
+              fill
+              priority
+              quality={90}
+              className="object-cover object-center"
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
@@ -440,7 +454,7 @@ export function HeroShowcase() {
           </div>
         </div>
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="sync">
           {/* HERO VIEW */}
           {currentApp === "home" ? (
             <motion.div
@@ -485,44 +499,22 @@ export function HeroShowcase() {
 
               {/* Mobile hero layout */}
               <div className="relative flex flex-1 flex-col px-6 pb-10 pt-10 sm:hidden">
-                <div className="flex-1" />
+                <div className="flex-[0.63]" />
 
-                <div className="relative mt-[22vh]">
+                <div className="relative mt-[calc(4vh+4.4cm)]">
                   <Image
                     src={assetPath("/pattern1.svg")}
                     alt=""
                     width={600}
                     height={380}
                     className="pointer-events-none absolute -bottom-[10%] left-1/2 -translate-x-1/2 opacity-60"
+                    style={{ bottom: "calc(-10% - 2.2cm)" }}
                   />
 
-                  <div className="flex items-center justify-center gap-4 pb-4">
-                    {heroSlides.map((_, dotIndex) => (
-                      <motion.button
-                        key={`mobile-dot-${dotIndex}`}
-                        type="button"
-                        onClick={() => setIndex(dotIndex)}
-                        className="relative flex h-3 w-3 items-center justify-center"
-                        animate={{ scale: dotIndex === index ? 1.2 : 1 }}
-                        transition={{ type: "spring", stiffness: 280, damping: 16 }}
-                        aria-label={`Go to slide ${dotIndex + 1}`}
-                      >
-                        <span
-                          className={`block h-2.5 w-2.5 rounded-full ${
-                            dotIndex === index ? "bg-[#b3242d]" : "bg-white/90"
-                          }`}
-                        />
-                        {dotIndex === index && (
-                          <span className="absolute h-1.5 w-1.5 rounded-full bg-black" />
-                        )}
-                      </motion.button>
-                    ))}
-                  </div>
-
-                  <p className="type-card-title mt-2 text-center text-[18px] text-white/95">
+                  <p className="relative z-10 type-card-title mt-1 text-center text-[18px] text-white/95">
                     Lamborghini EVO Spyder
                   </p>
-                  <p className="type-body mt-3 text-[11px] leading-[1.5] text-white/80 text-justify">
+                  <p className="relative z-10 font-body mt-2 text-[14px] leading-[1.6] text-white/85 text-justify">
                     Lamborghini Huracan EVO Spyder brings open‑top V10 performance with sharp, confident handling.
                     Its aggressive design and iconic presence make every arrival unforgettable.
                     Refined materials and a driver‑focused cockpit keep every moment pure Lamborghini.
@@ -530,7 +522,7 @@ export function HeroShowcase() {
 
                   <motion.button
                     type="button"
-                    className="type-button mt-6 h-12 w-full bg-[#b3242d] text-white"
+                    className="relative z-10 type-button mt-4 h-12 w-full bg-[#b3242d] text-white"
                     onClick={enterRideIt}
                     whileTap={{ scale: 0.98 }}
                     transition={{ type: "spring", stiffness: 240, damping: 20 }}
@@ -596,35 +588,6 @@ export function HeroShowcase() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.45, ease: "easeInOut" }}
             >
-              {/* Social icons (same placement) */}
-              <div className="social-icons-left-center">
-                {socialIcons.map((item) => (
-            <motion.button
-              key={item.id}
-              type="button"
-              className="pointer-events-auto flex h-8 w-8 items-center justify-center rounded-full bg-transparent"
-                    whileHover={{ scale: 1.08, boxShadow: "0 0 18px rgba(255,255,255,0.25)" }}
-                    transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                  >
-                    <span
-                      className="h-4 w-4"
-                      style={{
-                        backgroundColor: "#ffffff",
-                        WebkitMaskImage: `url(${item.icon})`,
-                        maskImage: `url(${item.icon})`,
-                        WebkitMaskRepeat: "no-repeat",
-                        maskRepeat: "no-repeat",
-                        WebkitMaskPosition: "center",
-                        maskPosition: "center",
-                        WebkitMaskSize: "contain",
-                        maskSize: "contain",
-                      }}
-                      aria-hidden="true"
-                    />
-                  </motion.button>
-                ))}
-              </div>
-
               <div className="relative mx-auto flex min-h-screen w-full max-w-350 items-center px-6 pb-10 pt-24 sm:px-10 sm:pb-12">
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[42vh] bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.18)_18%,rgba(0,0,0,0.62)_100%)]" />
                 <div className="relative z-10 grid w-full grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] lg:gap-12">
@@ -638,7 +601,7 @@ export function HeroShowcase() {
                       Lamborghini EVO Spyder
                     </h2>
 
-                    <div className="mt-5 flex items-end gap-2 text-[#b3242d]">
+                    <div className="mt-5 flex items-end gap-2 text-white sm:text-[#b3242d]">
                       <span className="type-price text-[15px] sm:text-[16px]">€</span>
                       <span className="type-price">
                         3,300
@@ -714,7 +677,7 @@ export function HeroShowcase() {
       <AnimatePresence>
         {isHudOpen && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center px-3 py-3 text-[#F5F5F5] sm:px-5 sm:py-5"
+            className="fixed inset-0 z-50 flex items-center justify-center px-0 py-0 text-[#F5F5F5] sm:px-5 sm:py-5"
             initial="closed"
             animate="open"
             exit="closed"
@@ -738,7 +701,7 @@ export function HeroShowcase() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="specifications-title"
-              className="relative mx-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-350 flex-col overflow-hidden border border-white/10 bg-[#0B0B0D] shadow-[0_24px_80px_rgba(0,0,0,0.62)] sm:max-h-[calc(100dvh-2.5rem)]"
+              className="relative mx-auto flex h-[100dvh] w-full max-w-none flex-col overflow-hidden border-0 bg-[#0B0B0D] shadow-[0_24px_80px_rgba(0,0,0,0.62)] sm:max-h-[calc(100dvh-2.5rem)] sm:h-auto sm:max-w-350 sm:border sm:border-white/10"
               variants={{
                 closed: prefersReducedMotion
                   ? { opacity: 0 }
@@ -753,7 +716,7 @@ export function HeroShowcase() {
             >
               <div className="specs-noise pointer-events-none absolute inset-0" />
 
-              <div className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0D]/92 px-7 pb-3 pt-3 backdrop-blur sm:px-9 sm:pt-4">
+              <div className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0D]/92 px-7 pb-3 pt-6 backdrop-blur sm:px-9 sm:pt-4">
                 <div className="flex items-center justify-between">
                   <div
                     id="specifications-title"
@@ -761,7 +724,10 @@ export function HeroShowcase() {
                   >
                     Specifications
                   </div>
-                  <CloseButton onClick={() => setIsHudOpen(false)} />
+                  <CloseButton
+                    onClick={() => setIsHudOpen(false)}
+                    className="border-transparent bg-transparent shadow-none hover:border-transparent hover:bg-transparent sm:border-[var(--border-subtle)] sm:bg-black/20 sm:hover:border-[var(--brand-red)] sm:hover:bg-white/[0.04]"
+                  />
                 </div>
               </div>
 
@@ -773,21 +739,64 @@ export function HeroShowcase() {
                   >
                     Category
                   </label>
-                  <div className="border-b border-white/10 pb-5">
-                    <select
+                  <div className="relative border-b border-white/10 pb-5">
+                    <button
                       id="spec-category-select"
-                      value={activeSpecCategory}
-                      onChange={(event) =>
-                        setActiveSpecCategory(event.target.value as SpecCategory)
-                      }
-                      className="type-button w-full border border-white/10 bg-[#0F0F12] px-4 py-3 text-left text-white outline-none transition focus:border-[#C1121F]/70"
+                      type="button"
+                      aria-haspopup="listbox"
+                      aria-expanded={isMobileSpecMenuOpen}
+                      className="type-button flex w-full items-center justify-between border border-white/10 bg-[#0F0F12] px-4 py-3 text-left text-white outline-none transition focus:border-[#C1121F]/70"
+                      onClick={() => setIsMobileSpecMenuOpen((open) => !open)}
                     >
-                      {specCategories.map((category) => (
-                        <option key={category} value={category}>
-                          {getSpecCategoryNumber(category)} {category}
-                        </option>
-                      ))}
-                    </select>
+                      <span>
+                        {getSpecCategoryNumber(activeSpecCategory)} {activeSpecCategory}
+                      </span>
+                      <span
+                        className={`flex items-center justify-center text-white/78 transition-transform duration-200 ${
+                          isMobileSpecMenuOpen ? "rotate-180" : ""
+                        }`}
+                        aria-hidden="true"
+                      >
+                        <ChevronDown className="size-4" strokeWidth={1.8} />
+                      </span>
+                    </button>
+
+                    <AnimatePresence>
+                      {isMobileSpecMenuOpen ? (
+                        <motion.div
+                          className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden border border-white/10 bg-[#0F0F12] shadow-[0_18px_44px_rgba(0,0,0,0.45)]"
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.18, ease: "easeOut" }}
+                        >
+                          <div role="listbox" aria-labelledby="spec-category-select">
+                            {specCategories.map((category) => {
+                              const isActive = activeSpecCategory === category;
+                              return (
+                                <button
+                                  key={category}
+                                  type="button"
+                                  role="option"
+                                  aria-selected={isActive}
+                                  className={`type-button flex w-full items-center px-4 py-3 text-left transition ${
+                                    isActive
+                                      ? "bg-[#15151A] text-[#F5F5F5]"
+                                      : "text-white/82 hover:bg-white/[0.04] hover:text-white"
+                                  }`}
+                                  onClick={() => {
+                                    setActiveSpecCategory(category);
+                                    setIsMobileSpecMenuOpen(false);
+                                  }}
+                                >
+                                  {getSpecCategoryNumber(category)} {category}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      ) : null}
+                    </AnimatePresence>
                   </div>
                 </div>
 
@@ -956,6 +965,8 @@ export function HeroShowcase() {
           ))}
         </div>
       )}
+
+      <PageFooterNote mobileClassName="bottom-[calc(2.2vh-0.35cm)]" />
     </section>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
 import { usePageTransition } from "@/hooks/use-page-transition";
@@ -44,6 +45,7 @@ export function FaqView() {
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const { overlay, runTransition } = usePageTransition();
 
   const navigateTo = (href: string) => {
@@ -84,7 +86,7 @@ export function FaqView() {
         <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/65 via-black/22 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-10 pt-4 sm:px-10">
+      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-4 pt-4 sm:px-10 sm:pb-10">
         <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 pt-2 sm:-mx-10 sm:px-10">
           <InternalPageHeader
             title="FAQ"
@@ -95,9 +97,69 @@ export function FaqView() {
           />
         </div>
 
-        <section className="mt-4 flex flex-1 items-center justify-center pb-20 sm:mt-6 lg:mt-4">
+        <section className="mt-3 flex flex-1 items-center justify-center overflow-hidden pb-14 sm:mt-6 sm:pb-20 lg:mt-4">
           <div className="w-full max-w-[980px]">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6 lg:gap-4 xl:gap-4.5">
+            <div className="space-y-1.5 sm:hidden">
+              {faqs.map((item, index) => {
+                const isOpen = openFaqIndex === index;
+
+                return (
+                  <motion.article
+                    key={item.q}
+                    className="group relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] shadow-[0_18px_50px_rgba(0,0,0,0.55)]"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.24, ease: "easeOut", delay: index * 0.03 }}
+                  >
+                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
+                    <button
+                      type="button"
+                      className="relative flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left"
+                      onClick={() =>
+                        setOpenFaqIndex((current) => (current === index ? null : index))
+                      }
+                      aria-expanded={isOpen}
+                    >
+                      <div className="min-w-0">
+                        <span className="type-eyebrow text-white/30">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <h2 className="type-card-title mt-1 text-[0.82rem] leading-[1.14] text-white/92">
+                          {item.q}
+                        </h2>
+                      </div>
+                      <ChevronDown
+                        className={`size-3.5 shrink-0 text-white/72 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {isOpen ? (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <div className="relative border-t border-white/8 px-3 pb-3 pt-2">
+                            <p className="type-body text-[0.7rem] leading-[1.4] text-white/66">
+                              {item.a}
+                            </p>
+                          </div>
+                        </motion.div>
+                      ) : null}
+                    </AnimatePresence>
+                  </motion.article>
+                );
+              })}
+            </div>
+
+            <div className="hidden grid-cols-1 gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-6 lg:gap-4 xl:gap-4.5">
               {faqs.map((item, index) => (
                 <motion.article
                   key={item.q}
@@ -134,6 +196,10 @@ export function FaqView() {
 
           </div>
         </section>
+
+        <p className="fixed bottom-[calc(2.2vh-0.2cm)] left-1/2 z-30 -translate-x-1/2 text-center text-[11px] tracking-[0.03em] text-white/55 sm:hidden">
+          Platinum all rights reserved &copy; 2026
+        </p>
 
         <p className="fixed bottom-[calc(4vh-0.5cm)] left-1/2 z-30 hidden -translate-x-1/2 text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
           Platinum all rights reserved &copy; 2026

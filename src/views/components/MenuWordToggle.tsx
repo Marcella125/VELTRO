@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { closeButtonClassName } from "@/components/ui/close-button";
 
 type MenuWordToggleProps = {
   open?: boolean;
@@ -40,11 +39,9 @@ export function MenuWordToggle({
       onClick={handleToggle}
       className={cn(
         isOpen
-          ? cn(
-              closeButtonClassName,
-              isDarkTone &&
-                "border-black/10 bg-black/[0.04] text-[#111111] hover:border-[var(--brand-red)] hover:bg-black/[0.06] focus-visible:ring-offset-[#dedede]"
-            )
+          ? isDarkTone
+            ? "group inline-flex size-11 items-center justify-center border border-transparent bg-transparent text-[#111111] transition-[border-color,background-color,box-shadow,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] hover:border-black/18 hover:bg-black/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#dedede]"
+            : "group inline-flex size-11 items-center justify-center border border-transparent bg-transparent text-white/95 transition-[border-color,background-color,box-shadow,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] hover:border-[var(--border-subtle)] hover:bg-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-red)] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           : isDarkTone
             ? "group inline-flex size-11 items-center justify-center border border-black/8 bg-transparent text-[#111111] transition-[border-color,background-color,box-shadow,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] hover:border-black/18 hover:bg-black/[0.04]"
             : "group inline-flex size-11 items-center justify-center border border-transparent bg-transparent text-white/95 transition-[border-color,background-color,box-shadow,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] hover:border-[var(--border-subtle)] hover:bg-black/25",

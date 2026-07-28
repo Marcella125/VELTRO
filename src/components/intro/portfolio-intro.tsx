@@ -12,8 +12,6 @@ type PortfolioIntroProps = {
 
 const DESCRIPTION =
   "An original front-end and UI/UX concept created to explore premium automotive design, responsive interfaces, and refined digital interactions.";
-const META = "Personal portfolio project created by marcella moussa";
-
 export function PortfolioIntro({
   onEnter,
   disabled = false,
@@ -31,11 +29,11 @@ export function PortfolioIntro({
     >
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src={assetPath("/Platinum Intro.png")}
+          src={assetPath("/Back2.jpg")}
           alt=""
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[58%_center] sm:object-center"
           aria-hidden="true"
         />
       </div>
@@ -53,11 +51,11 @@ export function PortfolioIntro({
           />
         </div>
 
-        <div className="flex flex-1 items-center">
+        <div className="flex flex-1 items-start pt-[47vh] sm:items-center sm:pt-0">
           <div className="w-full max-w-[43rem]">
             <motion.h1
               id="portfolio-intro-title"
-              className="type-section-title max-w-none whitespace-nowrap !text-[clamp(calc(1.7rem-14px),calc(2.8vw-14px),calc(3.45rem-14px))] tracking-[-0.04em] text-white"
+              className="type-section-title max-w-none whitespace-nowrap !text-[1.02rem] tracking-[-0.04em] text-white sm:!text-[clamp(1.02rem,1.72vw,2.1rem)]"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
@@ -99,10 +97,6 @@ export function PortfolioIntro({
               >
                 Enter Experience
               </PrimaryButton>
-
-              <p className="type-eyebrow mt-5 !text-[8px] tracking-[0.22em] text-white/36 sm:!text-[9px]">
-                {META}
-              </p>
             </motion.div>
           </div>
         </div>

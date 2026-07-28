@@ -12,6 +12,7 @@ type InternalPageHeaderProps = {
   onSelect: (id: string) => void;
   onLogoClick: () => void;
   className?: string;
+  surfaceClassName?: string;
 };
 
 export function InternalPageHeader({
@@ -21,6 +22,7 @@ export function InternalPageHeader({
   onSelect,
   onLogoClick,
   className,
+  surfaceClassName,
 }: InternalPageHeaderProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -55,12 +57,12 @@ export function InternalPageHeader({
 
   return (
     <div ref={containerRef} className={`relative z-40 ${className ?? ""}`}>
-      <div className="relative z-30">
+      <div className={`relative z-30 ${surfaceClassName ?? ""}`}>
         <SiteHeader
           title={title}
           isDockOpen={isDockOpen}
           onToggle={onOpenChange}
-          className="relative z-30"
+          className={`relative z-30 ${surfaceClassName ?? ""}`}
           onLogoClick={onLogoClick}
           menuTone="light"
           titleTone="light"
@@ -73,13 +75,17 @@ export function InternalPageHeader({
         {isDockOpen ? (
           <motion.div
             key="internal-page-dock"
-            className="absolute inset-x-0 top-full z-20 overflow-hidden border-x border-b border-white/10 bg-[linear-gradient(180deg,rgba(10,10,10,0.92)_0%,rgba(20,9,11,0.94)_100%)] shadow-[0_22px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl"
+            className="absolute top-full z-20 -mx-6 w-[calc(100%+3rem)] overflow-visible border-y border-white/10 bg-[linear-gradient(180deg,rgba(10,10,10,0.92)_0%,rgba(20,9,11,0.94)_100%)] shadow-[0_22px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:inset-x-0 sm:mx-0 sm:w-auto sm:overflow-hidden sm:border-x sm:border-y-0 sm:border-b"
             initial={{ opacity: 0, y: -10, clipPath: "inset(0 0 100% 0)" }}
             animate={{ opacity: 1, y: 0, clipPath: "inset(0 0 0% 0)" }}
             exit={{ opacity: 0, y: -8, clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            onPointerDown={(event) => event.stopPropagation()}
           >
-            <div className="px-2 pb-1 pt-2 sm:px-3">
+            <div
+              className="px-4 pb-5 pt-4 sm:px-3 sm:pb-1 sm:pt-2"
+              onPointerDown={(event) => event.stopPropagation()}
+            >
               <TopBarDock variant="panel" onSelect={handleSelect} />
             </div>
           </motion.div>

@@ -8,6 +8,7 @@ import { assetPath } from "@/lib/asset-path";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 type ContactFormState = {
   firstName: string;
@@ -115,7 +116,7 @@ export function ContactView() {
         <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-6 pt-6 sm:px-10">
+      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-4 pt-4 sm:px-10 sm:pb-6 sm:pt-6">
         <div className="relative z-30">
           <InternalPageHeader
             title="Contact"
@@ -126,10 +127,10 @@ export function ContactView() {
           />
         </div>
 
-        <section className="relative mt-5 flex min-h-0 flex-1 items-center lg:mt-6">
+        <section className="relative mt-3 flex min-h-0 flex-1 items-center sm:mt-5 lg:mt-6">
           <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,0.98fr)] lg:items-center lg:gap-10 xl:gap-14">
             <motion.div
-              className="relative"
+              className="relative hidden lg:block sm:block"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
@@ -179,52 +180,18 @@ export function ContactView() {
 
               <form
                 onSubmit={handleSubmit}
-                className="relative border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.86)_0%,rgba(20,9,11,0.92)_100%)] px-4 py-4 shadow-[0_26px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:px-5 sm:py-5 lg:px-5 lg:py-5"
+                className="relative border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.86)_0%,rgba(20,9,11,0.92)_100%)] px-3 py-3 shadow-[0_26px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl sm:px-5 sm:py-5 lg:px-5 lg:py-5"
               >
-                <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-2.5">
+                <div className="border-b border-white/10 pb-2 sm:pb-2.5">
                   <div>
                     <p className="type-eyebrow text-white/38">Contact Form</p>
-                    <h2 className="type-card-title mt-1 text-white text-[1.14rem] sm:text-[1.16rem]">
-                      Booking & General Enquiries
+                    <h2 className="type-card-title mt-1 text-[0.76rem] whitespace-nowrap text-white sm:text-[1.16rem]">
+                      Booking & General Inquiries
                     </h2>
                   </div>
-
-                  <AnimatePresence mode="wait" initial={false}>
-                    {status === "sent" ? (
-                      <motion.p
-                        key="sent"
-                        className="type-eyebrow max-w-[10.5rem] text-right text-[var(--brand-red)]"
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                      >
-                        Message received
-                      </motion.p>
-                    ) : status === "error" ? (
-                      <motion.p
-                        key="error"
-                        className="type-eyebrow max-w-[10.5rem] text-right text-[#d96c74]"
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                      >
-                        Complete all required fields
-                      </motion.p>
-                    ) : (
-                      <motion.p
-                        key="idle"
-                        className="type-eyebrow max-w-[10.5rem] text-right text-white/32"
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                      >
-                        Response times vary by enquiry
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
                 </div>
 
-                <div className="mt-2.5 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                <div className="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-1.5">
                   <div className="space-y-0.5">
                     <label className="type-eyebrow block text-white/34" htmlFor="contact-first-name">
                       First name
@@ -234,7 +201,7 @@ export function ContactView() {
                       type="text"
                       value={formState.firstName}
                       onChange={(event) => updateField("firstName", event.target.value)}
-                      className={`${fieldClassName} h-9`}
+                      className={`${fieldClassName} h-8.5`}
                     />
                   </div>
 
@@ -247,7 +214,7 @@ export function ContactView() {
                       type="text"
                       value={formState.lastName}
                       onChange={(event) => updateField("lastName", event.target.value)}
-                      className={`${fieldClassName} h-9`}
+                      className={`${fieldClassName} h-8.5`}
                     />
                   </div>
 
@@ -260,7 +227,7 @@ export function ContactView() {
                       type="text"
                       value={formState.enquiry}
                       onChange={(event) => updateField("enquiry", event.target.value)}
-                      className={`${fieldClassName} h-9`}
+                      className={`${fieldClassName} h-8.5`}
                     />
                   </div>
 
@@ -273,7 +240,7 @@ export function ContactView() {
                       type="email"
                       value={formState.email}
                       onChange={(event) => updateField("email", event.target.value)}
-                      className={`${fieldClassName} h-9`}
+                      className={`${fieldClassName} h-8.5`}
                     />
                   </div>
 
@@ -285,14 +252,14 @@ export function ContactView() {
                       id="contact-message"
                       value={formState.message}
                       onChange={(event) => updateField("message", event.target.value)}
-                      rows={3}
-                      className={`${fieldClassName} min-h-[5rem] resize-none py-1.5`}
+                      rows={2}
+                      className={`${fieldClassName} min-h-[4.25rem] resize-none py-1.5 sm:min-h-[5rem]`}
                     />
                   </div>
                 </div>
 
-                <div className="mt-3 flex flex-col gap-2 border-t border-white/10 pt-2.5 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="type-body max-w-[18rem] text-[0.78rem] leading-4 text-white/52">
+                <div className="mt-2.5 flex flex-col gap-2 border-t border-white/10 pt-2 sm:flex-row sm:items-center sm:justify-between sm:pt-2.5">
+                  <p className="type-body hidden max-w-[18rem] text-[0.78rem] leading-4 text-white/52 sm:block">
                     Include preferred dates, vehicle model, and destination details for
                     a faster response.
                   </p>
@@ -308,11 +275,11 @@ export function ContactView() {
             </motion.div>
           </div>
         </section>
-
-        <p className="shrink-0 pb-[calc(0.5rem-0.3cm)] pt-4 text-center text-[11px] tracking-[0.03em] text-white/55">
+        <p className="hidden shrink-0 pb-[calc(0.5rem-0.3cm)] pt-4 text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
           Platinum all rights reserved &copy; 2026
         </p>
       </div>
+      <PageFooterNote />
     </motion.main>
   );
 }

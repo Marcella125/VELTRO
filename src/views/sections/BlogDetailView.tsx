@@ -9,6 +9,7 @@ import { ActionLink } from "@/components/ui/action-link";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 import { blogEntries } from "@/data/blogs";
 
 const containerVariants: Variants = {
@@ -231,6 +232,7 @@ export function BlogDetailView() {
           </>
         )}
       </div>
+      <PageFooterNote />
     </motion.main>
   );
 }

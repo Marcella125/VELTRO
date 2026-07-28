@@ -11,6 +11,7 @@ import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 import type { Car } from "@/models/car.model";
 
 type FleetViewProps = {
@@ -246,7 +247,7 @@ export function FleetView({ cars }: FleetViewProps) {
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
             <section className="relative z-30 mt-3 shrink-0 pb-3 sm:mt-4">
               <div className="no-scrollbar -mx-2 overflow-x-auto px-2">
-                <div className="mx-auto flex min-w-max items-center justify-center gap-3 sm:gap-5">
+                <div className="mx-auto flex min-w-max items-center justify-center gap-1.5 sm:gap-5">
                   {brandFilters.map((filter) => {
                     const isActive = filter.id === activeBrandFilter;
 
@@ -257,7 +258,7 @@ export function FleetView({ cars }: FleetViewProps) {
                         aria-pressed={isActive}
                         aria-label={filter.alt}
                         onClick={() => setActiveBrandFilter(filter.id)}
-                        className="group relative flex min-h-11 items-center justify-center px-2 py-2"
+                        className="group relative flex min-h-11 items-center justify-center px-1 py-2 sm:px-2"
                       >
                         {filter.logoSrc ? (
                           <Image
@@ -265,7 +266,7 @@ export function FleetView({ cars }: FleetViewProps) {
                             alt={filter.alt}
                             width={72}
                             height={40}
-                            className={`h-10 w-auto object-contain transition-[opacity,filter,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] sm:h-12 ${
+                            className={`h-7 w-auto object-contain transition-[opacity,filter,transform] duration-[var(--transition-normal)] ease-[var(--ease-premium)] sm:h-12 ${
                               isActive
                                 ? "opacity-100 brightness-110"
                                 : "opacity-50 grayscale-[0.1] group-hover:opacity-78"
@@ -284,7 +285,9 @@ export function FleetView({ cars }: FleetViewProps) {
                         )}
 
                         <span
-                          className={`pointer-events-none absolute inset-x-2 -bottom-0.5 h-px bg-[var(--brand-red)] transition-[opacity,transform,box-shadow] duration-[var(--transition-normal)] ease-[var(--ease-premium)] ${
+                          className={`pointer-events-none absolute ${
+                            filter.logoSrc ? "inset-x-2" : "left-0 right-0"
+                          } -bottom-0.5 h-px bg-[var(--brand-red)] transition-[opacity,transform,box-shadow] duration-[var(--transition-normal)] ease-[var(--ease-premium)] ${
                             isActive
                               ? "opacity-100 shadow-[0_0_12px_rgba(177,18,38,0.45)]"
                               : "scale-x-75 opacity-0 group-hover:scale-x-100 group-hover:opacity-60"
@@ -299,7 +302,7 @@ export function FleetView({ cars }: FleetViewProps) {
 
             <main
               ref={scrollAreaRef}
-              className="no-scrollbar mt-6 grid min-h-0 flex-1 auto-rows-[100%] overflow-y-auto overscroll-contain snap-y snap-mandatory sm:mt-8 lg:mt-10"
+              className="no-scrollbar mt-6 flex min-h-0 flex-1 gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain snap-x snap-mandatory pr-2 sm:mt-8 sm:grid sm:auto-rows-[100%] sm:gap-0 sm:overflow-x-hidden sm:overflow-y-auto sm:overscroll-contain sm:pr-0 sm:snap-y lg:mt-10"
             >
               {filteredCars.length === 0 ? (
                 <section className="flex h-full min-h-0 snap-start snap-always flex-col justify-start overflow-hidden">
@@ -315,7 +318,7 @@ export function FleetView({ cars }: FleetViewProps) {
                   {vehicleGroups.map((group, groupIndex) => (
                     <section
                       key={`fleet-group-${groupIndex}`}
-                      className="flex h-full min-h-0 snap-start snap-always flex-col justify-center overflow-hidden py-3"
+                      className="flex h-full min-h-0 w-[calc(100vw-3rem)] shrink-0 snap-start snap-always flex-col justify-center overflow-hidden py-3 sm:w-auto"
                     >
                       <div className="grid auto-rows-fr grid-cols-1 content-center gap-3.5 md:grid-cols-2 xl:grid-cols-4 xl:gap-4">
                           {group.map((car, index) => {
@@ -440,12 +443,24 @@ export function FleetView({ cars }: FleetViewProps) {
               )}
             </main>
 
-            <p className="shrink-0 pb-[calc(1.5rem-0.2cm)] pt-4 text-center text-[11px] tracking-[0.03em] text-white/55">
+            <div className="relative -top-[calc(2rem+0.3cm)] mb-2 flex items-center justify-center gap-2 sm:hidden">
+              {[0, 1, 2].map((dot) => (
+                <span
+                  key={`fleet-carousel-dot-${dot}`}
+                  className={`h-2 w-2 rounded-full ${
+                    dot === 0 ? "bg-[var(--brand-red)]" : "bg-white/35"
+                  }`}
+                  aria-hidden="true"
+                />
+              ))}
+            </div>
+            <p className="hidden shrink-0 pb-[calc(1.5rem-0.2cm)] pt-4 text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
               Platinum all rights reserved &copy; 2026
             </p>
           </div>
         </div>
       </div>
+      <PageFooterNote />
 
       <AnimatePresence>
         {activeSpecCar ? (
