@@ -52,16 +52,16 @@ export function PageFooterNote({
               <Image
                 src={item.icon}
                 alt={item.label}
-                width={14}
-                height={14}
-                className="h-3.5 w-3.5 object-contain opacity-90"
+                width={12}
+                height={12}
+                className="h-3 w-3 object-contain opacity-90"
                 unoptimized
               />
             </Link>
           ))}
         </div>
         <span className="h-3.5 w-px bg-white/16" />
-        <p className="font-body font-medium uppercase tracking-[0.2em] text-white/62">
+        <p className="font-body font-medium tracking-[0.2em] text-white/62">
           {"\u00A9"} 2026 Platinum. All rights reserved.
         </p>
       </div>
@@ -83,16 +83,16 @@ export function PageFooterNote({
                 <Image
                   src={item.icon}
                   alt={item.label}
-                  width={15}
-                  height={15}
-                  className="h-[15px] w-[15px] object-contain opacity-90"
+                  width={13}
+                  height={13}
+                  className="h-[13px] w-[13px] object-contain opacity-90"
                   unoptimized
                 />
               </Link>
             ))}
           </div>
           <span className="h-4 w-px bg-white/16" />
-          <p className="font-body text-[11px] font-medium uppercase tracking-[0.2em] text-white/62">
+          <p className="font-body text-[11px] font-medium tracking-[0.2em] text-white/62">
             {"\u00A9"} 2026 Platinum. All rights reserved.
           </p>
         </div>

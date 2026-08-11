@@ -3,13 +3,15 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { CloseButton } from "@/components/ui/close-button";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
+import { formatPrice } from "@/lib/utils";
 import type { Car } from "@/models/car.model";
+import { FleetSpecsOverlay } from "@/views/components/FleetSpecsOverlay";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 
 type FleetAllViewProps = {
@@ -25,6 +27,14 @@ type FleetGridCard = {
   power: string;
   drive: string;
 };
+
+type FleetBrandFilter =
+  | "all"
+  | "Lamborghini"
+  | "Porsche"
+  | "Ferrari"
+  | "Mercedes-Benz"
+  | "BMW";
 
 const fleetGridCards: FleetGridCard[] = [
   {
@@ -103,12 +113,15 @@ const fleetGridCards: FleetGridCard[] = [
 
 export function FleetAllView({ cars }: FleetAllViewProps) {
   const router = useRouter();
-  const prefersReducedMotion = useReducedMotion();
   const [isDockOpen, setIsDockOpen] = useState(false);
-  const [activeSpecCar, setActiveSpecCar] = useState<Car | null>(null);
+  const [activeSpecCard, setActiveSpecCard] = useState<{
+    car: Car;
+    card: FleetGridCard;
+  } | null>(null);
+  const [activeBrand, setActiveBrand] = useState<FleetBrandFilter>("all");
   const { overlay, runTransition } = usePageTransition();
 
-  useOverlayBehavior(Boolean(activeSpecCar), () => setActiveSpecCar(null));
+  useOverlayBehavior(Boolean(activeSpecCard), () => setActiveSpecCard(null));
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -123,6 +136,22 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
   const carBySlug = useMemo(
     () => new Map(cars.map((car) => [car.slug, car])),
     [cars]
+  );
+
+  const brandFilters: FleetBrandFilter[] = [
+    "Lamborghini",
+    "Porsche",
+    "Ferrari",
+    "Mercedes-Benz",
+    "BMW",
+  ];
+
+  const visibleCards = useMemo(
+    () =>
+      activeBrand === "all"
+        ? fleetGridCards
+        : fleetGridCards.filter((card) => card.brand === activeBrand),
+    [activeBrand]
   );
 
   const navigateTo = (href: string) => {
@@ -141,8 +170,6 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
     if (id === "contact") return navigateTo("/contact");
     if (id === "faq") return navigateTo("/faq");
   };
-
-  const activeSpecRows = activeSpecCar?.specs ?? [];
 
   return (
     <main className="relative h-dvh overflow-hidden text-[#F5F5F5]">
@@ -180,19 +207,33 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
               <button
                 type="button"
-                className="border border-[var(--brand-red)] px-4 py-2 text-white"
+                onClick={() => setActiveBrand("all")}
+                className={`border px-4 py-2 transition ${
+                  activeBrand === "all"
+                    ? "border-[var(--brand-red)] text-white"
+                    : "border-white/12 text-white/58 hover:border-white/22 hover:text-white/82"
+                }`}
               >
                 All Vehicles
               </button>
-              <span>Lamborghini</span>
-              <span className="text-white/24">|</span>
-              <span>Porsche</span>
-              <span className="text-white/24">|</span>
-              <span>Ferrari</span>
-              <span className="text-white/24">|</span>
-              <span>Mercedes-Benz</span>
-              <span className="text-white/24">|</span>
-              <span>BMW</span>
+              {brandFilters.map((brand, index) => (
+                <div key={brand} className="flex items-center gap-x-5">
+                  <button
+                    type="button"
+                    onClick={() => setActiveBrand(brand)}
+                    className={`transition ${
+                      activeBrand === brand
+                        ? "text-white"
+                        : "text-white/58 hover:text-white/82"
+                    }`}
+                  >
+                    {brand}
+                  </button>
+                  {index < brandFilters.length - 1 ? (
+                    <span className="text-white/24">|</span>
+                  ) : null}
+                </div>
+              ))}
             </div>
 
             <div className="flex items-center gap-3">
@@ -202,18 +243,18 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
             </div>
           </div>
 
-          <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {fleetGridCards.map((card, index) => {
+          <div className="grid min-h-0 flex-1 grid-cols-1 gap-x-3 gap-y-0 [&>article:nth-child(n+2)]:-mt-8 sm:[&>article:nth-child(n+2)]:mt-0 sm:[&>article:nth-child(n+3)]:-mt-8 xl:[&>article:nth-child(n+3)]:mt-0 xl:[&>article:nth-child(n+5)]:-mt-8 sm:grid-cols-2 xl:grid-cols-4">
+            {visibleCards.map((card, index) => {
               const sourceCar = carBySlug.get(card.sourceSlug) ?? cars[0];
 
               return (
                 <article
                   key={`${card.name}-${index}`}
-                  className="relative aspect-[1.4/1] overflow-hidden border border-[rgba(177,18,38,0.72)] bg-black/20 sm:aspect-[1.38/1] xl:aspect-[1.32/1]"
+                  className="relative aspect-[1.4/1] overflow-hidden border border-white/8 bg-black/20 sm:aspect-[1.38/1] xl:aspect-[1.32/1]"
                 >
                   <button
                     type="button"
-                    onClick={() => setActiveSpecCar(sourceCar)}
+                    onClick={() => setActiveSpecCard({ car: sourceCar, card })}
                     className="group block h-full w-full text-left"
                   >
                     <div className="relative h-full overflow-hidden">
@@ -235,21 +276,20 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
                         <h2 className="mt-1.5 font-display text-[17.1px] font-black uppercase leading-[0.94] tracking-[-0.05em] text-white sm:text-[22.7px] xl:text-[16.3px]">
                           {card.name}
                         </h2>
-                        <p className="mt-2.5 font-display text-[7.82px] uppercase tracking-[0.14em] text-white/68 sm:text-[8.78px]">
-                          <span>{card.engine}</span>
-                          <span className="px-1.5 text-[var(--brand-red)]">•</span>
-                          <span>{card.power}</span>
-                          <span className="px-1.5 text-[var(--brand-red)]">•</span>
-                          <span>{card.drive}</span>
-                        </p>
                       </div>
 
-                      <div className="absolute bottom-2 left-3.5 z-10">
-                        <span className="font-display inline-flex items-center gap-2 text-[8.14px] uppercase tracking-[0.16em] text-white/84 transition group-hover:text-white sm:text-[8.78px]">
-                          <span>Explore Vehicle</span>
-                          <span className="inline-flex items-center self-center text-[0.88rem] font-semibold leading-none text-[var(--brand-red)]">
-                            →
-                          </span>
+                      <div className="absolute bottom-2 right-3.5 z-10 flex flex-col items-end text-right">
+                        <span className="font-display text-[12.4px] font-semibold leading-none text-white sm:text-[14px] xl:text-[12.9px]">
+                          {formatPrice(sourceCar.pricePerDay)}
+                        </span>
+                        <span className="mt-1 font-display text-[7.6px] uppercase tracking-[0.16em] text-white/62 sm:text-[8.5px] xl:text-[7.8px]">
+                          Rent Per Day
+                        </span>
+                      </div>
+
+                      <div className="absolute bottom-2 left-3 z-10">
+                        <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-2 py-1 text-[6.2px] font-medium uppercase tracking-[0.16em] text-white transition group-hover:brightness-110 sm:px-2.5 sm:text-[6.8px]">
+                          <span>Book This Vehicle</span>
                         </span>
                       </div>
                     </div>
@@ -259,96 +299,27 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
             })}
           </div>
 
-          <div className="flex shrink-0 justify-center pt-1">
-            <button
-              type="button"
-              className="font-display inline-flex min-w-[10.5rem] items-center justify-center gap-3 border border-white/12 px-6 py-2.5 text-[0.62rem] uppercase tracking-[0.16em] text-white/72"
-            >
-              <span>Load More Vehicles</span>
-              <ChevronDown className="size-3 text-[var(--brand-red)]" strokeWidth={1.8} />
-            </button>
-          </div>
         </section>
       </div>
+      <PageFooterNote />
 
       <AnimatePresence>
-        {activeSpecCar ? (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center px-3 py-3 text-[#F5F5F5] sm:px-5 sm:py-5"
-            initial="closed"
-            animate="open"
-            exit="closed"
-          >
-            <motion.button
-              type="button"
-              aria-label="Close specifications"
-              className="absolute inset-0 bg-black"
-              variants={{
-                closed: { opacity: 0 },
-                open: { opacity: 1 },
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.35,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              onClick={() => setActiveSpecCar(null)}
-            />
-
-            <motion.section
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="fleet-all-specifications-title"
-              className="relative mx-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-350 flex-col overflow-hidden border border-white/10 bg-[#0B0B0D] shadow-[0_24px_80px_rgba(0,0,0,0.62)] sm:max-h-[calc(100dvh-2.5rem)]"
-              variants={{
-                closed: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
-                open: { opacity: 1, y: 0 },
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.4,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0D]/92 px-7 pb-3 pt-3 backdrop-blur sm:px-9 sm:pt-4">
-                <div className="flex items-center justify-between">
-                  <div
-                    id="fleet-all-specifications-title"
-                    className="type-eyebrow text-[#F5F5F5]"
-                  >
-                    Specifications
-                  </div>
-                  <CloseButton onClick={() => setActiveSpecCar(null)} />
-                </div>
-              </div>
-
-              <div className="platinum-specs-scroll mt-4 flex-1 overflow-y-auto px-7 pb-6 sm:px-9 sm:pb-8">
-                <div className="space-y-3 border-b border-white/10 pb-5">
-                  <p className="type-eyebrow text-white/42">01 Technical Data</p>
-                  <h3 className="type-section-title text-[#F5F5F5]">
-                    {activeSpecCar.name}
-                  </h3>
-                </div>
-
-                <div className="space-y-0">
-                  {activeSpecRows.map((specRow) => (
-                    <div
-                      key={`${activeSpecCar.id}-${specRow.label}`}
-                      className="grid grid-cols-[minmax(0,1fr)_minmax(180px,auto)] items-start gap-6 border-b border-white/10 py-4"
-                    >
-                      <span className="type-label text-[#8A8A8F]">
-                        {specRow.label}
-                      </span>
-                      <span className="type-spec-value text-right leading-6 text-[#F5F5F5]">
-                        {specRow.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.section>
-          </motion.div>
+        {activeSpecCard ? (
+          <FleetSpecsOverlay
+            car={activeSpecCard.car}
+            displayBrand={activeSpecCard.card.brand}
+            displayName={activeSpecCard.card.name}
+            imageSrc={activeSpecCard.card.imageSrc}
+            engineLabel={activeSpecCard.card.engine}
+            powerLabel={activeSpecCard.card.power}
+            driveLabel={activeSpecCard.card.drive}
+            onClose={() => setActiveSpecCard(null)}
+            onLogoClick={() => navigateTo("/")}
+          />
         ) : null}
       </AnimatePresence>
     </main>
   );
 }
+
+

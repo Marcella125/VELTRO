@@ -1,13 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CloseButton } from "@/components/ui/close-button";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
+import { formatPrice } from "@/lib/utils";
+import { FleetSpecsOverlay } from "@/views/components/FleetSpecsOverlay";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 import type { Car } from "@/models/car.model";
@@ -29,6 +30,7 @@ type FleetPresentation = {
   imageSrc: string;
   displayBrand?: string;
   displayName?: string;
+  displayEngine?: string;
   displayPower?: string;
   displayDrive?: string;
 };
@@ -71,6 +73,7 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
     imageSrc: assetPath("/lambo fleet.png"),
     displayBrand: "Lamborghini",
     displayName: "Evo Spyder",
+    displayEngine: "V10",
     displayPower: "640 HP",
     displayDrive: "AWD",
   },
@@ -78,6 +81,7 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
     imageSrc: assetPath("/porshe fleet.png"),
     displayBrand: "Porsche",
     displayName: "911 Carrera 4S",
+    displayEngine: "Flat-6",
     displayPower: "450 HP",
     displayDrive: "AWD",
   },
@@ -85,34 +89,35 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
     imageSrc: assetPath("/ferrari fleet.png"),
     displayBrand: "Ferrari",
     displayName: "296 GTB",
+    displayEngine: "V6 Hybrid",
     displayPower: "830 HP",
     displayDrive: "RWD",
   },
   "velour-phantom": {
     imageSrc: assetPath("/lambo fleet.png"),
     displayBrand: "Lamborghini",
-    displayName: "Evo Spyder",
+    displayName: "Huracan STO",
+    displayEngine: "V10",
     displayPower: "640 HP",
-    displayDrive: "AWD",
+    displayDrive: "RWD",
   },
   "ember-revenant": {
     imageSrc: assetPath("/porshe fleet.png"),
-    displayBrand: "Porsche",
-    displayName: "911 Carrera 4S",
-    displayPower: "450 HP",
-    displayDrive: "AWD",
+    displayBrand: "Mercedes-Benz",
+    displayName: "AMG GT R",
+    displayEngine: "V8 Biturbo",
+    displayPower: "585 HP",
+    displayDrive: "RWD",
   },
   "midnight-regal": {
     imageSrc: assetPath("/ferrari fleet.png"),
-    displayBrand: "Ferrari",
-    displayName: "296 GTB",
-    displayPower: "830 HP",
-    displayDrive: "RWD",
+    displayBrand: "BMW",
+    displayName: "M8 Competition",
+    displayEngine: "V8",
+    displayPower: "625 HP",
+    displayDrive: "AWD",
   },
 };
-
-const getSpecValue = (car: Car, label: string) =>
-  car.specs.find((spec) => spec.label === label)?.value ?? "";
 
 function chunkArray<T>(items: T[], size: number): T[][] {
   return Array.from(
@@ -123,8 +128,6 @@ function chunkArray<T>(items: T[], size: number): T[][] {
 
 export function FleetView({ cars }: FleetViewProps) {
   const router = useRouter();
-  const homeHref = "/";
-  const prefersReducedMotion = useReducedMotion();
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [activeBrandFilter, setActiveBrandFilter] =
     useState<ActiveBrandFilter>("all");
@@ -173,14 +176,20 @@ export function FleetView({ cars }: FleetViewProps) {
       setIsDockOpen(false);
       return;
     }
-    if (id === "home") return navigateTo(homeHref);
+    if (id === "home") return navigateTo("/");
     if (id === "blogs") return navigateTo("/blogs");
     if (id === "mission") return navigateTo("/mission");
     if (id === "contact") return navigateTo("/contact");
     if (id === "faq") return navigateTo("/faq");
   };
 
-  const activeSpecRows = activeSpecCar?.specs ?? [];
+  const activeSpecPresentation = activeSpecCar
+    ? fleetPresentationBySlug[activeSpecCar.slug] ?? {
+        imageSrc: assetPath("/images/cars.png"),
+        displayBrand: activeSpecCar.brand,
+        displayName: activeSpecCar.name,
+      }
+    : null;
   const hasPreviousPage = activePageIndex > 0;
   const hasNextPage = activePageIndex < vehiclePages.length - 1;
   const showFleetArrows =
@@ -214,7 +223,7 @@ export function FleetView({ cars }: FleetViewProps) {
               isDockOpen={isDockOpen}
               onOpenChange={setIsDockOpen}
               onSelect={handleDockSelect}
-              onLogoClick={() => navigateTo(homeHref)}
+              onLogoClick={() => navigateTo("/")}
             />
           </header>
 
@@ -308,15 +317,11 @@ export function FleetView({ cars }: FleetViewProps) {
                       const absoluteIndex = activePageIndex * 3 + index;
                       const displayBrand = presentation.displayBrand ?? car.brand;
                       const displayName = presentation.displayName ?? car.name;
-                      const horsepower =
-                        presentation.displayPower ?? getSpecValue(car, "Power") ?? "640 HP";
-                      const drive =
-                        presentation.displayDrive ?? getSpecValue(car, "Drive") ?? "AWD";
 
                       return (
                         <article
                           key={car.id}
-                          className="relative flex min-h-0 flex-col overflow-hidden border border-[rgba(177,18,38,0.55)]"
+                          className="relative flex min-h-0 flex-col overflow-hidden border border-white/8"
                         >
                           <button
                             type="button"
@@ -341,20 +346,21 @@ export function FleetView({ cars }: FleetViewProps) {
                                   <h2 className="-translate-x-[0.1cm] mt-2 font-display text-[1.95rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[2.25rem] lg:text-[2.45rem]">
                                     {displayName}
                                   </h2>
-                                  <p className="mt-4 font-display text-[0.72rem] uppercase tracking-[0.14em] text-white/70 sm:text-[0.76rem]">
-                                    <span>V10</span>
-                                    <span className="px-2 text-[var(--brand-red)]">•</span>
-                                    <span>{horsepower}</span>
-                                    <span className="px-2 text-[var(--brand-red)]">•</span>
-                                    <span>{drive}</span>
-                                  </p>
                                 </div>
                               </div>
 
-                              <div className="absolute bottom-4 left-5 z-10 sm:bottom-5 sm:left-6">
-                                <span className="font-display inline-flex items-center gap-3 text-[0.82rem] uppercase tracking-[0.16em] text-white/86 transition group-hover:text-white">
-                                  <span>Explore Vehicle</span>
-                                  <span className="relative -translate-y-[0.05cm] inline-flex items-center self-center text-[1.3rem] font-semibold leading-none text-[var(--brand-red)]">→</span>
+                              <div className="absolute bottom-4 right-5 z-10 flex flex-col items-end text-right sm:bottom-5 sm:right-6">
+                                <span className="font-display text-[1.22rem] font-semibold leading-none text-white sm:text-[1.34rem]">
+                                  {formatPrice(car.pricePerDay)}
+                                </span>
+                                <span className="mt-1 font-display text-[0.68rem] uppercase tracking-[0.18em] text-white/62 sm:text-[0.74rem]">
+                                  Rent Per Day
+                                </span>
+                              </div>
+
+                              <div className="absolute bottom-4 left-4 z-10 sm:bottom-5 sm:left-5">
+                                <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-3 py-1.5 text-[0.52rem] font-medium uppercase tracking-[0.18em] text-white transition group-hover:brightness-110 sm:px-3.5 sm:text-[0.58rem]">
+                                  <span>Book This Vehicle</span>
                                 </span>
                               </div>
                             </div>
@@ -389,146 +395,22 @@ export function FleetView({ cars }: FleetViewProps) {
 
       <AnimatePresence>
         {activeSpecCar ? (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center px-3 py-3 text-[#F5F5F5] sm:px-5 sm:py-5"
-            initial="closed"
-            animate="open"
-            exit="closed"
-          >
-            <motion.button
-              type="button"
-              aria-label="Close specifications"
-              className="absolute inset-0 bg-black"
-              variants={{
-                closed: { opacity: 0 },
-                open: { opacity: 1 },
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.35,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              onClick={() => setActiveSpecCar(null)}
-            />
-
-            <motion.section
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="fleet-specifications-title"
-              className="relative mx-auto flex max-h-[calc(100dvh-1.5rem)] w-full max-w-350 flex-col overflow-hidden border border-white/10 bg-[#0B0B0D] shadow-[0_24px_80px_rgba(0,0,0,0.62)] sm:max-h-[calc(100dvh-2.5rem)]"
-              variants={{
-                closed: prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 10 },
-                open: { opacity: 1, y: 0 },
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.4,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="specs-noise pointer-events-none absolute inset-0" />
-
-              <div className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0D]/92 px-7 pb-3 pt-3 backdrop-blur sm:px-9 sm:pt-4">
-                <div className="flex items-center justify-between">
-                  <div
-                    id="fleet-specifications-title"
-                    className="type-eyebrow text-[#F5F5F5]"
-                  >
-                    Specifications
-                  </div>
-                  <CloseButton onClick={() => setActiveSpecCar(null)} />
-                </div>
-              </div>
-
-              <div className="platinum-specs-scroll mt-4 flex-1 overflow-y-auto px-7 pb-6 sm:px-9 sm:pb-8">
-                <div className="hidden sm:grid sm:grid-cols-[minmax(260px,300px)_minmax(0,1fr)] sm:gap-10 lg:gap-14">
-                  <div
-                    className="border-r border-white/8 pr-8"
-                    role="tablist"
-                    aria-orientation="vertical"
-                    aria-label="Specification categories"
-                  >
-                    <div className="space-y-1">
-                      <button
-                        type="button"
-                        role="tab"
-                        tabIndex={0}
-                        aria-selected="true"
-                        className="group relative block w-full border-l border-[#C1121F] py-3 pl-7 pr-3 text-left text-[#C1121F]"
-                      >
-                        <span className="type-eyebrow block text-[#C1121F]">01</span>
-                        <span className="type-nav mt-1 block leading-6 font-semibold">
-                          Technical Data
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="relative min-w-0">
-                    <div className="pointer-events-none absolute bottom-0 right-0 h-56 w-56 bg-[radial-gradient(circle,rgba(193,18,31,0.12),transparent_72%)] blur-[22px]" />
-                    <motion.section
-                      key={activeSpecCar.id}
-                      role="tabpanel"
-                      className="relative space-y-4"
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.24, ease: "easeOut" }}
-                    >
-                      <div className="space-y-3 border-b border-white/10 pb-5">
-                        <p className="type-eyebrow text-white/42">01 Technical Data</p>
-                        <h3 className="type-section-title text-[#F5F5F5]">
-                          {activeSpecCar.name}
-                        </h3>
-                      </div>
-
-                      <div className="space-y-0">
-                        {activeSpecRows.map((specRow) => (
-                          <div
-                            key={`${activeSpecCar.id}-${specRow.label}`}
-                            className="grid grid-cols-[minmax(0,1fr)_minmax(180px,auto)] items-start gap-6 border-b border-white/10 py-4"
-                          >
-                            <span className="type-label text-[#8A8A8F]">
-                              {specRow.label}
-                            </span>
-                            <span className="type-spec-value text-right leading-6 text-[#F5F5F5]">
-                              {specRow.value}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.section>
-                  </div>
-                </div>
-
-                <div className="sm:hidden">
-                  <div className="space-y-3 border-b border-white/10 pb-5">
-                    <p className="type-eyebrow text-white/42">01 Technical Data</p>
-                    <h3 className="type-card-title text-[#F5F5F5]">
-                      {activeSpecCar.name}
-                    </h3>
-                  </div>
-
-                  <div className="mt-6 space-y-0">
-                    {activeSpecRows.map((specRow) => (
-                      <div
-                        key={`${activeSpecCar.id}-mobile-${specRow.label}`}
-                        className="grid grid-cols-1 gap-1 border-b border-white/10 py-3"
-                      >
-                        <span className="type-label text-[#8A8A8F]">
-                          {specRow.label}
-                        </span>
-                        <span className="type-spec-value leading-6 text-[#F5F5F5]">
-                          {specRow.value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.section>
-          </motion.div>
+          <FleetSpecsOverlay
+            car={activeSpecCar}
+            displayBrand={activeSpecPresentation?.displayBrand ?? activeSpecCar.brand}
+            displayName={activeSpecPresentation?.displayName ?? activeSpecCar.name}
+            imageSrc={activeSpecPresentation?.imageSrc ?? assetPath("/images/cars.png")}
+            engineLabel={activeSpecPresentation?.displayEngine}
+            powerLabel={activeSpecPresentation?.displayPower}
+            driveLabel={activeSpecPresentation?.displayDrive}
+            onClose={() => setActiveSpecCar(null)}
+            onLogoClick={() => navigateTo("/")}
+          />
         ) : null}
       </AnimatePresence>
     </main>
   );
 }
+
+
+

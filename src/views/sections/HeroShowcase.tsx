@@ -11,6 +11,8 @@ import { PrimaryButton } from "@/components/ui/primary-button";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
+import type { Car } from "@/models/car.model";
+import { FleetSpecsOverlay } from "@/views/components/FleetSpecsOverlay";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 
@@ -158,6 +160,36 @@ const homeHeroMeta = {
   description: "Italian performance. Open-air exhilaration.",
 };
 
+const evoSpecCar: Car = {
+  id: "hero-evo-spyder",
+  slug: "hero-evo-spyder",
+  name: "Evo Spyder",
+  brand: "Lamborghini",
+  year: 2023,
+  bodyType: "Spyder",
+  pricePerDay: 1600,
+  image: "lambo-specs",
+  featured: true,
+  specs: [
+    { label: "Power", value: "640 HP" },
+    { label: "Torque", value: "600 Nm" },
+    { label: "0-60", value: "2.9s" },
+    { label: "0-100", value: "3.1 s" },
+    { label: "Drive", value: "AWD" },
+    { label: "Top Speed", value: "325 KM/H" },
+    { label: "Interior", value: "Onyx leather" },
+    { label: "Audio", value: "16 speaker studio" },
+    { label: "Wheels", value: "20/21 in forged" },
+    { label: "Tires", value: "Pirelli P Zero" },
+    { label: "Brakes", value: "Carbon ceramic" },
+    { label: "Comfort", value: "Adaptive suspension" },
+    { label: "Design", value: "Aerodynamic body kit" },
+    { label: "Consumption", value: "13.7 L/100KM" },
+    { label: "Emissions", value: "311 g/km" },
+    { label: "Range", value: "410 mi" },
+  ],
+};
+
 export function HeroShowcase() {
   const router = useRouter();
   const homeHref = "/";
@@ -222,6 +254,11 @@ export function HeroShowcase() {
     allSpecSections.find((section) => section.title === activeSpecCategory) ?? allSpecSections[0];
 
   const handleViewFeatures = () => {
+    setIsMobileSpecMenuOpen(false);
+    setActiveSpecCategory("Performance");
+    setIsHudOpen(true);
+  };
+  const openEvoSpecs = () => {
     setIsMobileSpecMenuOpen(false);
     setActiveSpecCategory("Performance");
     setIsHudOpen(true);
@@ -378,8 +415,6 @@ export function HeroShowcase() {
             className="object-cover object-center"
           />
         </div>
-
-        <div className="absolute left-1/2 top-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-red-700/20 blur-[120px]" />
       </div>
       {/* Mobile background */}
       <div className="fixed inset-0 sm:hidden">
@@ -470,11 +505,10 @@ export function HeroShowcase() {
                 <div className="relative z-10 mt-8">
                   <button
                     type="button"
-                    onClick={enterRideIt}
-                    className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-between bg-[var(--brand-red)] px-4 text-[0.82rem] font-medium uppercase tracking-[0.19em] text-white"
+                    onClick={openEvoSpecs}
+                    className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4 text-[0.82rem] font-medium uppercase tracking-[0.19em] text-white"
                   >
-                    <span className="flex-1 text-center">Explore The Evo</span>
-                    <span className="ml-3 text-[1.06rem] leading-none text-white">→</span>
+                    <span className="text-center">Explore The Evo</span>
                   </button>
                 </div>
 
@@ -518,11 +552,10 @@ export function HeroShowcase() {
                     <div className="mt-7">
                       <button
                         type="button"
-                        onClick={enterRideIt}
-                        className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-between bg-[var(--brand-red)] px-4 text-[0.76rem] font-medium uppercase tracking-[0.19em] text-white"
+                        onClick={openEvoSpecs}
+                        className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4 text-[0.76rem] font-medium uppercase tracking-[0.19em] text-white"
                       >
-                        <span className="flex-1 text-center">Explore The Evo</span>
-                        <span className="ml-3 text-[1rem] leading-none text-white">→</span>
+                        <span className="text-center">Explore The Evo</span>
                       </button>
                     </div>
                   </div>
@@ -629,269 +662,17 @@ export function HeroShowcase() {
       {/* Specs Overlay */}
       <AnimatePresence>
         {isHudOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center px-0 py-0 text-[#F5F5F5] sm:px-5 sm:py-5"
-            initial="closed"
-            animate="open"
-            exit="closed"
-          >
-            <motion.button
-              type="button"
-              aria-label="Close specifications"
-              className="absolute inset-0 bg-black"
-              variants={{
-                closed: { opacity: 0 },
-                open: { opacity: 0.9 },
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.35,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              onClick={() => setIsHudOpen(false)}
-            />
-
-            <motion.section
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="specifications-title"
-              className="relative mx-auto flex h-[100dvh] w-full max-w-none flex-col overflow-hidden border-0 bg-[#0B0B0D] shadow-[0_24px_80px_rgba(0,0,0,0.62)] sm:max-h-[calc(100dvh-2.5rem)] sm:h-auto sm:max-w-350 sm:border sm:border-white/10"
-              variants={{
-                closed: prefersReducedMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, y: 10 },
-                open: { opacity: 1, y: 0 },
-              }}
-              transition={{
-                duration: prefersReducedMotion ? 0.01 : 0.4,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="specs-noise pointer-events-none absolute inset-0" />
-
-              <div className="sticky top-0 z-20 border-b border-white/10 bg-[#0B0B0D]/92 px-7 pb-3 pt-6 backdrop-blur sm:px-9 sm:pt-4">
-                <div className="flex items-center justify-between">
-                  <div
-                    id="specifications-title"
-                    className="type-eyebrow text-[#F5F5F5]"
-                  >
-                    Specifications
-                  </div>
-                  <CloseButton
-                    onClick={() => setIsHudOpen(false)}
-                    className="border-transparent bg-transparent shadow-none hover:border-transparent hover:bg-transparent sm:border-[var(--border-subtle)] sm:bg-black/20 sm:hover:border-[var(--brand-red)] sm:hover:bg-white/[0.04]"
-                  />
-                </div>
-              </div>
-
-              <div className="platinum-specs-scroll mt-4 flex-1 overflow-y-auto px-7 pb-6 sm:px-9 sm:pb-8">
-                <div className="sm:hidden">
-                  <label
-                    htmlFor="spec-category-select"
-                    className="type-eyebrow mb-2 block text-white/46"
-                  >
-                    Category
-                  </label>
-                  <div className="relative border-b border-white/10 pb-5">
-                    <button
-                      id="spec-category-select"
-                      type="button"
-                      aria-haspopup="listbox"
-                      aria-expanded={isMobileSpecMenuOpen}
-                      className="type-button flex w-full items-center justify-between border border-white/10 bg-[#0F0F12] px-4 py-3 text-left text-white outline-none transition focus:border-[#C1121F]/70"
-                      onClick={() => setIsMobileSpecMenuOpen((open) => !open)}
-                    >
-                      <span>
-                        {getSpecCategoryNumber(activeSpecCategory)} {activeSpecCategory}
-                      </span>
-                      <span
-                        className={`flex items-center justify-center text-white/78 transition-transform duration-200 ${
-                          isMobileSpecMenuOpen ? "rotate-180" : ""
-                        }`}
-                        aria-hidden="true"
-                      >
-                        <ChevronDown className="size-4" strokeWidth={1.8} />
-                      </span>
-                    </button>
-
-                    <AnimatePresence>
-                      {isMobileSpecMenuOpen ? (
-                        <motion.div
-                          className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden border border-white/10 bg-[#0F0F12] shadow-[0_18px_44px_rgba(0,0,0,0.45)]"
-                          initial={{ opacity: 0, y: -6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -6 }}
-                          transition={{ duration: 0.18, ease: "easeOut" }}
-                        >
-                          <div role="listbox" aria-labelledby="spec-category-select">
-                            {specCategories.map((category) => {
-                              const isActive = activeSpecCategory === category;
-                              return (
-                                <button
-                                  key={category}
-                                  type="button"
-                                  role="option"
-                                  aria-selected={isActive}
-                                  className={`type-button flex w-full items-center px-4 py-3 text-left transition ${
-                                    isActive
-                                      ? "bg-[#15151A] text-[#F5F5F5]"
-                                      : "text-white/82 hover:bg-white/[0.04] hover:text-white"
-                                  }`}
-                                  onClick={() => {
-                                    setActiveSpecCategory(category);
-                                    setIsMobileSpecMenuOpen(false);
-                                  }}
-                                >
-                                  {getSpecCategoryNumber(category)} {category}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </motion.div>
-                      ) : null}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                <div className="hidden sm:grid sm:grid-cols-[minmax(260px,300px)_minmax(0,1fr)] sm:gap-10 lg:gap-14">
-                  <div
-                    className="border-r border-white/8 pr-8"
-                    role="tablist"
-                    aria-orientation="vertical"
-                    aria-label="Specification categories"
-                  >
-                    <div className="space-y-1">
-                      {specCategories.map((category, categoryIndex) => {
-                        const isActive = activeSpecCategory === category;
-                        const tabId = `spec-tab-${categoryIndex}`;
-                        const panelId = `spec-panel-${categoryIndex}`;
-
-                        return (
-                          <button
-                            key={category}
-                            ref={(node) => {
-                              specTabRefs.current[categoryIndex] = node;
-                            }}
-                            id={tabId}
-                            type="button"
-                            role="tab"
-                            tabIndex={isActive ? 0 : -1}
-                            aria-selected={isActive}
-                            aria-controls={panelId}
-                            onClick={() => setActiveSpecCategory(category)}
-                            onKeyDown={(event) => handleSpecTabKeyDown(event, categoryIndex)}
-                            className={`group relative block w-full border-l py-3 pl-5 pr-3 text-left transition ${
-                              isActive
-                                ? "border-[#C1121F] pl-7 text-[#C1121F]"
-                                : "border-transparent text-white/48 hover:text-white/82"
-                            }`}
-                          >
-                            <span
-                              className={`type-eyebrow block ${
-                                isActive ? "text-[#C1121F]" : "text-white/35"
-                              }`}
-                            >
-                              {getSpecCategoryNumber(category)}
-                            </span>
-                            <span
-                              className={`type-nav mt-1 block leading-6 ${
-                                isActive ? "font-semibold" : "font-medium"
-                              }`}
-                            >
-                              {category}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="relative min-w-0">
-                    <div className="pointer-events-none absolute bottom-0 right-0 h-56 w-56 bg-[radial-gradient(circle,rgba(193,18,31,0.12),transparent_72%)] blur-[22px]" />
-                    <AnimatePresence mode="wait">
-                      <motion.section
-                        key={activeSpecSection.title}
-                        id={`spec-panel-${specCategories.indexOf(activeSpecCategory)}`}
-                        role="tabpanel"
-                        aria-labelledby={`spec-tab-${specCategories.indexOf(activeSpecCategory)}`}
-                        className="relative space-y-4"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: 0.24, ease: "easeOut" }}
-                      >
-                        <div className="space-y-3 border-b border-white/10 pb-5">
-                          <p className="type-eyebrow text-white/42">
-                            {getSpecCategoryNumber(activeSpecCategory)} Technical Data
-                          </p>
-                          <h3 className="type-section-title text-[#F5F5F5]">
-                            {activeSpecSection.title}
-                          </h3>
-                        </div>
-
-                        <div className="space-y-0">
-                          {activeSpecSection.rows.map((specRow) => (
-                            <div
-                              key={`${activeSpecSection.title}-${specRow.label}`}
-                              className="grid grid-cols-[minmax(0,1fr)_minmax(180px,auto)] items-start gap-6 border-b border-white/10 py-4"
-                            >
-                              <span className="type-label text-[#8A8A8F]">
-                                {specRow.label}
-                              </span>
-                              <span className="type-spec-value text-right leading-6 text-[#F5F5F5]">
-                                {specRow.value}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </motion.section>
-                    </AnimatePresence>
-                  </div>
-                </div>
-
-                <div className="mt-6 sm:hidden">
-                  <AnimatePresence mode="wait">
-                    <motion.section
-                      key={activeSpecSection.title}
-                      id={`spec-panel-${specCategories.indexOf(activeSpecCategory)}`}
-                      role="tabpanel"
-                      aria-labelledby={`spec-tab-${specCategories.indexOf(activeSpecCategory)}`}
-                      className="space-y-4"
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.24, ease: "easeOut" }}
-                    >
-                      <div className="space-y-3 border-b border-white/10 pb-5">
-                        <p className="type-eyebrow text-white/42">
-                          {getSpecCategoryNumber(activeSpecCategory)} Technical Data
-                        </p>
-                        <h3 className="type-card-title text-[#F5F5F5]">
-                          {activeSpecSection.title}
-                        </h3>
-                      </div>
-
-                      <div className="space-y-0">
-                        {activeSpecSection.rows.map((specRow) => (
-                          <div
-                            key={`${activeSpecSection.title}-${specRow.label}`}
-                            className="grid grid-cols-1 gap-1 border-b border-white/10 py-3"
-                          >
-                            <span className="type-label text-[#8A8A8F]">
-                              {specRow.label}
-                            </span>
-                            <span className="type-spec-value leading-6 text-[#F5F5F5]">
-                              {specRow.value}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.section>
-                  </AnimatePresence>
-                </div>
-              </div>
-            </motion.section>
-          </motion.div>
+          <FleetSpecsOverlay
+            car={evoSpecCar}
+            displayBrand="Lamborghini"
+            displayName="Evo Spyder"
+            imageSrc={assetPath("/images/lambo specs.png")}
+            engineLabel="V10"
+            powerLabel="640 HP"
+            driveLabel="AWD"
+            onClose={() => setIsHudOpen(false)}
+            onLogoClick={() => navigateTo("/")}
+          />
         )}
       </AnimatePresence>
 

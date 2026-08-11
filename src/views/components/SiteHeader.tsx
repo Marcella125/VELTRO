@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { assetPath } from "@/lib/asset-path";
 import { HamburgerToggle } from "@/views/components/HamburgerToggle";
 
+let persistedMenuOpen = false;
+
 type SiteHeaderProps = {
   title: string;
   className?: string;
@@ -24,10 +26,7 @@ export function SiteHeader({
   compact = false,
 }: SiteHeaderProps) {
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.sessionStorage.getItem("platinum-header-menu-open") === "true";
-  });
+  const [isMenuOpen, setIsMenuOpen] = useState(persistedMenuOpen);
   const shouldHideTitle = hideTitleOnMobile ?? true;
   const homeHref = "/";
   const titleClassName =
@@ -46,10 +45,7 @@ export function SiteHeader({
   ];
 
   useEffect(() => {
-    window.sessionStorage.setItem(
-      "platinum-header-menu-open",
-      String(isMenuOpen)
-    );
+    persistedMenuOpen = isMenuOpen;
   }, [isMenuOpen]);
 
   return (
