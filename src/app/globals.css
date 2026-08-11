@@ -10,8 +10,8 @@
   --surface-2: #1a1a1a;
   --muted-foreground: rgba(245, 245, 245, 0.68);
   --border-subtle: rgba(255, 255, 255, 0.12);
-  --font-display: var(--font-space-grotesk), Arial, Helvetica, sans-serif;
-  --font-body: var(--font-manrope), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-montserrat), Arial, Helvetica, sans-serif;
+  --font-body: var(--font-montserrat), Arial, Helvetica, sans-serif;
   --radius-sm: 10px;
   --radius-md: 18px;
   --transition-fast: 150ms;
@@ -30,7 +30,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-weight: 400;
   line-height: 1.7;
 }
@@ -41,6 +41,10 @@ body {
 
 .font-body {
   font-family: var(--font-body);
+}
+
+.font-hero {
+  font-family: var(--font-rajdhani);
 }
 
 button,
@@ -56,15 +60,15 @@ textarea {
 .type-card-title,
 .type-button,
 .type-price,
-.type-spec-value,
-.type-eyebrow {
-  font-family: var(--font-space-grotesk), Arial, Helvetica, sans-serif;
+.type-spec-value {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
 .type-body,
 .type-label,
-.type-footer {
-  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+.type-footer,
+.type-eyebrow {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
 .type-eyebrow {
@@ -77,8 +81,9 @@ textarea {
 .type-nav {
   font-size: 16px;
   font-weight: 500;
-  letter-spacing: 0;
+  letter-spacing: 0.1em;
   line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .type-hero-title {
@@ -105,12 +110,12 @@ textarea {
 .type-price {
   font-size: clamp(30px, 2.8vw, 40px);
   font-weight: 700;
-  letter-spacing: 0;
+  letter-spacing: 0.02em;
   line-height: 1;
 }
 
 .type-price-suffix {
-  font-family: var(--font-space-grotesk), Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.2em;
@@ -120,8 +125,8 @@ textarea {
 .type-button {
   font-size: 15px;
   font-weight: 500;
-  letter-spacing: 0;
-  text-transform: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .type-body {
@@ -139,6 +144,7 @@ textarea {
 .type-spec-value {
   font-size: 16px;
   font-weight: 600;
+  letter-spacing: 0.03em;
   line-height: 1.5;
 }
 
@@ -177,6 +183,16 @@ body.home-scroll-hidden {
 body.home-scroll-hidden::-webkit-scrollbar {
   width: 0;
   height: 0;
+}
+
+@media (min-width: 1024px) {
+  body.mission-desktop-lock {
+    overflow: hidden;
+  }
+
+  body.mission-desktop-lock .site-footer {
+    display: none;
+  }
 }
 
 body[data-app-loading="true"] .site-footer {
@@ -400,6 +416,7 @@ nextjs-portal {
   transform: translateY(-50%);
   pointer-events: none;
 }
+
 
 @media (max-width: 640px) {
   .social-icons-left-center {

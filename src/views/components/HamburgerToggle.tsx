@@ -54,12 +54,9 @@ export function HamburgerToggle({
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
       onClick={handleToggle}
-      className={`group inline-flex items-center justify-center rounded-full text-white ${className ?? ""}`}
+      className={`group inline-flex items-center justify-center text-white ${className ?? ""}`}
       style={{ width: hitSize, height: hitSize }}
-      whileHover={{
-        scale: 1.05,
-        boxShadow: "0 8px 20px rgba(255,255,255,0.15)",
-      }}
+      whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 280, damping: 20 }}
     >

@@ -1,7 +1,6 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { ExperienceTransition } from "@/components/experience-transition";
 
 type IntroExperienceProps = {
   children: ReactNode;
@@ -10,11 +9,7 @@ type IntroExperienceProps = {
 
 export function IntroExperience({
   children,
-  sessionKey,
+  sessionKey: _sessionKey,
 }: IntroExperienceProps) {
-  return (
-    <ExperienceTransition sessionKey={sessionKey}>
-      {children}
-    </ExperienceTransition>
-  );
+  return <>{children}</>;
 }

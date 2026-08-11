@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Manrope, Space_Grotesk } from "next/font/google";
+import { Geist_Mono, Montserrat, Rajdhani } from "next/font/google";
 import AppLoader from "@/components/app-loader";
+import { PageTransitionProvider } from "@/components/page-transition-provider";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -37,10 +38,10 @@ export default function RootLayout({
     <html lang="en">
       <body
         data-app-loading="true"
-        className={`${manrope.variable} ${spaceGrotesk.variable} ${geistMono.variable} antialiased bg-black text-zinc-100`}
+        className={`${montserrat.variable} ${rajdhani.variable} ${geistMono.variable} antialiased bg-black text-zinc-100`}
       >
         <AppLoader />
-        {children}
+        <PageTransitionProvider>{children}</PageTransitionProvider>
       </body>
     </html>
   );
