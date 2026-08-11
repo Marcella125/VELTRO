@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
 import { ActionLink } from "@/components/ui/action-link";
 import { CloseButton } from "@/components/ui/close-button";
@@ -21,22 +21,13 @@ const blogCards = blogEntries.map((entry, index) => ({
   body: entry.body,
 }));
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.26, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 export function BlogsView() {
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [activeBlogId, setActiveBlogId] = useState<string | null>(null);
   const [hasMobileScrolled, setHasMobileScrolled] = useState(false);
-  const { overlay } = usePageTransition();
+  const { overlay, runTransition } = usePageTransition();
 
   const activeBlog =
     blogCards.find((entry) => entry.id === activeBlogId) ?? null;
@@ -56,7 +47,7 @@ export function BlogsView() {
 
   const navigateTo = (href: string) => {
     setIsDockOpen(false);
-    router.push(href);
+    runTransition(() => router.push(href));
   };
 
   const handleDockSelect = (id: string) => {
@@ -86,12 +77,7 @@ export function BlogsView() {
   };
 
   return (
-    <motion.main
-      className="relative min-h-[100dvh] overflow-x-hidden text-white platinum-blog-scroll"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <main className="relative min-h-[100dvh] overflow-x-hidden text-white platinum-blog-scroll">
       <AnimatePresence>{overlay}</AnimatePresence>
       <div className="pointer-events-none fixed inset-0">
         <Image
@@ -148,13 +134,7 @@ export function BlogsView() {
         <section className="relative z-10 mt-2 sm:mt-6 lg:mt-8">
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 md:gap-5">
             {blogCards.map((card) => (
-              <motion.article
-                key={card.id}
-                className="group flex h-full"
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.28, ease: "easeOut" }}
-              >
+              <article key={card.id} className="group flex h-full">
                 <div className="relative flex h-full min-h-[122px] w-full flex-col justify-between overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] p-2.5 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-300 group-hover:border-white/20 group-hover:shadow-[0_24px_70px_rgba(177,18,38,0.16)] sm:min-h-[260px] sm:p-6">
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(177,18,38,0.5),transparent)] opacity-70" />
@@ -186,16 +166,13 @@ export function BlogsView() {
                     </div>
                   </div>
                 </div>
-              </motion.article>
+              </article>
             ))}
           </div>
         </section>
 
       </div>
       <PageFooterNote />
-      <p className="fixed bottom-[calc(4vh-0.5cm)] left-1/2 z-30 hidden -translate-x-1/2 text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
-        Platinum all rights reserved &copy; 2026
-      </p>
 
       <AnimatePresence>
         {activeBlog ? (
@@ -249,6 +226,6 @@ export function BlogsView() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </motion.main>
+    </main>
   );
 }

@@ -4,10 +4,11 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
-import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
 import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 const faqs = [
   {
@@ -32,15 +33,6 @@ const faqs = [
   },
 ];
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.26, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 export function FaqView() {
   const router = useRouter();
   const homeHref = "/";
@@ -63,12 +55,7 @@ export function FaqView() {
   };
 
   return (
-    <motion.main
-      className="relative h-dvh overflow-hidden text-white"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <main className="relative min-h-dvh text-white">
       <AnimatePresence>{overlay}</AnimatePresence>
       <div className="pointer-events-none fixed inset-0">
         <Image
@@ -86,7 +73,7 @@ export function FaqView() {
         <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/65 via-black/22 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-4 pt-4 sm:px-10 sm:pb-10">
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-6 pb-4 pt-4 sm:px-10 sm:pb-10">
         <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 pt-2 sm:-mx-10 sm:px-10">
           <InternalPageHeader
             title="FAQ"
@@ -97,24 +84,21 @@ export function FaqView() {
           />
         </div>
 
-        <section className="mt-3 flex flex-1 items-center justify-center overflow-hidden pb-14 sm:mt-6 sm:pb-20 lg:mt-4">
-          <div className="w-full max-w-[980px]">
-            <div className="space-y-1.5 sm:hidden">
+        <section className="mt-3 flex flex-1 items-start justify-center pt-2 pb-28 sm:mt-6 sm:pt-3 sm:pb-32 lg:mt-4 lg:pt-5 lg:pb-36">
+          <div className="w-full max-w-[980px] sm:-translate-y-4 lg:-translate-y-8">
+            <div className="space-y-1 sm:hidden">
               {faqs.map((item, index) => {
                 const isOpen = openFaqIndex === index;
 
                 return (
-                  <motion.article
+                  <article
                     key={item.q}
                     className="group relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] shadow-[0_18px_50px_rgba(0,0,0,0.55)]"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.24, ease: "easeOut", delay: index * 0.03 }}
                   >
                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
                     <button
                       type="button"
-                      className="relative flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left"
+                      className="relative flex w-full items-center justify-between gap-2.5 px-2.5 py-2 text-left"
                       onClick={() =>
                         setOpenFaqIndex((current) => (current === index ? null : index))
                       }
@@ -124,7 +108,7 @@ export function FaqView() {
                         <span className="type-eyebrow text-white/30">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <h2 className="type-card-title mt-1 text-[0.82rem] leading-[1.14] text-white/92">
+                        <h2 className="type-card-title mt-1 text-[0.66rem] leading-[1.08] text-white/92">
                           {item.q}
                         </h2>
                       </div>
@@ -146,33 +130,30 @@ export function FaqView() {
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="relative border-t border-white/8 px-3 pb-3 pt-2">
-                            <p className="type-body text-[0.7rem] leading-[1.4] text-white/66">
+                          <div className="relative border-t border-white/8 px-2.5 pb-2.5 pt-1.5">
+                            <p className="type-body text-[0.58rem] leading-[1.28] text-white/66">
                               {item.a}
                             </p>
                           </div>
                         </motion.div>
                       ) : null}
                     </AnimatePresence>
-                  </motion.article>
+                  </article>
                 );
               })}
             </div>
 
-            <div className="hidden grid-cols-1 gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-6 lg:gap-4 xl:gap-4.5">
+            <div className="hidden grid-cols-1 gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-6 lg:gap-2.5 xl:gap-3">
               {faqs.map((item, index) => (
-                <motion.article
+                <article
                   key={item.q}
-                  className={`group relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] p-2.5 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_24px_70px_rgba(177,18,38,0.16)] sm:p-3 ${
+                  className={`group relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] p-1.5 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_24px_70px_rgba(177,18,38,0.16)] sm:p-2 ${
                     index < 3
                       ? "lg:col-span-2"
                       : index === 3
                         ? "lg:col-start-2 lg:col-span-2"
                         : "lg:col-start-4 lg:col-span-2"
                   }`}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.24, ease: "easeOut", delay: index * 0.03 }}
                 >
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(177,18,38,0.5),transparent)] opacity-70" />
@@ -182,29 +163,22 @@ export function FaqView() {
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <h2 className="type-card-title mt-1.5 text-[0.84rem] leading-[1.18] text-white/92 sm:text-[0.88rem]">
+                    <h2 className="type-card-title mt-1 text-[0.64rem] leading-[1.08] text-white/92 sm:text-[0.7rem]">
                       {item.q}
                     </h2>
 
-                    <p className="type-body mt-1 text-[0.73rem] leading-[1.42] text-white/60">
+                    <p className="type-body mt-0.5 text-[0.56rem] leading-[1.24] text-white/60">
                       {item.a}
                     </p>
                   </div>
-                </motion.article>
+                </article>
               ))}
             </div>
 
           </div>
         </section>
-
-        <p className="fixed bottom-[calc(2.2vh-0.2cm)] left-1/2 z-30 -translate-x-1/2 text-center text-[11px] tracking-[0.03em] text-white/55 sm:hidden">
-          Platinum all rights reserved &copy; 2026
-        </p>
-
-        <p className="fixed bottom-[calc(4vh-0.5cm)] left-1/2 z-30 hidden -translate-x-1/2 text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
-          Platinum all rights reserved &copy; 2026
-        </p>
       </div>
-    </motion.main>
+      <PageFooterNote />
+    </main>
   );
 }

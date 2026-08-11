@@ -16,9 +16,9 @@ import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 
 const heroSlides = [
-  assetPath("/images/lamboevospyder.jpeg"),
-  assetPath("/images/lamboevospyderback.jpeg"),
-  assetPath("/images/lamboevospyder.jpeg"),
+  assetPath("/Home bg.png"),
+  assetPath("/Home bg.png"),
+  assetPath("/Home bg.png"),
 ];
 
 const detailSlides = [
@@ -149,13 +149,20 @@ const specCategories: SpecCategory[] = [
 ];
 
 const allSpecSections = [...specsLeft, ...specsRight];
+const homeHeroMeta = {
+  eyebrow: "01",
+  marque: "Lamborghini",
+  titleLead: "EVO",
+  titleAccent: "SPYDER",
+  featureLine: "V10 • AWD • OPEN AIR",
+  description: "Italian performance. Open-air exhilaration.",
+};
 
 export function HeroShowcase() {
   const router = useRouter();
   const homeHref = "/";
   const prefersReducedMotion = useReducedMotion();
   const specTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const [index, setIndex] = useState(0);
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [currentApp, setCurrentApp] = useState<"home" | "rideit">("home");
   const [activeTab, setActiveTab] = useState<AppTab>("car");
@@ -166,15 +173,13 @@ export function HeroShowcase() {
   const swipeDeltaY = useRef(0);
   const { runTransition } = usePageTransition();
 
-  const totalSlides = currentApp === "home" ? heroSlides.length : detailSlides.length;
-
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setIndex((prev) => (prev + 1) % totalSlides);
-    }, 5000);
-
-    return () => window.clearInterval(intervalId);
-  }, [totalSlides]);
+  const navigateTo = (href: string) => {
+    document.body.classList.remove("home-scroll-hidden");
+    setIsDockOpen(false);
+    runTransition(() => {
+      router.push(href);
+    });
+  };
 
   useEffect(() => {
     const body = document.body;
@@ -201,10 +206,7 @@ export function HeroShowcase() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [currentApp, isHudOpen]);
 
-  const slideSrc = useMemo(
-    () => (currentApp === "home" ? heroSlides : detailSlides)[index],
-    [index, currentApp]
-  );
+  const slideSrc = currentApp === "home" ? heroSlides[0] : detailSlides[0];
 
   const whatsappNumber = "+96170335113";
   const whatsappMessage =
@@ -335,7 +337,6 @@ export function HeroShowcase() {
 
   const handleDockSelect = (id: string) => {
     if (id === "home") {
-      setIsDockOpen(false);
       runTransition(() => {
         setCurrentApp("home");
         router.push(homeHref);
@@ -343,38 +344,23 @@ export function HeroShowcase() {
       return;
     }
     if (id === "blogs") {
-      setIsDockOpen(false);
-      runTransition(() => {
-        router.push("/blogs");
-      });
+      navigateTo("/blogs");
       return;
     }
     if (id === "fleet") {
-      setIsDockOpen(false);
-      runTransition(() => {
-        router.push("/fleet");
-      });
+      navigateTo("/fleet");
       return;
     }
     if (id === "mission") {
-      setIsDockOpen(false);
-      runTransition(() => {
-        router.push("/mission");
-      });
+      navigateTo("/mission");
       return;
     }
     if (id === "contact") {
-      setIsDockOpen(false);
-      runTransition(() => {
-        router.push("/contact");
-      });
+      navigateTo("/contact");
       return;
     }
     if (id === "faq") {
-      setIsDockOpen(false);
-      runTransition(() => {
-        router.push("/faq");
-      });
+      navigateTo("/faq");
     }
   };
 
@@ -382,55 +368,37 @@ export function HeroShowcase() {
     <section className="relative min-h-screen">
       {/* Background slideshow (desktop) */}
       <div className="fixed inset-0 hidden sm:block">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={slideSrc}
-            className="absolute inset-0"
-            initial={{ opacity: 0, scale: 1.04, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 1.02, filter: "blur(6px)" }}
-            transition={{ duration: 1.1, ease: "easeInOut" }}
-          >
-            <Image
-              src={slideSrc}
-              alt="Lamborghini EVO Spyder"
-              fill
-              priority
-              quality={100}
-              className="object-cover object-center"
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div className="absolute inset-0">
+          <Image
+            src={currentApp === "home" ? assetPath("/Home bg.png") : slideSrc}
+            alt="Lamborghini EVO Spyder"
+            fill
+            priority
+            quality={100}
+            className="object-cover object-center"
+          />
+        </div>
 
         <div className="absolute left-1/2 top-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-red-700/20 blur-[120px]" />
       </div>
       {/* Mobile background */}
       <div className="fixed inset-0 sm:hidden">
-        <AnimatePresence mode="sync">
-          <motion.div
-            key={currentApp === "rideit" ? "rideit-mobile-bg" : "home-mobile-bg"}
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.28, ease: "easeInOut" }}
-          >
-            <Image
-              src={assetPath(currentApp === "rideit" ? "/back3.jpg" : "/back1.jpg")}
-              alt=""
-              fill
-              priority
-              quality={90}
-              className="object-cover object-center"
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div className="absolute inset-0">
+          <Image
+            src={assetPath(currentApp === "rideit" ? "/back3.jpg" : "/Home bg.png")}
+            alt=""
+            fill
+            priority
+            quality={90}
+            className="object-cover object-center"
+          />
+        </div>
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* Header */}
         <div className="relative z-30">
-          <div className="mx-auto w-full max-w-350 px-6 pt-5 sm:px-10">
+          <div className="mx-auto w-full max-w-350 px-6 pt-5 sm:px-10 sm:pt-6">
             <InternalPageHeader
               title={headerTitle}
               isDockOpen={isDockOpen}
@@ -447,8 +415,7 @@ export function HeroShowcase() {
                   setIsDockOpen(false);
                   return;
                 }
-                setIsDockOpen(false);
-                runTransition(() => router.push(homeHref));
+                navigateTo(homeHref);
               }}
             />
           </div>
@@ -465,118 +432,104 @@ export function HeroShowcase() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.45, ease: "easeInOut" }}
             >
-              {/* Social icons */}
-              <div className="social-icons-left-center">
-                {socialIcons.map((item) => (
-            <motion.button
-              key={item.id}
-              type="button"
-              className="pointer-events-auto flex h-8 w-8 items-center justify-center rounded-full bg-transparent"
-                    whileHover={{ scale: 1.08, boxShadow: "0 0 18px rgba(255,255,255,0.25)" }}
-                    transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                  >
-                    <span
-                      className="h-4 w-4"
-                      style={{
-                        backgroundColor: "#ffffff",
-                        WebkitMaskImage: `url(${item.icon})`,
-                        maskImage: `url(${item.icon})`,
-                        WebkitMaskRepeat: "no-repeat",
-                        maskRepeat: "no-repeat",
-                        WebkitMaskPosition: "center",
-                        maskPosition: "center",
-                        WebkitMaskSize: "contain",
-                        maskSize: "contain",
-                      }}
-                      aria-hidden="true"
-                    />
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* Desktop spacer (keeps original vertical rhythm) */}
-              <div className="hidden flex-1 sm:block" />
-
               {/* Mobile hero layout */}
-              <div className="relative flex flex-1 flex-col px-6 pb-10 pt-10 sm:hidden">
-                <div className="flex-[0.63]" />
+              <div className="relative flex flex-1 flex-col px-5 pb-8 pt-5 translate-y-[1.5cm] sm:hidden">
+                <div className="relative z-10 mt-3 -translate-x-[0.2cm]">
+                  <div className="font-body translate-x-[0.28cm] text-[0.88rem] font-medium uppercase tracking-[0.2em] text-white/62">
+                    <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
+                    <span className="px-2 text-white/38">/</span>
+                    <span>{homeHeroMeta.marque}</span>
+                  </div>
 
-                <div className="relative mt-[calc(4vh+4.4cm)]">
-                  <Image
-                    src={assetPath("/pattern1.svg")}
-                    alt=""
-                    width={600}
-                    height={380}
-                    className="pointer-events-none absolute -bottom-[10%] left-1/2 -translate-x-1/2 opacity-60"
-                    style={{ bottom: "calc(-10% - 2.2cm)" }}
-                  />
+                  <div className="mt-6">
+                    <p className="font-display text-[6.1rem] font-black leading-[0.82] tracking-[-0.095em] text-white">
+                      {homeHeroMeta.titleLead}
+                    </p>
+                    <p className="font-display -mt-1 text-[3.25rem] font-black leading-[0.9] tracking-[-0.06em] text-[var(--brand-red)]">
+                      {homeHeroMeta.titleAccent}
+                    </p>
+                  </div>
 
-                  <p className="relative z-10 type-card-title mt-1 text-center text-[18px] text-white/95">
-                    Lamborghini EVO Spyder
+                  <p className="mt-4 font-body text-[0.86875rem] font-medium uppercase tracking-[0.22em] text-white/72">
+                    <span>V10</span>
+                    <span className="px-2 text-[var(--brand-red)]">•</span>
+                    <span>AWD</span>
+                    <span className="px-2 text-[var(--brand-red)]">•</span>
+                    <span>OPEN AIR</span>
                   </p>
-                  <p className="relative z-10 font-body mt-2 text-[14px] leading-[1.6] text-white/85 text-justify">
-                    Lamborghini Huracan EVO Spyder brings open‑top V10 performance with sharp, confident handling.
-                    Its aggressive design and iconic presence make every arrival unforgettable.
-                    Refined materials and a driver‑focused cockpit keep every moment pure Lamborghini.
-                  </p>
 
-                  <motion.button
-                    type="button"
-                    className="relative z-10 type-button mt-4 h-12 w-full bg-[#b3242d] text-white"
-                    onClick={enterRideIt}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 240, damping: 20 }}
-                  >
-                    Ride it
-                  </motion.button>
+                  <div className="mt-7 h-px w-14 bg-[var(--brand-red)]" />
                 </div>
+
+                <p className="relative z-10 mt-8 max-w-[17rem] font-body text-[19px] leading-[1.28] text-white/82">
+                  Italian performance.
+                  <br />
+                  Open-air exhilaration.
+                </p>
+
+                <div className="relative z-10 mt-8">
+                  <button
+                    type="button"
+                    onClick={enterRideIt}
+                    className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-between bg-[var(--brand-red)] px-4 text-[0.82rem] font-medium uppercase tracking-[0.19em] text-white"
+                  >
+                    <span className="flex-1 text-center">Explore The Evo</span>
+                    <span className="ml-3 text-[1.06rem] leading-none text-white">→</span>
+                  </button>
+                </div>
+
               </div>
 
               {/* Desktop hero layout */}
-              <div className="mx-auto mt-2 hidden w-full max-w-350 items-end justify-between pl-16 pr-4 sm:flex">
-                <div className="flex-1">
-                  <p className="type-card-title mb-3 text-[18px] text-white/90">
-                    Lamborghini EVO Spyder
-                  </p>
-                  <p
-                    className="text-white/85 text-justify"
-                    style={{
-                      fontSize: "14px",
-                      lineHeight: "1.6",
-                      fontWeight: 400,
-                    }}
-                  >
-                    Experience pure Italian supercar excitement with the Lamborghini Huracan EVO Spyder, a high-performance convertible
-                    available for rent. Built for drivers who demand aggressive design, naturally aspirated V10 power, and open-top driving thrills,
-                    the EVO Spyder delivers breathtaking acceleration, precision handling, and iconic Lamborghini presence. Whether cruising
-                    city streets or arriving in style at exclusive destinations, this supercar guarantees an unforgettable luxury experience.
-                    Carbon-fiber details, bespoke materials, and a driver-focused cockpit elevate every moment, while advanced dynamics keep
-                    the ride precise and composed. From sunrise coastal runs to exclusive evening arrivals, the EVO Spyder turns every mile into
-                    an event and every stop into a statement.
-                  </p>
-                </div>
+              <div className="relative mx-auto hidden h-full w-full max-w-350 flex-1 sm:block">
+                <div className="relative z-10 grid h-full grid-cols-[minmax(340px,390px)_minmax(0,1fr)] items-center gap-6 px-8 pb-10 pt-6 lg:px-10">
+                  <div className="self-center -translate-x-[0.2cm] translate-y-[1.5cm] max-w-[22rem]">
+                    <div className="font-body translate-x-[0.28cm] text-[0.95rem] font-medium uppercase tracking-[0.2em] text-white/62">
+                      <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
+                      <span className="px-2.5 text-white/38">/</span>
+                      <span>{homeHeroMeta.marque}</span>
+                    </div>
 
-                <div className="relative mt-0 flex w-105 shrink-0 items-center justify-end gap-6">
-                  <Image
-                    src={assetPath("/pattern1.svg")}
-                    alt=""
-                    width={800}
-                    height={600}
-                    className="pointer-events-none absolute -right-32 opacity-85"
-                    style={{ top: "-392px" }}
-                  />
-                  <PrimaryButton
-                    type="button"
-                    className="relative z-10 w-56"
-                    onClick={enterRideIt}
-                  >
-                    Ride It
-                  </PrimaryButton>
+                    <div className="mt-6">
+                      <h1 className="font-display text-[clamp(6.55rem,8.06vw,7.7rem)] font-black leading-[0.8] tracking-[-0.105em] text-white">
+                        {homeHeroMeta.titleLead}
+                      </h1>
+                      <p className="font-display mt-1 text-[clamp(3.25rem,4.22vw,3.8rem)] font-black leading-[0.84] tracking-[-0.06em] text-[var(--brand-red)]">
+                        {homeHeroMeta.titleAccent}
+                      </p>
+                    </div>
+
+                    <p className="mt-4 font-body text-[0.88875rem] font-medium uppercase tracking-[0.22em] text-white/72">
+                      <span>V10</span>
+                      <span className="px-2 text-[var(--brand-red)]">•</span>
+                      <span>AWD</span>
+                      <span className="px-2 text-[var(--brand-red)]">•</span>
+                      <span>OPEN AIR</span>
+                    </p>
+
+                    <div className="mt-5 h-px w-14 bg-[var(--brand-red)]" />
+
+                    <p className="mt-5 max-w-[16rem] font-body text-[1.18rem] leading-[1.24] text-white/82">
+                      Italian performance.
+                      <br />
+                      Open-air exhilaration.
+                    </p>
+
+                    <div className="mt-7">
+                      <button
+                        type="button"
+                        onClick={enterRideIt}
+                        className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-between bg-[var(--brand-red)] px-4 text-[0.76rem] font-medium uppercase tracking-[0.19em] text-white"
+                      >
+                        <span className="flex-1 text-center">Explore The Evo</span>
+                        <span className="ml-3 text-[1rem] leading-none text-white">→</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="relative flex h-full items-end justify-center" />
                 </div>
               </div>
-              <p className="mt-4 mb-4 hidden text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
-                Platinum all rights reserved &copy; 2026
-              </p>
             </motion.div>
           ) : (
             /* DETAIL VIEW */
@@ -942,31 +895,7 @@ export function HeroShowcase() {
         )}
       </AnimatePresence>
 
-      {/* Hero dots (only in hero view) */}
-      {currentApp === "home" && (
-        <div className="absolute right-10 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
-          {heroSlides.map((_, dotIndex) => (
-            <motion.button
-              key={`dot-${dotIndex}`}
-              type="button"
-              onClick={() => setIndex(dotIndex)}
-              className="relative flex h-3 w-3 items-center justify-center"
-              animate={{ scale: dotIndex === index ? 1.2 : 1 }}
-              transition={{ type: "spring", stiffness: 280, damping: 16 }}
-              aria-label={`Go to slide ${dotIndex + 1}`}
-            >
-              <span
-                className={`block h-2.5 w-2.5 rounded-full ${
-                  dotIndex === index ? "bg-[#b3242d]" : "bg-white/90"
-                }`}
-              />
-              {dotIndex === index && <span className="absolute h-1.5 w-1.5 rounded-full bg-black" />}
-            </motion.button>
-          ))}
-        </div>
-      )}
-
-      <PageFooterNote mobileClassName="bottom-[calc(2.2vh-0.35cm)]" />
+      <PageFooterNote />
     </section>
   );
 }

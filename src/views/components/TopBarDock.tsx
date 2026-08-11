@@ -18,7 +18,7 @@ type TopBarDockProps = {
   variant?: "default" | "panel";
 };
 
-const items: DockItem[] = [
+export const topBarDockItems: DockItem[] = [
   { id: "home", label: "Home", icon: assetPath("/icons/Home.svg"), iconColor: "#ffffff" },
   { id: "blogs", label: "Blogs", icon: assetPath("/icons/Acceleration.svg"), iconColor: "#ffffff" },
   { id: "fleet", label: "Fleet", icon: assetPath("/icons/fleet.svg"), iconColor: "#ffffff" },
@@ -36,12 +36,12 @@ export function TopBarDock({
   const isPanelVariant = variant === "panel";
   const activeIndex = useMemo(() => {
     if (!pathname) return 0;
-    if (pathname.startsWith("/blogs")) return items.findIndex((i) => i.id === "blogs");
-    if (pathname.startsWith("/fleet")) return items.findIndex((i) => i.id === "fleet");
-    if (pathname.startsWith("/mission")) return items.findIndex((i) => i.id === "mission");
-    if (pathname.startsWith("/contact")) return items.findIndex((i) => i.id === "contact");
-    if (pathname.startsWith("/faq")) return items.findIndex((i) => i.id === "faq");
-    if (pathname === "/") return items.findIndex((i) => i.id === "home");
+    if (pathname.startsWith("/blogs")) return topBarDockItems.findIndex((i) => i.id === "blogs");
+    if (pathname.startsWith("/fleet")) return topBarDockItems.findIndex((i) => i.id === "fleet");
+    if (pathname.startsWith("/mission")) return topBarDockItems.findIndex((i) => i.id === "mission");
+    if (pathname.startsWith("/contact")) return topBarDockItems.findIndex((i) => i.id === "contact");
+    if (pathname.startsWith("/faq")) return topBarDockItems.findIndex((i) => i.id === "faq");
+    if (pathname === "/") return topBarDockItems.findIndex((i) => i.id === "home");
     return 0;
   }, [pathname]);
 
@@ -68,7 +68,7 @@ export function TopBarDock({
             )}
           >
             <div className={cn(isPanelVariant ? "contents lg:flex" : "contents sm:flex")}>
-          {items.map((item, index) => {
+          {topBarDockItems.map((item, index) => {
             const isActive = index === activeIndex;
 
             const showLabel =

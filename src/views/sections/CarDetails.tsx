@@ -119,12 +119,7 @@ export function CarDetails() {
   }, []);
 
   return (
-    <motion.main
-      className="relative min-h-screen bg-[#0a0f10]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.42, ease: "easeInOut" }}
-    >
+    <main className="relative min-h-screen bg-[#0a0f10]">
       <AnimatePresence>{overlay}</AnimatePresence>
       <section className="relative min-h-[70vh] overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-b from-black via-[#0a0f10] to-[#111314]" />
@@ -153,7 +148,7 @@ export function CarDetails() {
         <div className="relative z-10 flex min-h-[70vh] flex-col justify-center transition-all duration-300">
           <div className="mx-auto flex w-full max-w-350 flex-col gap-12 px-16 pb-10 pt-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex w-full flex-1 flex-col items-start">
-              <AnimatePresence mode="wait">
+              <AnimatePresence initial={false} mode="wait">
                 <motion.div
                   key={carSlides[index]}
                   className="relative w-full max-w-140"
@@ -226,23 +221,15 @@ export function CarDetails() {
                 ))}
               </div>
 
-              <motion.div
-                className="w-full max-w-[292px] rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,18,18,0.82),rgba(12,12,12,0.72))] p-5 shadow-none backdrop-blur-sm lg:mt-4 lg:w-[292px]"
-                initial={{ opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              >
+              <div className="w-full max-w-[292px] rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,18,18,0.82),rgba(12,12,12,0.72))] p-5 shadow-none backdrop-blur-sm lg:mt-4 lg:w-[292px]">
                 <div className="text-center text-[24px] font-semibold tracking-[0.01em] text-[#c62a34]">
                   {"\u00D0"} 3,300.00
                 </div>
                 <div className="mt-4 grid grid-cols-2 gap-2.5">
-                  {featureStats.map((item, idx) => (
-                    <motion.div
+                  {featureStats.map((item) => (
+                    <div
                       key={item.title}
                       className="flex min-h-[78px] flex-col items-center justify-center rounded-[20px] border border-white/8 bg-white/[0.03] px-3 py-3 text-center"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.35, delay: 0.1 + idx * 0.05 }}
                     >
                       <div
                         className={`whitespace-pre-line font-semibold leading-5 text-white/90 ${
@@ -259,7 +246,7 @@ export function CarDetails() {
                       <div className="mt-1 text-[8px] uppercase tracking-[0.16em] text-white/50">
                         {item.label}
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
                 <PrimaryButton
@@ -270,7 +257,7 @@ export function CarDetails() {
                 >
                   WhatsApp
                 </PrimaryButton>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
@@ -325,6 +312,6 @@ export function CarDetails() {
         </div>
       </section>
 
-    </motion.main>
+    </main>
   );
 }

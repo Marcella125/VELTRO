@@ -29,7 +29,7 @@ export function PortfolioIntro({
     >
       <div className="pointer-events-none absolute inset-0">
         <Image
-          src={assetPath("/Back2.jpg")}
+          src={assetPath("/Platinum Intro Page.png")}
           alt=""
           fill
           priority

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
 import { ActionLink } from "@/components/ui/action-link";
 import { PrimaryButton } from "@/components/ui/primary-button";
@@ -11,15 +11,6 @@ import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 import { blogEntries } from "@/data/blogs";
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.26, ease: [0.22, 1, 0.36, 1] },
-  },
-};
 
 export function BlogDetailView() {
   const router = useRouter();
@@ -52,12 +43,7 @@ export function BlogDetailView() {
   };
 
   return (
-    <motion.main
-      className="platinum-blog-scroll relative min-h-screen max-h-screen overflow-y-auto text-white"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <main className="platinum-blog-scroll relative min-h-screen max-h-screen overflow-y-auto text-white">
       <div className="pointer-events-none fixed inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
@@ -102,12 +88,7 @@ export function BlogDetailView() {
           <>
             {/* Mobile layout */}
             <section className="relative mt-4 sm:hidden">
-              <motion.div
-                className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              >
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
                 <div className="relative h-64 w-full">
                   <Image
                     src={blog.heroImage}
@@ -149,7 +130,7 @@ export function BlogDetailView() {
                     </ActionLink>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </section>
 
             {/* Desktop layout */}
@@ -159,12 +140,7 @@ export function BlogDetailView() {
               <div className="order-1 lg:order-0">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] lg:items-end lg:gap-10">
                   {/* Square hero (since images are squared) */}
-                  <motion.div
-                    className="relative mx-auto w-full max-w-[560px] overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.6)] backdrop-blur-xl lg:h-[520px]"
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                  >
+                  <div className="relative mx-auto w-full max-w-[560px] overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_30px_90px_rgba(0,0,0,0.6)] backdrop-blur-xl lg:h-[520px]">
                     <div className="relative h-full w-full">
                       <Image
                         src={blog.heroImage}
@@ -184,15 +160,10 @@ export function BlogDetailView() {
 
                     {/* Title plate removed per request */}
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Text + CTA */}
-                  <motion.div
-                    className="no-scrollbar rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_22px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-8 lg:h-[520px] lg:overflow-y-auto"
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.55, ease: "easeOut", delay: 0.08 }}
-                  >
+                  <div className="no-scrollbar rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_22px_70px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-8 lg:h-[520px] lg:overflow-y-auto">
                     <p className="text-[15px] leading-8 text-white/75">
                       {blog.summary}
                     </p>
@@ -221,18 +192,15 @@ export function BlogDetailView() {
                         Back to Blogs
                       </ActionLink>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
             </section>
 
-            <p className="mt-10 mb-6 hidden text-center text-[11px] tracking-[0.03em] text-white/55 sm:block">
-              Platinum all rights reserved &copy; 2026
-            </p>
           </>
         )}
       </div>
       <PageFooterNote />
-    </motion.main>
+    </main>
   );
 }
