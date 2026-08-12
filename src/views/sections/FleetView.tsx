@@ -5,7 +5,6 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
 import { formatPrice } from "@/lib/utils";
 import { FleetSpecsOverlay } from "@/views/components/FleetSpecsOverlay";
@@ -133,13 +132,11 @@ export function FleetView({ cars }: FleetViewProps) {
     useState<ActiveBrandFilter>("all");
   const [activeSpecCar, setActiveSpecCar] = useState<Car | null>(null);
   const [activePageIndex, setActivePageIndex] = useState(0);
-  const { overlay, runTransition } = usePageTransition();
 
   useOverlayBehavior(Boolean(activeSpecCar), () => setActiveSpecCar(null));
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const filteredCars = useMemo(() => {
@@ -173,7 +170,6 @@ export function FleetView({ cars }: FleetViewProps) {
 
   const handleDockSelect = (id: string) => {
     if (id === "fleet") {
-      setIsDockOpen(false);
       return;
     }
     if (id === "home") return navigateTo("/");
@@ -198,7 +194,6 @@ export function FleetView({ cars }: FleetViewProps) {
 
   return (
     <main className="relative h-dvh overflow-hidden text-[#F5F5F5]">
-      <AnimatePresence>{overlay}</AnimatePresence>
       <div className="pointer-events-none absolute inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
@@ -207,8 +202,8 @@ export function FleetView({ cars }: FleetViewProps) {
           priority
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,#240407_0%,#100103_38%,#050505_70%,#000_100%)] opacity-[0.78]" />
-        <div className="absolute inset-0 bg-[radial-gradient(80%_58%_at_50%_48%,rgba(140,10,18,0.28),transparent_62%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,#1f1f1f_0%,#111111_38%,#050505_70%,#000_100%)] opacity-[0.78]" />
+        <div className="absolute inset-0 bg-[radial-gradient(80%_58%_at_50%_48%,rgba(255,255,255,0.14),transparent_62%)]" />
         <div className="absolute inset-0 bg-black/54" />
         <div className="absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.74)]" />
         <div className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black/60 via-black/24 to-transparent" />
@@ -216,7 +211,7 @@ export function FleetView({ cars }: FleetViewProps) {
       </div>
 
       <div className="relative z-10 flex h-dvh flex-col overflow-hidden">
-        <div className="mx-auto flex w-full max-w-350 flex-1 flex-col overflow-hidden px-6 pt-6 sm:px-10">
+        <div className="mx-auto flex w-full max-w-350 flex-1 flex-col overflow-hidden px-6 pt-5 sm:px-10 sm:pt-6">
           <header className="relative z-40 shrink-0">
             <InternalPageHeader
               title="Fleet"
@@ -233,14 +228,14 @@ export function FleetView({ cars }: FleetViewProps) {
                 <div className="mx-auto flex min-w-max items-center justify-center gap-1.5 sm:gap-5">
                   <button
                     type="button"
-                    aria-label="View all vehicles"
+                    aria-label="All cars"
                     onClick={() => navigateTo("/fleet/all")}
                     className="group relative flex min-h-11 min-w-[4.4rem] items-center justify-center px-2.5 py-2 sm:min-w-[4.8rem] sm:px-3"
                   >
                     <span className="type-eyebrow rounded-none border border-white/12 px-3 py-1.5 text-center text-[10px] leading-[1.15] tracking-[0.16em] text-white/72 transition-[color,border-color,background-color] duration-[var(--transition-normal)] group-hover:border-[var(--brand-red)]/55 group-hover:text-white">
-                      VIEW
-                      <br />
                       ALL
+                      <br />
+                      CARS
                     </span>
                   </button>
                   {brandFilters.map((filter) => {
@@ -321,7 +316,7 @@ export function FleetView({ cars }: FleetViewProps) {
                       return (
                         <article
                           key={car.id}
-                          className="relative flex min-h-0 flex-col overflow-hidden border border-white/8"
+                          className="relative flex min-h-0 flex-col overflow-hidden border border-white/8 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:shadow-[0_24px_60px_rgba(0,0,0,0.48)]"
                         >
                           <button
                             type="button"
@@ -336,13 +331,18 @@ export function FleetView({ cars }: FleetViewProps) {
                                 priority={absoluteIndex < 3}
                                 loading={absoluteIndex < 3 ? "eager" : "lazy"}
                                 sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                                className="object-cover object-center"
+                                className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                               />
                               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.28)_0%,rgba(0,0,0,0.08)_34%,rgba(0,0,0,0.35)_100%)]" />
 
                               <div className="absolute left-0 top-0 z-10 min-w-0 px-5 pt-4 sm:px-6 sm:pt-5">
                                 <div className="min-w-0">
-                                  <p className="type-eyebrow text-white/62">{displayBrand}</p>
+                                  <p className="type-eyebrow text-white/62">
+                                    <span className="text-[var(--brand-red)]">
+                                      {String(absoluteIndex + 1).padStart(2, "0")}
+                                    </span>
+                                    <span>{` / ${displayBrand}`}</span>
+                                  </p>
                                   <h2 className="-translate-x-[0.1cm] mt-2 font-display text-[1.95rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[2.25rem] lg:text-[2.45rem]">
                                     {displayName}
                                   </h2>

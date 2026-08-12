@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
 import { ActionLink } from "@/components/ui/action-link";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 import { blogEntries } from "@/data/blogs";
@@ -17,11 +16,9 @@ export function BlogDetailView() {
   const homeHref = "/";
   const params = useParams<{ slug?: string }>();
   const [isDockOpen, setIsDockOpen] = useState(false);
-  const { runTransition } = usePageTransition();
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
@@ -53,14 +50,14 @@ export function BlogDetailView() {
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_60%_30%,rgba(193,18,31,0.35),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_60%_30%,rgba(255,255,255,0.18),transparent_60%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_20%_70%,rgba(0,0,0,0.8),transparent_60%)]" />
         <div className="absolute inset-0 shadow-[inset_0_0_160px_rgba(0,0,0,0.75)]" />
         <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-350 flex-col px-6 pb-12 pt-3 sm:px-10">
-        <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 pt-1 sm:-mx-10 sm:px-10">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-350 flex-col px-6 pb-12 pt-5 sm:px-10 sm:pt-6">
+        <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 sm:-mx-10 sm:px-10">
           <InternalPageHeader
             title="Blogs"
             isDockOpen={isDockOpen}

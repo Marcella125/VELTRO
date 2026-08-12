@@ -9,7 +9,6 @@ import { ActionLink } from "@/components/ui/action-link";
 import { CloseButton } from "@/components/ui/close-button";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
 import { FleetSpecsOverlay } from "@/views/components/FleetSpecsOverlay";
@@ -203,14 +202,10 @@ export function HeroShowcase() {
   const [activeSpecCategory, setActiveSpecCategory] = useState<SpecCategory>("Performance");
   const swipeStartY = useRef<number | null>(null);
   const swipeDeltaY = useRef(0);
-  const { runTransition } = usePageTransition();
 
   const navigateTo = (href: string) => {
     document.body.classList.remove("home-scroll-hidden");
-    setIsDockOpen(false);
-    runTransition(() => {
-      router.push(href);
-    });
+    router.push(href);
   };
 
   useEffect(() => {
@@ -374,10 +369,8 @@ export function HeroShowcase() {
 
   const handleDockSelect = (id: string) => {
     if (id === "home") {
-      runTransition(() => {
-        setCurrentApp("home");
-        router.push(homeHref);
-      });
+      setCurrentApp("home");
+      router.push(homeHref);
       return;
     }
     if (id === "blogs") {
@@ -417,15 +410,16 @@ export function HeroShowcase() {
         </div>
       </div>
       {/* Mobile background */}
-      <div className="fixed inset-0 sm:hidden">
+      <div className="fixed inset-0 bg-black sm:hidden">
         <div className="absolute inset-0">
           <Image
-            src={assetPath(currentApp === "rideit" ? "/back3.jpg" : "/Home bg.png")}
+            src={assetPath(currentApp === "rideit" ? "/back3.jpg" : "/images/Home bg mobile.png")}
             alt=""
             fill
             priority
             quality={90}
             className="object-cover object-center"
+            style={{ objectPosition: "calc(50% - 0.3cm) calc(50% + 2cm)" }}
           />
         </div>
       </div>
@@ -433,21 +427,16 @@ export function HeroShowcase() {
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* Header */}
         <div className="relative z-30">
+          <div className="absolute inset-x-0 top-0 h-full bg-black sm:hidden" />
           <div className="mx-auto w-full max-w-350 px-6 pt-5 sm:px-10 sm:pt-6">
             <InternalPageHeader
               title={headerTitle}
               isDockOpen={isDockOpen}
-              onOpenChange={(next) => {
-                setIsDockOpen(next);
-                if (next && isHudOpen) {
-                  setIsHudOpen(false);
-                }
-              }}
+              onOpenChange={setIsDockOpen}
               onSelect={handleDockSelect}
               onLogoClick={() => {
                 if (currentApp === "rideit") {
                   setCurrentApp("home");
-                  setIsDockOpen(false);
                   return;
                 }
                 navigateTo(homeHref);
@@ -468,7 +457,7 @@ export function HeroShowcase() {
               transition={{ duration: 0.45, ease: "easeInOut" }}
             >
               {/* Mobile hero layout */}
-              <div className="relative flex flex-1 flex-col px-5 pb-8 pt-5 translate-y-[1.5cm] sm:hidden">
+              <div className="relative flex flex-1 flex-col px-5 pb-8 pt-5 -translate-y-[0.5cm] sm:hidden">
                 <div className="relative z-10 mt-3 -translate-x-[0.2cm]">
                   <div className="font-body translate-x-[0.28cm] text-[0.88rem] font-medium uppercase tracking-[0.2em] text-white/62">
                     <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
@@ -660,21 +649,20 @@ export function HeroShowcase() {
       </div>
 
       {/* Specs Overlay */}
-      <AnimatePresence>
-        {isHudOpen && (
-          <FleetSpecsOverlay
-            car={evoSpecCar}
-            displayBrand="Lamborghini"
-            displayName="Evo Spyder"
-            imageSrc={assetPath("/images/lambo specs.png")}
-            engineLabel="V10"
-            powerLabel="640 HP"
-            driveLabel="AWD"
-            onClose={() => setIsHudOpen(false)}
-            onLogoClick={() => navigateTo("/")}
-          />
-        )}
-      </AnimatePresence>
+      {isHudOpen ? (
+        <FleetSpecsOverlay
+          car={evoSpecCar}
+          displayBrand="Lamborghini"
+          displayName="Evo Spyder"
+          imageSrc={assetPath("/images/lambo specs.png")}
+          engineLabel="V10"
+          powerLabel="640 HP"
+          driveLabel="AWD"
+          onClose={() => setIsHudOpen(false)}
+          onLogoClick={() => navigateTo("/")}
+          backLabel="Back To Home"
+        />
+      ) : null}
 
       <PageFooterNote />
     </section>

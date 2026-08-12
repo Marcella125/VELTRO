@@ -2,6 +2,9 @@ import { assetPath } from "@/lib/asset-path";
 
 export type BlogEntry = {
   id: string;
+  category: "Automotive" | "Lifestyle" | "Experience" | "News";
+  publishedAt: string;
+  readTime: string;
   title: string;
   summary: string;
   heroImage: string;
@@ -18,63 +21,75 @@ export type BlogEntry = {
 
 export const blogEntries: BlogEntry[] = [
   {
-    id: "blog-cr7",
-    title: "Discipline, Control, and the Ronaldo Image",
+    id: "evolution-of-italian-engineering",
+    category: "Automotive",
+    publishedAt: "May 24, 2024",
+    readTime: "5 min read",
+    title: "The Evolution of Italian Engineering",
     summary:
-      "Cristiano Ronaldo's public image is built on discipline: repetition, intent, and control.",
-    heroImage: assetPath("/images/cr7.png"),
+      "A look into the legacy of Italian performance and design, from dramatic proportions to mechanical clarity.",
+    heroImage: assetPath("/images/blog 3.png"),
     body: [
-      "Cristiano Ronaldo's public image is built around precision, repetition, and discipline. Every detail, from his physical preparation to the way he presents himself publicly, reinforces a clear sense of intent and control.",
-      "That consistency is what makes the image memorable. The message is never scattered or accidental. It is structured, deliberate, and shaped by routine as much as by performance.",
-      "In editorial terms, the appeal is not only success but clarity. The image works because it is repeated with discipline until it becomes unmistakable.",
+      "Italian supercars have always treated engineering as theatre. Performance matters, but so does the feeling of occasion: the lines, the proportions, the soundtrack, and the way each control feels intentional.",
+      "That philosophy is what keeps cars like the Huracan EVO Spyder relevant beyond raw numbers. The experience is built around balance, precision, and a design language that communicates speed before the car even moves.",
+      "For luxury rental clients, that legacy still matters. They are not only choosing acceleration; they are choosing the emotional clarity of an icon shaped by decades of uncompromising engineering.",
     ],
     car: {
-      name: "Lamborghini Urus",
+      name: "Lamborghini Huracan EVO Spyder",
       image: assetPath("/images/cars.png"),
-      horsepower: "Performance",
-      topSpeed: "Control",
+      horsepower: "640 HP",
+      topSpeed: "325 KM/H",
       ctaLabel: "WhatsApp",
-      ctaHref: "https://wa.me/96170335113?text=Hi%2C%20I'm%20interested%20in%20the%20Lamborghini%20Urus.",
+      ctaHref:
+        "https://wa.me/96170335113?text=Hi%2C%20I'm%20interested%20in%20the%20Lamborghini%20Huracan%20EVO%20Spyder.",
     },
   },
   {
-    id: "blog-sheikh",
-    title: "Leadership Through Vision",
+    id: "drive-beyond-the-ordinary",
+    category: "Experience",
+    publishedAt: "May 10, 2024",
+    readTime: "4 min read",
+    title: "Drive Beyond the Ordinary",
     summary:
-      "Sheikh Mohammed bin Rashid Al Maktoum represents a leadership style shaped by long-term vision, stability, ambition, and authority.",
-    heroImage: assetPath("/images/sheikh.png"),
+      "Why the journey matters just as much as the destination when the car is built to engage every sense.",
+    heroImage: assetPath("/images/blog 2.png"),
     body: [
-      "Sheikh Mohammed bin Rashid Al Maktoum represents a leadership style shaped by long-term vision, stability, ambition, and authority. His public presence communicates direction and confidence.",
-      "The strength of that image comes from consistency. It frames leadership as something calm, measured, and future-facing rather than reactive or performative.",
-      "What remains most visible is clarity of purpose. The identity is persuasive because it links authority with vision and makes both feel steady and durable.",
-    ],
-    car: {
-      name: "Mercedes G60",
-      image: assetPath("/images/cars.png"),
-      horsepower: "Command",
-      topSpeed: "Endurance",
-      ctaLabel: "WhatsApp",
-      ctaHref: "https://wa.me/96170335113?text=Hi%2C%20I'm%20interested%20in%20the%20Mercedes%20G60.",
-    },
-  },
-  {
-    id: "blog-ladygaga",
-    title: "Expression, Confidence, and Presence",
-    summary:
-      "Lady Gaga's public identity is built on expression, confidence, reinvention, and presence.",
-    heroImage: assetPath("/images/ladygaga.png"),
-    body: [
-      "Lady Gaga's public identity is built on expression, confidence, reinvention, and presence. Her image demonstrates how originality and consistency can create a memorable global brand.",
-      "What stands out is not only boldness but control over transformation. Reinvention becomes effective because it still feels intentional, coherent, and unmistakably hers.",
-      "The result is an identity built for recall. It proves that distinct expression, when sustained with confidence, can create lasting cultural presence.",
+      "A high-performance rental changes the rhythm of a drive. The route becomes part of the experience, not just the distance between two appointments or destinations.",
+      "Open-top cars are especially good at this. They amplify sound, atmosphere, and pace in a way that makes even familiar roads feel deliberate and cinematic.",
+      "That is why premium clients often ask for more than specifications. They want a car that turns motion into memory, with presence strong enough to reshape the entire journey.",
     ],
     car: {
       name: "Lamborghini Huracan EVO Spyder",
       image: assetPath("/images/cars.png"),
       horsepower: "Open-top",
-      topSpeed: "Presence",
+      topSpeed: "V10",
       ctaLabel: "WhatsApp",
-      ctaHref: "https://wa.me/96170335113?text=Hi%2C%20I'm%20interested%20in%20the%20Lamborghini%20Huracan%20EVO%20Spyder.",
+      ctaHref:
+        "https://wa.me/96170335113?text=Hi%2C%20I'm%20interested%20in%20the%20Lamborghini%20Huracan%20EVO%20Spyder.",
+    },
+  },
+  {
+    id: "a-new-chapter-is-coming",
+    category: "News",
+    publishedAt: "May 10, 2024",
+    readTime: "3 min read",
+    title: "A New Chapter Is Coming",
+    summary:
+      "Something extraordinary is on the horizon, shaped around sharper curation, stronger visuals, and a more refined fleet story.",
+    heroImage: assetPath("/images/blog 1.png"),
+    body: [
+      "Platinum continues to refine how it presents the fleet, the stories around it, and the experience clients can expect before they ever make contact.",
+      "That means stronger editorial direction, sharper vehicle presentation, and content that feels closer to the cars themselves: confident, precise, and unmistakably premium.",
+      "The next phase is not about noise. It is about a tighter point of view and a more coherent luxury experience across the site and the fleet.",
+    ],
+    car: {
+      name: "Lamborghini Huracan EVO Spyder",
+      image: assetPath("/images/cars.png"),
+      horsepower: "New drop",
+      topSpeed: "Soon",
+      ctaLabel: "WhatsApp",
+      ctaHref:
+        "https://wa.me/96170335113?text=Hi%2C%20I'm%20interested%20in%20the%20Lamborghini%20Huracan%20EVO%20Spyder.",
     },
   },
 ];

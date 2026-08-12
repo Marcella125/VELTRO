@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
+import { PageFooterNote } from "@/views/components/PageFooterNote";
 import { SiteHeader } from "@/views/components/SiteHeader";
 
 type FleetSpecsOverlayProps = {
@@ -18,6 +19,7 @@ type FleetSpecsOverlayProps = {
   driveLabel?: string;
   onClose: () => void;
   onLogoClick: () => void;
+  backLabel?: string;
 };
 
 const categories = [
@@ -43,6 +45,7 @@ export function FleetSpecsOverlay({
   driveLabel,
   onClose,
   onLogoClick,
+  backLabel = "Back To Fleet",
 }: FleetSpecsOverlayProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState<SpecCategory>("Performance");
@@ -155,13 +158,7 @@ export function FleetSpecsOverlay({
   const activeContent = categoryContent[activeCategory];
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 overflow-hidden bg-black text-[#F5F5F5]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: prefersReducedMotion ? 0.01 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <div className="fixed inset-0 z-50 overflow-hidden bg-black text-[#F5F5F5]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.52)_0%,rgba(0,0,0,0.3)_34%,rgba(0,0,0,0.72)_58%,rgba(0,0,0,0.88)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.32)_100%)]" />
@@ -177,19 +174,19 @@ export function FleetSpecsOverlay({
           compact
         />
 
-        <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 xl:mt-5 xl:grid xl:grid-cols-[minmax(0,0.98fr)_minmax(470px,1.02fr)] xl:gap-5">
-          <section className="relative min-h-0 overflow-hidden border border-[#242428] bg-white">
+        <div className="mt-[calc(1rem-0.1cm)] flex min-h-0 flex-1 flex-col gap-3 xl:mt-[calc(1.25rem-0.1cm)] xl:grid xl:grid-cols-[minmax(0,0.98fr)_minmax(470px,1.02fr)] xl:grid-rows-[minmax(0,0.94fr)] xl:gap-4">
+          <section className="relative min-h-0 overflow-hidden border border-[#242428] bg-[#0A0A0B]">
             <div
               className="pointer-events-none absolute inset-0"
               style={{
                 backgroundImage: `url("${assetPath("/images/lambo specs.png")}")`,
-                backgroundPosition: "left top",
+                backgroundPosition: "left 0 top 0",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
               }}
             />
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(20,0,3,0.28)_0%,rgba(0,0,0,0.34)_48%,rgba(0,0,0,0.78)_100%)]" />
-            <div className="relative z-10 flex h-full flex-col p-5 sm:p-7">
+            <div className="relative z-10 flex h-full flex-col p-4.5 sm:p-6">
               <button
                 type="button"
                 onClick={onClose}
@@ -201,15 +198,15 @@ export function FleetSpecsOverlay({
                 >
                   {"<"}
                 </span>
-                <span>Back To Fleet</span>
+                <span>{backLabel}</span>
               </button>
 
-              <div className="mt-auto max-w-[21rem]">
+              <div className="mt-auto max-w-[20rem]">
                 <p className="type-eyebrow text-white/62">{displayBrand}</p>
-                <h2 className="mt-2 font-display text-[2.45rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[3.55rem]">
+                <h2 className="mt-2 font-display text-[2.25rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[3.2rem]">
                   {displayName}
                 </h2>
-                <p className="mt-3 font-display text-[0.82rem] uppercase tracking-[0.16em] text-white/74">
+                <p className="mt-2.5 font-display text-[0.76rem] uppercase tracking-[0.16em] text-white/74">
                   <span>{engine}</span>
                   <span className="px-2 text-[var(--brand-red)]">/</span>
                   <span>{power}</span>
@@ -220,7 +217,7 @@ export function FleetSpecsOverlay({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-display mt-5 inline-flex min-w-[13.85rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-5 py-3.5 text-[0.72rem] font-medium uppercase tracking-[0.19em] text-white transition hover:brightness-110"
+                  className="font-display mt-4 inline-flex min-w-[12.8rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4.5 py-3 text-[0.68rem] font-medium uppercase tracking-[0.19em] text-white transition hover:brightness-110"
                 >
                   <span>WhatsApp</span>
                 </Link>
@@ -228,7 +225,7 @@ export function FleetSpecsOverlay({
             </div>
           </section>
 
-          <section className="grid min-h-0 gap-3 xl:grid-rows-[minmax(0,1fr)_160px]">
+          <section className="grid min-h-0 gap-3 xl:grid-rows-[minmax(0,1fr)_124px]">
             <div className="grid min-h-0 overflow-hidden border border-white/8 bg-[#0A0A0B] md:grid-cols-[170px_minmax(0,1fr)]">
               <div className="grid auto-rows-fr border-b border-white/8 md:border-b-0 md:border-r md:border-white/8">
                 {categories.map((category) => {
@@ -255,20 +252,20 @@ export function FleetSpecsOverlay({
                 })}
               </div>
 
-              <div className="flex min-h-0 flex-col p-5 sm:p-6">
-                <div className="pb-3">
+              <div className="flex min-h-0 flex-col p-4.5 sm:p-5.5">
+                <div className="pb-2.5">
                   <div className="flex items-start justify-between gap-4">
-                    <h3 className="font-display text-[1.65rem] font-medium uppercase tracking-[0.08em] text-white sm:text-[1.85rem]">
+                    <h3 className="font-display text-[1.5rem] font-medium uppercase tracking-[0.08em] text-white sm:text-[1.7rem]">
                       {activeContent.title}
                     </h3>
-                    <span className="translate-y-[0.4cm] font-display text-[0.9rem] font-semibold uppercase tracking-[0.08em] text-white/88">
+                    <span className="translate-y-[0.32cm] font-display text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-white/88">
                       {activeContent.priceLabel}
                     </span>
                   </div>
-                  <p className="mt-1 font-display text-[0.7rem] uppercase tracking-[0.18em] text-white/42">
+                  <p className="mt-1 font-display text-[0.66rem] uppercase tracking-[0.18em] text-white/42">
                     {activeContent.subtitle}
                   </p>
-                  <p className="mt-2 max-w-[30rem] text-[0.82rem] leading-[1.6] text-white/56">
+                  <p className="mt-2 max-w-[30rem] text-[0.78rem] leading-[1.55] text-white/56">
                     {activeContent.description}
                   </p>
                 </div>
@@ -277,18 +274,18 @@ export function FleetSpecsOverlay({
                   {activeContent.tiles.map((tile, index) => (
                     <div
                       key={`${displayName}-${activeCategory}-${tile.label}`}
-                      className={`flex min-h-[84px] border-b border-white/8 px-1 py-3 sm:px-2 ${
+                      className={`flex min-h-[76px] border-b border-white/8 px-1 py-2.5 sm:px-2 ${
                         index % 2 === 0 ? "md:border-r md:border-white/8 md:pr-6" : "md:pl-6"
                       }`}
                     >
                       <div className="min-w-0">
-                        <div className="font-display text-[0.62rem] uppercase tracking-[0.18em] text-white/42">
+                        <div className="font-display text-[0.58rem] uppercase tracking-[0.18em] text-white/42">
                           {tile.label}
                         </div>
-                        <div className="mt-1 font-display text-[1.18rem] font-medium leading-[1.05] text-white">
+                        <div className="mt-1 font-display text-[1.08rem] font-medium leading-[1.05] text-white">
                           {tile.value}
                         </div>
-                        <div className="mt-0.5 text-[0.62rem] uppercase tracking-[0.13em] text-white/36">
+                        <div className="mt-0.5 text-[0.58rem] uppercase tracking-[0.13em] text-white/36">
                           {tile.detail}
                         </div>
                       </div>
@@ -311,7 +308,8 @@ export function FleetSpecsOverlay({
           </section>
         </div>
       </div>
-    </motion.div>
+      <PageFooterNote />
+    </div>
   );
 }
 

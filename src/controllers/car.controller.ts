@@ -1,6 +1,6 @@
 import { Car } from "@/models/car.model";
 
-const cars: Car[] = [
+export const cars: Car[] = [
   {
     id: "1",
     slug: "obsidian-gt",

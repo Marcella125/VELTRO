@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { assetPath } from "@/lib/asset-path";
 import { formatPrice } from "@/lib/utils";
 import type { Car } from "@/models/car.model";
@@ -119,7 +118,6 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
     card: FleetGridCard;
   } | null>(null);
   const [activeBrand, setActiveBrand] = useState<FleetBrandFilter>("all");
-  const { overlay, runTransition } = usePageTransition();
 
   useOverlayBehavior(Boolean(activeSpecCard), () => setActiveSpecCard(null));
 
@@ -155,8 +153,7 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
   );
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
@@ -173,8 +170,6 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
 
   return (
     <main className="relative h-dvh overflow-hidden text-[#F5F5F5]">
-      <AnimatePresence>{overlay}</AnimatePresence>
-
       <div className="pointer-events-none absolute inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
@@ -183,15 +178,15 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
           priority
           className="object-cover object-center"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,#240407_0%,#100103_38%,#050505_70%,#000_100%)] opacity-[0.78]" />
-        <div className="absolute inset-0 bg-[radial-gradient(92%_66%_at_50%_48%,rgba(140,10,18,0.4),transparent_68%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,#1f1f1f_0%,#111111_38%,#050505_70%,#000_100%)] opacity-[0.78]" />
+        <div className="absolute inset-0 bg-[radial-gradient(92%_66%_at_50%_48%,rgba(255,255,255,0.18),transparent_68%)]" />
         <div className="absolute inset-0 bg-black/54" />
         <div className="absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.74)]" />
         <div className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black/60 via-black/24 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/66 via-black/28 to-transparent" />
       </div>
 
-      <div className="relative z-10 mx-auto flex h-dvh w-full max-w-350 flex-col px-6 pb-6 pt-6 sm:px-10">
+      <div className="relative z-10 mx-auto flex h-dvh w-full max-w-350 flex-col px-6 pb-6 pt-5 sm:px-10 sm:pt-6">
         <header className="relative z-40 shrink-0">
           <InternalPageHeader
             title="Fleet"
@@ -250,7 +245,7 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
               return (
                 <article
                   key={`${card.name}-${index}`}
-                  className="relative aspect-[1.4/1] overflow-hidden border border-white/8 bg-black/20 sm:aspect-[1.38/1] xl:aspect-[1.32/1]"
+                  className="relative aspect-[1.4/1] overflow-hidden border border-white/8 bg-black/20 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:shadow-[0_24px_60px_rgba(0,0,0,0.48)] sm:aspect-[1.38/1] xl:aspect-[1.32/1]"
                 >
                   <button
                     type="button"
@@ -265,13 +260,16 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
                         priority={index < 4}
                         loading={index < 4 ? "eager" : "lazy"}
                         sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw"
-                        className="object-cover object-center"
+                        className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.05)_35%,rgba(0,0,0,0.42)_100%)]" />
 
                       <div className="absolute left-0 top-0 z-10 px-3.5 pt-3.5">
                         <p className="type-eyebrow text-[8.5px] text-white/62">
-                          {card.brand}
+                          <span className="text-[var(--brand-red)]">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <span>{` / ${card.brand}`}</span>
                         </p>
                         <h2 className="mt-1.5 font-display text-[17.1px] font-black uppercase leading-[0.94] tracking-[-0.05em] text-white sm:text-[22.7px] xl:text-[16.3px]">
                           {card.name}

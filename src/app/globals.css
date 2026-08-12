@@ -28,7 +28,7 @@
 }
 
 body {
-  background: var(--background);
+  background: #000;
   color: var(--foreground);
   font-family: var(--font-display);
   font-weight: 400;
@@ -160,7 +160,7 @@ body {
   min-height: 100%;
   overflow-x: hidden;
   scrollbar-gutter: stable;
-  background: var(--background);
+  background: #000;
 }
 
 html,
@@ -193,11 +193,6 @@ body.home-scroll-hidden::-webkit-scrollbar {
   body.mission-desktop-lock .site-footer {
     display: none;
   }
-}
-
-body[data-app-loading="true"] .site-footer {
-  opacity: 0;
-  visibility: hidden;
 }
 
 .pb-safe {
@@ -263,39 +258,15 @@ body.rideit-open {
 }
 
 .platinum-fleet-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #c1121f rgba(255, 255, 255, 0.06);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-behavior: smooth;
-  scrollbar-gutter: stable;
 }
 
 .platinum-fleet-scroll::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.platinum-fleet-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.platinum-fleet-scroll::-webkit-scrollbar-thumb {
-  background-color: #c1121f;
-  border-radius: 0;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.platinum-fleet-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: #d11421;
-  box-shadow: 0 0 6px rgba(193, 18, 31, 0.45);
-}
-
-.platinum-fleet-scroll::-webkit-scrollbar-thumb:active {
-  background-color: #e01927;
-  box-shadow: 0 0 8px rgba(193, 18, 31, 0.6);
-}
-
-.platinum-fleet-scroll::-webkit-scrollbar-thumb {
   background-color: transparent;
+  width: 0;
+  height: 0;
   box-shadow: none;
 }
 
@@ -311,24 +282,16 @@ body.rideit-open {
 
 .platinum-blog-scroll {
   scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #c1121f transparent;
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding-right: 0;
   box-sizing: border-box;
 }
 
 .platinum-blog-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.platinum-blog-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.platinum-blog-scroll::-webkit-scrollbar-thumb {
   background-color: #c1121f;
-  border-radius: 999px;
+  width: 0;
+  height: 0;
   box-shadow: none;
 }
 
@@ -341,21 +304,13 @@ body.rideit-open {
 }
 
 .blog-text-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #c1121f transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .blog-text-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-
-.blog-text-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.blog-text-scroll::-webkit-scrollbar-thumb {
-  background-color: #c1121f;
-  border-radius: 999px;
+  width: 0;
+  height: 0;
 }
 
 .lux-bg {
@@ -428,26 +383,12 @@ nextjs-portal {
 }
 
 .platinum-faq-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: #b1121e rgba(255, 255, 255, 0.06);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-behavior: smooth;
-  scrollbar-gutter: stable;
 }
 
 .platinum-faq-scroll::-webkit-scrollbar {
-  width: 8px;
-}
-
-.platinum-faq-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.platinum-faq-scroll::-webkit-scrollbar-thumb {
-  background-color: #b1121e;
-  border-radius: 999px;
-  box-shadow: 0 0 8px rgba(177, 18, 30, 0.45);
-}
-
-.platinum-faq-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: #d11421;
+  width: 0;
+  height: 0;
 }

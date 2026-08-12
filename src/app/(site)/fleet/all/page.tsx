@@ -1,8 +1,6 @@
-import { carController } from "@/controllers/car.controller";
+import { cars } from "@/controllers/car.controller";
 import { FleetAllView } from "@/views/sections/FleetAllView";
 
-export default async function FleetAllPage() {
-  const cars = await carController.getAll();
-
+export default function FleetAllPage() {
   return <FleetAllView cars={cars} />;
 }

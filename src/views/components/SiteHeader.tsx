@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { assetPath } from "@/lib/asset-path";
 import { HamburgerToggle } from "@/views/components/HamburgerToggle";
 
-let persistedMenuOpen = false;
+const DEFAULT_MENU_OPEN = true;
+let persistedMenuOpen = DEFAULT_MENU_OPEN;
 
 type SiteHeaderProps = {
   title: string;
@@ -15,6 +16,8 @@ type SiteHeaderProps = {
   hideTitleOnMobile?: boolean;
   titleTone?: "light" | "dark";
   compact?: boolean;
+  menuOpen?: boolean;
+  onMenuOpenChange?: (next: boolean) => void;
 };
 
 export function SiteHeader({
@@ -24,9 +27,14 @@ export function SiteHeader({
   hideTitleOnMobile,
   titleTone = "light",
   compact = false,
+  menuOpen,
+  onMenuOpenChange,
 }: SiteHeaderProps) {
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(persistedMenuOpen);
+  const router = useRouter();
+  const [internalMenuOpen, setInternalMenuOpen] = useState(persistedMenuOpen);
+  const isMenuControlled = menuOpen !== undefined;
+  const isMenuOpen = isMenuControlled ? menuOpen : internalMenuOpen;
   const shouldHideTitle = hideTitleOnMobile ?? true;
   const homeHref = "/";
   const titleClassName =
@@ -45,8 +53,29 @@ export function SiteHeader({
   ];
 
   useEffect(() => {
+    const nextOpen = persistedMenuOpen;
+    if (!isMenuControlled) {
+      setInternalMenuOpen(nextOpen);
+    }
+    onMenuOpenChange?.(nextOpen);
+  }, [isMenuControlled, onMenuOpenChange]);
+
+  useEffect(() => {
     persistedMenuOpen = isMenuOpen;
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    navItems.forEach((item) => {
+      router.prefetch(item.href);
+    });
+  }, [router]);
+
+  const handleMenuOpenChange = (next: boolean) => {
+    if (!isMenuControlled) {
+      setInternalMenuOpen(next);
+    }
+    onMenuOpenChange?.(next);
+  };
 
   return (
     <header
@@ -122,7 +151,7 @@ export function SiteHeader({
         <div className="absolute right-0 top-1/2 -translate-y-1/2">
           <HamburgerToggle
             open={isMenuOpen}
-            onToggle={setIsMenuOpen}
+            onToggle={handleMenuOpenChange}
             size={compact ? 22 : 24}
             strokeWidth={1.8}
             className={compact ? "h-10 w-10 rounded-none" : "h-11 w-11 rounded-none"}

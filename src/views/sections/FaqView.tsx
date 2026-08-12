@@ -1,48 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 const faqs = [
   {
-    q: "How can I book a car with Platinum?",
-    a: "Booking is simple via WhatsApp or a phone call. Share your preferred car and rental dates, and we will confirm availability.",
+    q: "How do I make a reservation?",
+    a: "You can make a reservation through our website or by contacting the Platinum team directly. We confirm availability, timing, and final delivery details before handover.",
   },
   {
-    q: "Can I modify or cancel my booking?",
-    a: "Yes. Contact us as early as possible and we will assist based on availability and our cancellation policy.",
+    q: "What documents do I need to rent a car?",
+    a: "A valid driving license, passport, Emirates ID, or equivalent identity documentation may be required depending on residency status and vehicle category.",
   },
   {
-    q: "What documents are required to rent a car?",
-    a: "A valid driving license plus passport, Emirates ID, or equivalent identity documentation may be required for verification before handover.",
+    q: "Is there a mileage limit?",
+    a: "Each rental includes a defined mileage allowance. The exact limit depends on the selected vehicle and rental duration, and any additional usage is quoted transparently.",
   },
   {
-    q: "What type of driving license do I need?",
-    a: "UAE residents need a valid UAE license. Visitors can use an international license or approved home-country license where applicable.",
+    q: "Can I cancel or modify my reservation?",
+    a: "Yes. Reservation changes and cancellations are handled case by case based on timing, vehicle availability, and the booking terms confirmed at checkout.",
   },
   {
-    q: "What is included in the rental price?",
-    a: "Standard insurance, a set mileage allowance, and basic support are included. Specific inclusions vary by vehicle.",
+    q: "Do you offer chauffeur services?",
+    a: "Selected experiences may be arranged with a professional driver upon request. Availability depends on scheduling and the type of booking requested.",
   },
-];
+  {
+    q: "What happens in case of an accident?",
+    a: "Our team provides immediate guidance and support. You should contact Platinum as soon as possible so we can assist with the next steps, documentation, and recovery arrangements.",
+  },
+] as const;
 
 export function FaqView() {
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const { overlay, runTransition } = usePageTransition();
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
@@ -51,30 +61,30 @@ export function FaqView() {
     if (id === "blogs") return navigateTo("/blogs");
     if (id === "mission") return navigateTo("/mission");
     if (id === "contact") return navigateTo("/contact");
-    if (id === "faq") return setIsDockOpen(false);
+    if (id === "faq") return;
   };
 
   return (
-    <main className="relative min-h-dvh text-white">
-      <AnimatePresence>{overlay}</AnimatePresence>
+    <main className="relative h-dvh overflow-hidden bg-black text-white">
       <div className="pointer-events-none fixed inset-0">
         <Image
-          src={assetPath("/images/bgcar.png")}
+          src={assetPath("/images/FAQ.png")}
           alt="Platinum FAQ background"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[78%_68%] sm:object-[80%_62%] lg:object-[86%_70%]"
         />
-        <div className="absolute inset-0 bg-black/48" />
-        <div className="absolute inset-0 bg-[radial-gradient(90%_75%_at_50%_46%,rgba(0,0,0,0.7),transparent_62%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(90%_80%_at_12%_56%,rgba(177,18,38,0.18),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(90%_80%_at_88%_36%,rgba(177,18,38,0.16),transparent_58%)]" />
-        <div className="absolute inset-0 shadow-[inset_0_0_160px_rgba(0,0,0,0.78)]" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/65 via-black/22 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.96)_0%,rgba(0,0,0,0.88)_28%,rgba(0,0,0,0.62)_48%,rgba(0,0,0,0.26)_68%,rgba(0,0,0,0.18)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.22)_0%,rgba(0,0,0,0.08)_45%,rgba(0,0,0,0.58)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(75%_60%_at_18%_18%,rgba(255,255,255,0.08),transparent_56%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(80%_48%_at_82%_84%,rgba(255,255,255,0.09),transparent_52%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-[34vh] bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.02)_28%,rgba(0,0,0,0.18)_52%,rgba(0,0,0,0.74)_100%)]" />
+        <div className="absolute inset-x-[34%] bottom-[11vh] h-[14vh] bg-[radial-gradient(50%_100%_at_50%_50%,rgba(255,255,255,0.07),transparent_72%)] blur-2xl" />
+        <div className="absolute inset-0 shadow-[inset_0_0_180px_rgba(0,0,0,0.82)]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-6 pb-4 pt-4 sm:px-10 sm:pb-10">
-        <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 pt-2 sm:-mx-10 sm:px-10">
+      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-6 pb-6 pt-5 sm:px-10 sm:pb-8 sm:pt-6">
+        <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 sm:-mx-10 sm:px-10">
           <InternalPageHeader
             title="FAQ"
             isDockOpen={isDockOpen}
@@ -84,41 +94,51 @@ export function FaqView() {
           />
         </div>
 
-        <section className="mt-3 flex flex-1 items-start justify-center pt-2 pb-28 sm:mt-6 sm:pt-3 sm:pb-32 lg:mt-4 lg:pt-5 lg:pb-36">
-          <div className="w-full max-w-[980px] sm:-translate-y-4 lg:-translate-y-8">
-            <div className="space-y-1 sm:hidden">
+        <section className="relative z-10 flex flex-1 items-start justify-start pb-12 pt-2 sm:pb-16 sm:pt-5 lg:pt-6">
+          <div className="w-full max-w-[46rem]">
+            <div className="max-w-[18rem] sm:max-w-[21rem] lg:max-w-[22rem]">
+              <h1 className="font-display text-[1.5rem] font-semibold leading-[0.98] tracking-[-0.03em] text-white sm:text-[2rem] lg:text-[2.2rem]">
+                EVERYTHING YOU NEED TO KNOW<span className="text-[var(--brand-red)]">.</span>
+              </h1>
+
+              <div className="mt-6 h-px w-12 bg-[var(--brand-red)]" />
+            </div>
+
+            <div className="mt-6 max-w-[30rem] sm:mt-7">
               {faqs.map((item, index) => {
                 const isOpen = openFaqIndex === index;
 
                 return (
                   <article
                     key={item.q}
-                    className="group relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] shadow-[0_18px_50px_rgba(0,0,0,0.55)]"
+                    className="border-b border-white/10"
                   >
-                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
                     <button
                       type="button"
-                      className="relative flex w-full items-center justify-between gap-2.5 px-2.5 py-2 text-left"
                       onClick={() =>
                         setOpenFaqIndex((current) => (current === index ? null : index))
                       }
                       aria-expanded={isOpen}
+                      className="group flex w-full items-start gap-4 py-3.5 text-left sm:gap-6 sm:py-4"
                     >
-                      <div className="min-w-0">
-                        <span className="type-eyebrow text-white/30">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <h2 className="type-card-title mt-1 text-[0.66rem] leading-[1.08] text-white/92">
+                      <span className="font-display text-[0.8rem] leading-none text-[var(--brand-red)] sm:pt-1 sm:text-[0.88rem]">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <div className="min-w-0 flex-1 pr-2">
+                        <h2 className="font-display text-[0.95rem] leading-[1.2] text-white/92 transition-colors duration-300 group-hover:text-white sm:text-[1.04rem]">
                           {item.q}
                         </h2>
                       </div>
-                      <ChevronDown
-                        className={`size-3.5 shrink-0 text-white/72 transition-transform duration-200 ${
-                          isOpen ? "rotate-180" : ""
+
+                      <span
+                        className={`mt-0.5 font-display text-[1rem] leading-none transition-colors duration-300 sm:mt-1 sm:text-[1.15rem] ${
+                          isOpen ? "text-[var(--brand-red)]" : "text-white/48 group-hover:text-white/84"
                         }`}
-                        strokeWidth={1.8}
                         aria-hidden="true"
-                      />
+                      >
+                        {isOpen ? "−" : "+"}
+                      </span>
                     </button>
 
                     <AnimatePresence initial={false}>
@@ -127,11 +147,11 @@ export function FaqView() {
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
+                          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="relative border-t border-white/8 px-2.5 pb-2.5 pt-1.5">
-                            <p className="type-body text-[0.58rem] leading-[1.28] text-white/66">
+                          <div className="pb-3 pl-[2.1rem] pr-8 sm:pb-4 sm:pl-[3.1rem] sm:pr-12">
+                            <p className="max-w-[26rem] text-[0.82rem] leading-6 text-white/58 sm:text-[0.86rem] sm:leading-7">
                               {item.a}
                             </p>
                           </div>
@@ -142,42 +162,10 @@ export function FaqView() {
                 );
               })}
             </div>
-
-            <div className="hidden grid-cols-1 gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-6 lg:gap-2.5 xl:gap-3">
-              {faqs.map((item, index) => (
-                <article
-                  key={item.q}
-                  className={`group relative overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] p-1.5 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_24px_70px_rgba(177,18,38,0.16)] sm:p-2 ${
-                    index < 3
-                      ? "lg:col-span-2"
-                      : index === 3
-                        ? "lg:col-start-2 lg:col-span-2"
-                        : "lg:col-start-4 lg:col-span-2"
-                  }`}
-                >
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(177,18,38,0.5),transparent)] opacity-70" />
-
-                  <div className="relative flex h-full flex-col">
-                    <span className="type-eyebrow text-white/30">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-
-                    <h2 className="type-card-title mt-1 text-[0.64rem] leading-[1.08] text-white/92 sm:text-[0.7rem]">
-                      {item.q}
-                    </h2>
-
-                    <p className="type-body mt-0.5 text-[0.56rem] leading-[1.24] text-white/60">
-                      {item.a}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-
           </div>
         </section>
       </div>
+
       <PageFooterNote />
     </main>
   );

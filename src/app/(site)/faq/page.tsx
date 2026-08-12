@@ -1,5 +1,5 @@
 import { FaqView } from "@/views/sections/FaqView";
 
-export default async function FaqPage() {
+export default function FaqPage() {
   return <FaqView />;
 }

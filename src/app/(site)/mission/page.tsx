@@ -1,5 +1,5 @@
 import { MissionView } from "@/views/sections/MissionView";
 
-export default async function MissionPage() {
+export default function MissionPage() {
   return <MissionView />;
 }

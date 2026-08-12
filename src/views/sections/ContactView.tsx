@@ -1,33 +1,52 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { AnimatePresence } from "framer-motion";
+import { Clock3, Mail, MapPinned, Phone } from "lucide-react";
 import { assetPath } from "@/lib/asset-path";
-import { PrimaryButton } from "@/components/ui/primary-button";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 type ContactFormState = {
-  firstName: string;
-  lastName: string;
-  enquiry: string;
+  fullName: string;
   email: string;
+  subject: string;
   message: string;
 };
 
 const initialFormState: ContactFormState = {
-  firstName: "",
-  lastName: "",
-  enquiry: "",
+  fullName: "",
   email: "",
+  subject: "",
   message: "",
 };
 
-const fieldClassName =
-  "w-full border-0 border-b border-white/20 bg-transparent px-0 py-2.5 text-[14px] text-white placeholder:text-white/24 outline-none transition-[border-color,color] duration-[var(--transition-normal)] ease-[var(--ease-premium)] focus:border-[var(--brand-red)] sm:text-[15px]";
+const inputClassName =
+  "w-full border border-white/8 bg-[#0b0b0d] px-4 py-3 text-[14px] text-white placeholder:text-white/22 outline-none transition-[border-color,box-shadow] duration-[var(--transition-normal)] ease-[var(--ease-premium)] focus:border-[var(--brand-red)] focus:shadow-[0_0_0_1px_rgba(177,18,38,0.22)]";
+
+const contactInfo = [
+  {
+    title: "Visit Us",
+    lines: ["Platinum Showroom", "Beirut, Lebanon"],
+    icon: MapPinned,
+  },
+  {
+    title: "Email Us",
+    lines: ["info@platinum.com"],
+    icon: Mail,
+  },
+  {
+    title: "Call Us",
+    lines: ["+961 70 33 5467"],
+    icon: Phone,
+  },
+  {
+    title: "Hours",
+    lines: ["Mon - Sun: 9 AM - 8 PM"],
+    icon: Clock3,
+  },
+] as const;
 
 export function ContactView() {
   const router = useRouter();
@@ -35,11 +54,19 @@ export function ContactView() {
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
-  const { overlay, runTransition } = usePageTransition();
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, []);
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
@@ -47,7 +74,7 @@ export function ContactView() {
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
     if (id === "mission") return navigateTo("/mission");
-    if (id === "contact") return setIsDockOpen(false);
+    if (id === "contact") return;
     if (id === "faq") return navigateTo("/faq");
   };
 
@@ -59,8 +86,8 @@ export function ContactView() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const { firstName, lastName, enquiry, email, message } = formState;
-    if (!firstName || !lastName || !enquiry || !email || !message) {
+    const { fullName, email, subject, message } = formState;
+    if (!fullName || !email || !subject || !message) {
       setStatus("error");
       return;
     }
@@ -70,24 +97,19 @@ export function ContactView() {
   };
 
   return (
-    <main className="relative h-dvh overflow-hidden text-white">
-      <AnimatePresence>{overlay}</AnimatePresence>
+    <main className="relative min-h-dvh overflow-hidden bg-black text-white lg:h-dvh">
       <div className="pointer-events-none fixed inset-0">
         <Image
-          src={assetPath("/images/bgcar.png")}
+          src={assetPath("/images/contact.png")}
           alt="Platinum contact background"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[50%_calc(50%+0.5cm)]"
         />
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_60%_30%,rgba(193,18,31,0.18),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_20%_70%,rgba(0,0,0,0.8),transparent_60%)]" />
-        <div className="absolute inset-0 shadow-[inset_0_0_160px_rgba(0,0,0,0.75)]" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0.34)_40%,rgba(0,0,0,0.52)_100%)]" />
       </div>
 
-      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-4 pt-4 sm:px-10 sm:pb-6 sm:pt-6">
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-6 pb-8 pt-5 sm:px-10 sm:pb-10 sm:pt-6 lg:h-dvh">
         <div className="relative z-30">
           <InternalPageHeader
             title="Contact"
@@ -98,99 +120,120 @@ export function ContactView() {
           />
         </div>
 
-        <section className="relative mt-6 flex min-h-0 flex-1 items-start justify-center sm:mt-7 lg:mt-6 lg:pt-4">
-          <div className="w-full max-w-[1050px]">
-            <div className="mx-auto w-full max-w-[820px]">
-              <form onSubmit={handleSubmit} className="w-full">
-                <div className="grid grid-cols-1 gap-x-9 gap-y-5 sm:grid-cols-2 sm:gap-y-6 lg:gap-x-12">
-                  <div className="space-y-1.5">
-                    <label className="type-eyebrow block text-white/42" htmlFor="contact-first-name">
-                      First Name
-                    </label>
-                    <input
-                      id="contact-first-name"
-                      type="text"
-                      value={formState.firstName}
-                      onChange={(event) => updateField("firstName", event.target.value)}
-                      className={fieldClassName}
-                    />
-                  </div>
+        <section className="relative z-10 mt-5 flex flex-1 items-start justify-center sm:mt-7 lg:justify-start">
+          <div className="w-full max-w-[620px] lg:mr-auto">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
+              <div className="max-w-[18rem]">
+                <h2 className="font-display text-[1.5rem] font-semibold leading-[0.98] tracking-[-0.03em] text-white sm:text-[2rem] lg:text-[2.2rem]">
+                  WE&apos;D LOVE TO HEAR FROM YOU<span className="text-[var(--brand-red)]">.</span>
+                </h2>
+              </div>
 
-                  <div className="space-y-1.5">
-                    <label className="type-eyebrow block text-white/42" htmlFor="contact-last-name">
-                      Last Name
-                    </label>
-                    <input
-                      id="contact-last-name"
-                      type="text"
-                      value={formState.lastName}
-                      onChange={(event) => updateField("lastName", event.target.value)}
-                      className={fieldClassName}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="type-eyebrow block text-white/42" htmlFor="contact-email">
-                      Email
-                    </label>
-                    <input
-                      id="contact-email"
-                      type="email"
-                      value={formState.email}
-                      onChange={(event) => updateField("email", event.target.value)}
-                      className={fieldClassName}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="type-eyebrow block text-white/42" htmlFor="contact-enquiry">
-                      Enquiry Type
-                    </label>
-                    <input
-                      id="contact-enquiry"
-                      type="text"
-                      value={formState.enquiry}
-                      onChange={(event) => updateField("enquiry", event.target.value)}
-                      className={fieldClassName}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5 sm:col-span-2">
-                    <label className="type-eyebrow block text-white/42" htmlFor="contact-message">
-                      Message
-                    </label>
-                    <textarea
-                      id="contact-message"
-                      value={formState.message}
-                      onChange={(event) => updateField("message", event.target.value)}
-                      rows={4}
-                      placeholder="Preferred dates, vehicle model, destination, or anything else we should know."
-                      className={`${fieldClassName} min-h-[7.8rem] resize-none py-3 text-[14px] leading-[1.65] placeholder:text-[12.5px] placeholder:text-white/22 sm:min-h-[8.5rem] sm:placeholder:text-[13px]`}
-                    />
-                  </div>
+              <div className="flex items-start gap-4">
+                <div className="h-[5.2rem] w-px bg-white/18" />
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                  {contactInfo.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={item.title} className="flex min-w-0 items-start gap-2.5">
+                        <Icon
+                          className="mt-0.5 size-3.5 shrink-0 text-[var(--brand-red)]"
+                          strokeWidth={1.8}
+                        />
+                        <p className="text-[0.72rem] leading-4.5 text-white/68">
+                          {item.lines.join(" ")}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
+              </div>
+            </div>
 
-                <div className="mt-6 flex flex-col gap-3 sm:mt-7 sm:items-end">
-                  <PrimaryButton
-                    type="submit"
-                    className="w-full sm:w-auto sm:min-w-[13.5rem]"
-                  >
-                    Send Enquiry
-                  </PrimaryButton>
+            <div className="mt-3.5 overflow-hidden border border-white/10 bg-[#050506]/96 shadow-[0_18px_56px_rgba(0,0,0,0.42)]">
+              <div className="bg-[#070708] p-3.5 sm:p-4 lg:p-4">
+                <form onSubmit={handleSubmit} className="flex h-full flex-col">
+                  <div className="space-y-2">
+                    <div>
+                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-full-name">
+                        Full Name
+                      </label>
+                      <input
+                        id="contact-full-name"
+                        type="text"
+                        placeholder="Your name"
+                        value={formState.fullName}
+                        onChange={(event) => updateField("fullName", event.target.value)}
+                        className={inputClassName}
+                      />
+                    </div>
 
-                  {status !== "idle" ? (
-                    <p className="type-body text-[0.8rem] leading-5 text-white/58">
-                      {status === "sent"
-                        ? "Your enquiry has been sent."
-                        : "Please complete all fields before sending."}
-                    </p>
-                  ) : null}
-                </div>
-              </form>
+                    <div>
+                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-email">
+                        Email
+                      </label>
+                      <input
+                        id="contact-email"
+                        type="email"
+                        placeholder="Your email"
+                        value={formState.email}
+                        onChange={(event) => updateField("email", event.target.value)}
+                        className={inputClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-subject">
+                        Subject
+                      </label>
+                      <input
+                        id="contact-subject"
+                        type="text"
+                        placeholder="How can we help?"
+                        value={formState.subject}
+                        onChange={(event) => updateField("subject", event.target.value)}
+                        className={inputClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-message">
+                        Message
+                      </label>
+                      <textarea
+                        id="contact-message"
+                        rows={3}
+                        placeholder="Your message"
+                        value={formState.message}
+                        onChange={(event) => updateField("message", event.target.value)}
+                        className={`${inputClassName} min-h-[2.4rem] resize-none`}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <button
+                      type="submit"
+                      className="group inline-flex w-full items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-5 py-2.5 font-display text-[0.56rem] uppercase tracking-[0.18em] text-white transition hover:brightness-110"
+                    >
+                      <span>Send Message</span>
+                    </button>
+
+                    {status !== "idle" ? (
+                      <p className="mt-3 text-[0.82rem] leading-5 text-white/54">
+                        {status === "sent"
+                          ? "Your enquiry has been sent."
+                          : "Please complete all fields before sending."}
+                      </p>
+                    ) : null}
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </section>
       </div>
+
       <PageFooterNote />
     </main>
   );

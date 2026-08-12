@@ -1,10 +1,9 @@
-import { carController } from "@/controllers/car.controller";
+import { cars } from "@/controllers/car.controller";
 import { CarDetails } from "@/views/sections/CarDetails";
 
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
-  const cars = await carController.getAll();
+export function generateStaticParams() {
   return cars.map((car) => ({ slug: car.slug }));
 }
 

@@ -36,11 +36,11 @@ export function PageFooterNote({
   return (
     <>
       <div
-        className={`page-footer-note fixed bottom-[calc(2.2vh-0.25cm)] left-1/2 z-30 flex -translate-x-1/2 items-center gap-3 text-[10px] text-white/68 sm:hidden ${
+        className={`page-footer-note fixed bottom-[calc(1.6vh-0.25cm)] left-1/2 z-30 flex w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 items-center gap-3 whitespace-nowrap text-[9px] text-white/68 sm:hidden ${
           mobileClassName ?? ""
         }`}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {socialLinks.map((item) => (
             <Link
               key={`mobile-${item.label}`}
@@ -52,26 +52,26 @@ export function PageFooterNote({
               <Image
                 src={item.icon}
                 alt={item.label}
-                width={12}
-                height={12}
-                className="h-3 w-3 object-contain opacity-90"
+                width={16}
+                height={16}
+                className="h-[16px] w-[16px] object-contain opacity-90"
                 unoptimized
               />
             </Link>
           ))}
         </div>
         <span className="h-3.5 w-px bg-white/16" />
-        <p className="font-body font-medium tracking-[0.2em] text-white/62">
+        <p className="font-body whitespace-nowrap text-[9px] font-medium tracking-[0.17em] text-white/62">
           {"\u00A9"} 2026 Platinum. All rights reserved.
         </p>
       </div>
       {showDesktop ? (
         <div
-          className={`page-footer-note fixed bottom-[calc(4vh-0.4cm)] left-1/2 z-30 hidden -translate-x-1/2 items-center gap-4 text-white/68 sm:flex ${
+          className={`page-footer-note fixed bottom-[calc(3.1vh-0.4cm)] left-1/2 z-30 hidden w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3.5 whitespace-nowrap text-white/68 sm:flex ${
             desktopClassName ?? ""
           }`}
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {socialLinks.map((item) => (
               <Link
                 key={`desktop-${item.label}`}
@@ -83,16 +83,16 @@ export function PageFooterNote({
                 <Image
                   src={item.icon}
                   alt={item.label}
-                  width={13}
-                  height={13}
-                  className="h-[13px] w-[13px] object-contain opacity-90"
-                  unoptimized
-                />
+                  width={12}
+                  height={12}
+                className="h-[12px] w-[12px] object-contain opacity-90"
+                unoptimized
+              />
               </Link>
             ))}
           </div>
           <span className="h-4 w-px bg-white/16" />
-          <p className="font-body text-[11px] font-medium tracking-[0.2em] text-white/62">
+          <p className="font-body whitespace-nowrap text-[9.5px] font-medium tracking-[0.17em] text-white/62">
             {"\u00A9"} 2026 Platinum. All rights reserved.
           </p>
         </div>

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Montserrat, Rajdhani } from "next/font/google";
-import AppLoader from "@/components/app-loader";
-import { PageTransitionProvider } from "@/components/page-transition-provider";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -27,6 +25,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Platinum",
   description: "Luxury vehicle rentals for discerning drivers.",
+  icons: {
+    icon: "/icons/platinum-mark.svg",
+    shortcut: "/icons/platinum-mark.svg",
+    apple: "/icons/platinum-mark.svg",
+  },
 };
 
 export default function RootLayout({
@@ -37,11 +40,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        data-app-loading="true"
         className={`${montserrat.variable} ${rajdhani.variable} ${geistMono.variable} antialiased bg-black text-zinc-100`}
       >
-        <AppLoader />
-        <PageTransitionProvider>{children}</PageTransitionProvider>
+        {children}
       </body>
     </html>
   );

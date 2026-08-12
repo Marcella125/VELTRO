@@ -1,25 +1,24 @@
 "use client";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { assetPath } from "@/lib/asset-path";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
-import { useEffect, useState } from "react";
 
-const missionCopy = {
-  mission:
-    "Platinum elevates every drive through precision, performance, and effortless luxury. We deliver refined experiences that go beyond traditional car rentals.",
-  vision:
-    "To set the standard for premium sports car rentals where transparency, confidence, and world-class service define every journey.",
-};
+const missionHighlights = [
+  { number: "01", label: "Premium Fleet" },
+  { number: "02", label: "Exceptional Service" },
+  { number: "03", label: "Trust & Reliability" },
+  { number: "04", label: "Passion Driven" },
+] as const;
 
 export function MissionView() {
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
-  const { overlay, runTransition } = usePageTransition();
 
   useEffect(() => {
     document.body.classList.add("mission-desktop-lock");
@@ -30,45 +29,33 @@ export function MissionView() {
   }, []);
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
     if (id === "home") return navigateTo(homeHref);
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
-    if (id === "mission") return setIsDockOpen(false);
+    if (id === "mission") return;
     if (id === "contact") return navigateTo("/contact");
     if (id === "faq") return navigateTo("/faq");
   };
 
   return (
-    <main className="relative min-h-dvh overflow-hidden text-white lg:h-dvh lg:min-h-dvh">
-      <AnimatePresence>{overlay}</AnimatePresence>
+    <main className="relative min-h-dvh overflow-hidden bg-black text-white lg:h-dvh lg:min-h-dvh">
       <div className="pointer-events-none fixed inset-0">
         <Image
-          src={assetPath("/images/bgcar.png")}
+          src={assetPath("/images/Mission bg.png")}
           alt="Platinum mission background"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[74%_center] sm:object-[76%_center] lg:object-[72%_center]"
         />
-        <Image
-          src={assetPath("/pattern1.svg")}
-          alt=""
-          width={800}
-          height={600}
-          className="absolute left-1/2 top-[10%] w-[140%] -translate-x-1/2 opacity-60 sm:top-[6%] sm:w-[120%] sm:opacity-70"
-        />
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-[radial-gradient(110%_90%_at_60%_30%,rgba(193,18,31,0.35),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_20%_70%,rgba(0,0,0,0.8),transparent_60%)]" />
-        <div className="absolute inset-0 shadow-[inset_0_0_160px_rgba(0,0,0,0.75)]" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.72)_22%,rgba(0,0,0,0.32)_46%,rgba(0,0,0,0.03)_64%,rgba(0,0,0,0.28)_82%,rgba(0,0,0,0.54)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.03)_0%,rgba(0,0,0,0.08)_54%,rgba(0,0,0,0.22)_100%)]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-6 pb-12 pt-5 sm:px-10 sm:pb-16 lg:h-dvh lg:min-h-dvh lg:pb-0">
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-6 pb-10 pt-5 sm:px-10 sm:pt-6 sm:pb-12 lg:h-dvh lg:min-h-dvh lg:pb-6">
         <div className="relative z-30">
           <InternalPageHeader
             title="Mission"
@@ -79,56 +66,45 @@ export function MissionView() {
           />
         </div>
 
-        <section className="mt-1 flex flex-1 items-start pt-4 sm:mt-2 sm:pt-6 lg:mt-2 lg:items-start lg:pt-3">
-          <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 md:gap-5">
-            <article className="group flex h-full">
-              <div className="relative flex h-full min-h-[220px] w-full flex-col justify-between overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(8,8,8,0.96)_0%,rgba(20,9,11,0.94)_100%)] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-300 group-hover:border-white/20 group-hover:shadow-[0_24px_70px_rgba(177,18,38,0.16)] sm:min-h-[320px] sm:p-6 lg:min-h-[360px]"
+        <section className="relative z-10 flex flex-1 flex-col justify-between pt-12 sm:pt-14 lg:pb-20 lg:pt-14">
+          <div className="max-w-[18rem] sm:max-w-[21rem] lg:max-w-[22rem]">
+            <h1 className="font-display text-[2rem] font-semibold uppercase leading-[0.98] tracking-[-0.03em] text-white sm:text-[2.8rem] lg:text-[3.1rem]">
+              Driven by passion<span className="text-[var(--brand-red)]">.</span>
+              <br />
+              Defined by excellence<span className="text-[var(--brand-red)]">.</span>
+            </h1>
+
+            <div className="mt-6 h-px w-12 bg-[var(--brand-red)]" />
+
+            <div className="font-body mt-7 max-w-[18rem] text-[0.9rem] leading-7 text-white/72 sm:max-w-[21rem] sm:text-[1rem] sm:leading-8">
+              <p>
+                We don&apos;t simply provide exceptional cars.
+                <br />
+                We create experiences built around them.
+                <br />
+                Every detail is shaped to feel effortless, elevated, and memorable.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid max-w-[31rem] grid-cols-2 gap-x-5 gap-y-5 sm:max-w-[35rem] sm:grid-cols-4 sm:gap-x-6 lg:max-w-[33rem]">
+            {missionHighlights.map((item, index) => (
+              <div
+                key={item.number}
+                className={`relative pr-2 ${index < missionHighlights.length - 1 ? "sm:after:absolute sm:after:right-0 sm:after:top-0 sm:after:h-[4.2rem] sm:after:w-px sm:after:bg-white/16" : ""}`}
               >
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.18),transparent_52%)] opacity-70 transition duration-300 group-hover:opacity-100" />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(177,18,38,0.5),transparent)] opacity-70" />
-
-                <div className="relative flex h-full flex-col">
-                  <span className="type-hero-title text-[clamp(2rem,5vw,3.8rem)] leading-none font-semibold tracking-[-0.05em] text-white/28">
-                    01
-                  </span>
-
-                  <div className="mt-3 max-w-[34rem] space-y-3 sm:mt-5 sm:space-y-4">
-                    <h1 className="type-card-title text-[1.15rem] leading-[1.08] text-white sm:text-[1.7rem]">
-                      Mission
-                    </h1>
-                    <p className="type-body text-[0.84rem] leading-6 text-white/72 sm:text-[0.98rem] sm:leading-7">
-                      {missionCopy.mission}
-                    </p>
-                  </div>
-                </div>
+                <p className="font-display text-[1rem] leading-none text-[var(--brand-red)] sm:text-[1.05rem]">
+                  {item.number}
+                </p>
+                <p className="mt-3 font-body text-[0.62rem] uppercase leading-6 tracking-[0.14em] text-white/78 sm:text-[0.68rem]">
+                  {item.label}
+                </p>
               </div>
-            </article>
-
-            <article className="group flex h-full">
-              <div className="relative flex h-full min-h-[220px] w-full flex-col justify-between overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(7,7,7,0.98)_0%,rgba(20,9,11,0.96)_100%)] p-4 shadow-[0_18px_50px_rgba(0,0,0,0.55)] transition duration-300 group-hover:border-white/20 group-hover:shadow-[0_24px_70px_rgba(177,18,38,0.14)] sm:min-h-[320px] sm:p-6 lg:min-h-[360px]"
-              >
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(177,18,38,0.16),transparent_52%)] opacity-60 transition duration-300 group-hover:opacity-90" />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(177,18,38,0.42),transparent)] opacity-70" />
-
-                <div className="relative flex h-full flex-col">
-                  <span className="type-hero-title text-[clamp(2rem,5vw,3.8rem)] leading-none font-semibold tracking-[-0.05em] text-white/24">
-                    02
-                  </span>
-
-                  <div className="mt-3 max-w-[34rem] space-y-3 sm:mt-5 sm:space-y-4">
-                    <h2 className="type-card-title text-[1.15rem] leading-[1.08] text-white sm:text-[1.7rem]">
-                      Vision
-                    </h2>
-                    <p className="type-body text-[0.84rem] leading-6 text-white/68 sm:text-[0.98rem] sm:leading-7">
-                      {missionCopy.vision}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </article>
+            ))}
           </div>
         </section>
       </div>
+
       <PageFooterNote />
     </main>
   );

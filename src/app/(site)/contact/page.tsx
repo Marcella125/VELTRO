@@ -1,5 +1,5 @@
 import { ContactView } from "@/views/sections/ContactView";
 
-export default async function ContactPage() {
+export default function ContactPage() {
   return <ContactView />;
 }

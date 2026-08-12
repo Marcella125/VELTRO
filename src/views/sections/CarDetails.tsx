@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { assetPath } from "@/lib/asset-path";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { usePageTransition } from "@/hooks/use-page-transition";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 
 const carSlides = [
@@ -106,11 +105,9 @@ export function CarDetails() {
   const homeHref = "/";
   const [index, setIndex] = useState(0);
   const [isDockOpen, setIsDockOpen] = useState(false);
-  const { overlay, runTransition } = usePageTransition();
 
   const navigateTo = (href: string) => {
-    setIsDockOpen(false);
-    runTransition(() => router.push(href));
+    router.push(href);
   };
 
   const whatsappUrl = useMemo(() => {
@@ -120,7 +117,6 @@ export function CarDetails() {
 
   return (
     <main className="relative min-h-screen bg-[#0a0f10]">
-      <AnimatePresence>{overlay}</AnimatePresence>
       <section className="relative min-h-[70vh] overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-b from-black via-[#0a0f10] to-[#111314]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_55%)]" />
@@ -128,7 +124,7 @@ export function CarDetails() {
         <div className="pointer-events-none absolute left-[38%] top-44 h-64 w-64 rounded-full bg-[#b3242d]/25 blur-[130px]" />
         <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-80 bg-[linear-gradient(135deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.0)_55%)] opacity-40" />
         <div className="pointer-events-none absolute -right-8 bottom-0 h-56 w-72 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.08)_0,rgba(255,255,255,0.08)_2px,transparent_2px,transparent_12px)] opacity-[0.12]" />
-        <div className="relative z-20 mx-auto w-full max-w-350 px-4 pt-4 sm:px-6 lg:px-0">
+        <div className="relative z-20 mx-auto w-full max-w-350 px-6 pt-5 sm:px-10 sm:pt-6 lg:px-0">
           <InternalPageHeader
             title="Lamborghini EVO Spyder"
             isDockOpen={isDockOpen}
