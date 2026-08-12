@@ -25,11 +25,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Platinum",
   description: "Luxury vehicle rentals for discerning drivers.",
-  icons: {
-    icon: "/icons/platinum-mark.svg",
-    shortcut: "/icons/platinum-mark.svg",
-    apple: "/icons/platinum-mark.svg",
-  },
 };
 
 export default function RootLayout({
