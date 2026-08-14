@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
-const repoName = "Platinum_Edition";
+const repoName = "VELTRO";
 
 const nextConfig: NextConfig = {
   output: "export",
