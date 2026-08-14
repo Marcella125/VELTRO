@@ -45,3 +45,6 @@ next-env.d.ts
 out.zip
 dist/
 *.log
+
+# local browser automation profiles
+.tmp-chrome-*/
