@@ -28,7 +28,7 @@ export default function PlatinumLoader({
           }}
           role="status"
           aria-live="polite"
-          aria-label="Loading Platinum"
+          aria-label="Loading Veltro"
         >
           <div className="flex flex-col items-center px-6 pb-safe text-center">
             <motion.div
@@ -55,11 +55,11 @@ export default function PlatinumLoader({
               }}
             >
               <Image
-                src={assetPath("/icons/Platinumlogo.svg")}
-                alt="Platinum"
-                width={140}
-                height={28}
-                className="h-auto w-[7.5rem] object-contain sm:w-[8.75rem]"
+                src={assetPath("/icons/veltro_logo.svg")}
+                alt="Veltro"
+                width={620}
+                height={124}
+                className="h-auto w-[20rem] object-contain sm:w-[24rem]"
                 priority
                 unoptimized
               />

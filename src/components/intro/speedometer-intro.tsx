@@ -235,7 +235,7 @@ export function SpeedometerIntro({
                 km/h
               </div>
               <div className="type-eyebrow mt-5 text-[10px] tracking-[0.42em] text-white/34">
-                Platinum
+                Veltro
               </div>
             </div>
           </motion.div>

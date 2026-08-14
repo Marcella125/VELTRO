@@ -23,8 +23,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Platinum",
+  title: "Veltro",
   description: "Luxury vehicle rentals for discerning drivers.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: ["/favicon.svg"],
+    apple: ["/favicon.svg"],
+  },
 };
 
 export default function RootLayout({

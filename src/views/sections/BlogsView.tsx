@@ -19,7 +19,7 @@ type BlogFilter = (typeof blogFilters)[number];
 export function BlogsView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
   const [activeBlogId, setActiveBlogId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<BlogFilter>("All");
 
@@ -79,7 +79,7 @@ export function BlogsView() {
       <div className="pointer-events-none fixed inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
-          alt="Platinum blog background"
+          alt="Veltro blog background"
           fill
           priority
           className="object-cover object-center"

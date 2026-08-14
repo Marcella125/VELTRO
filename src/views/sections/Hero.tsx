@@ -27,7 +27,7 @@ export function Hero({ cars, tagline }: HeroProps) {
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
           <p className="text-xs uppercase tracking-[0.35em] text-red-500">
-            Platinum collection
+            Veltro collection
           </p>
           <h1 className="text-5xl font-semibold leading-tight text-zinc-100">
             Arrive in silence. Leave an impression.

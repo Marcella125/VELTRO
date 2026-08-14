@@ -15,7 +15,9 @@ type InternalPageHeaderProps = {
 
 export function InternalPageHeader({
   title,
+  isDockOpen,
   onOpenChange,
+  onSelect,
   onLogoClick,
   className,
   surfaceClassName,
@@ -31,6 +33,7 @@ export function InternalPageHeader({
           onLogoClick={onLogoClick}
           titleTone="light"
           compact
+          menuOpen={isDockOpen}
           onMenuOpenChange={onOpenChange}
         />
       </div>

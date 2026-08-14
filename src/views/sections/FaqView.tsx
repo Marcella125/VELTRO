@@ -11,7 +11,7 @@ import { PageFooterNote } from "@/views/components/PageFooterNote";
 const faqs = [
   {
     q: "How do I make a reservation?",
-    a: "You can make a reservation through our website or by contacting the Platinum team directly. We confirm availability, timing, and final delivery details before handover.",
+    a: "You can make a reservation through our website or by contacting the Veltro team directly. We confirm availability, timing, and final delivery details before handover.",
   },
   {
     q: "What documents do I need to rent a car?",
@@ -31,14 +31,14 @@ const faqs = [
   },
   {
     q: "What happens in case of an accident?",
-    a: "Our team provides immediate guidance and support. You should contact Platinum as soon as possible so we can assist with the next steps, documentation, and recovery arrangements.",
+    a: "Our team provides immediate guidance and support. You should contact Veltro as soon as possible so we can assist with the next steps, documentation, and recovery arrangements.",
   },
 ] as const;
 
 export function FaqView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export function FaqView() {
       <div className="pointer-events-none fixed inset-0">
         <Image
           src={assetPath("/images/FAQ.png")}
-          alt="Platinum FAQ background"
+          alt="Veltro FAQ background"
           fill
           priority
           className="object-cover object-[78%_68%] sm:object-[80%_62%] lg:object-[86%_70%]"

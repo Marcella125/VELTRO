@@ -10,7 +10,7 @@ export function TrackHudFooter() {
       <div className="mx-auto w-full max-w-400 px-6 py-6 lg:px-16">
         <div className="grid gap-6 text-center md:grid-cols-3 md:items-center md:text-left">
           <div>
-            <div className="text-[14px] font-semibold tracking-[0.12em]">Platinum</div>
+            <div className="text-[14px] font-semibold tracking-[0.12em]">Veltro</div>
             <div className="mt-2 text-[11px] tracking-[0.08em] text-white/80">
               Luxury Performance Rentals
             </div>
@@ -50,17 +50,17 @@ export function TrackHudFooter() {
               WhatsApp: +961 70 335 113
             </motion.a>
             <motion.a
-              href="mailto:info@platinumrentals.com"
+              href="mailto:info@veltrorentals.com"
               className="transition hover:text-white"
               whileHover={{ scale: 1.05 }}
             >
-              info@platinumrentals.com
+              info@veltrorentals.com
             </motion.a>
           </div>
         </div>
 
         <div className="mt-6 text-center text-[10px] tracking-widest text-white/70">
-          Platinum all rights reserved (c) 2026
+          Veltro all rights reserved (c) 2026
         </div>
       </div>
     </footer>

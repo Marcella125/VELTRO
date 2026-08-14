@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 460">
+  <title>Veltro mark</title>
+  <rect width="460" height="460" fill="#ffffff" />
+  <g transform="translate(26 -234) scale(1.14)">
+    <path
+      d="M 122 319 L 182 413 L 184 419 L 111 531 L 112 532 L 177 532 L 247 423 L 249 417 L 186 319 Z"
+      fill="#000000"
+    />
+    <path
+      d="M 210 319 L 212 324 L 271 415 L 272 419 L 206 522 L 201 532 L 266 532 L 337 418 L 275 319 Z"
+      fill="#F00022"
+    />
+  </g>
+</svg>

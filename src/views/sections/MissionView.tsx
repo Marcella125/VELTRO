@@ -18,7 +18,7 @@ const missionHighlights = [
 export function MissionView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
 
   useEffect(() => {
     document.body.classList.add("mission-desktop-lock");
@@ -46,7 +46,7 @@ export function MissionView() {
       <div className="pointer-events-none fixed inset-0">
         <Image
           src={assetPath("/images/Mission bg.png")}
-          alt="Platinum mission background"
+          alt="Veltro mission background"
           fill
           priority
           className="object-cover object-[74%_center] sm:object-[76%_center] lg:object-[72%_center]"

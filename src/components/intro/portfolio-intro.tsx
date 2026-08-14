@@ -41,8 +41,8 @@ export function PortfolioIntro({
       <div className="relative flex min-h-dvh w-full flex-col px-6 pt-6 sm:px-10">
         <div className="flex items-center justify-between">
           <Image
-            src={assetPath("/icons/Platinumlogo.svg")}
-            alt="Platinum"
+            src={assetPath("/icons/veltro_logo.svg")}
+            alt="Veltro"
             width={120}
             height={24}
             className="h-5 w-auto object-contain"
@@ -60,7 +60,7 @@ export function PortfolioIntro({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
             >
-              Platinum -{" "}
+              Veltro -{" "}
               <span className="text-[var(--brand-red)]">Luxury</span> Automotive
               Experience
             </motion.h1>
