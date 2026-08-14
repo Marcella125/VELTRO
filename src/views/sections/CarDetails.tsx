@@ -104,7 +104,7 @@ export function CarDetails() {
   const router = useRouter();
   const homeHref = "/";
   const [index, setIndex] = useState(0);
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
 
   const navigateTo = (href: string) => {
     router.push(href);

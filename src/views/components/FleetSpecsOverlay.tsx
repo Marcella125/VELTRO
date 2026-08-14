@@ -2,6 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Activity,
+  type LucideIcon,
+  Leaf,
+  Palette,
+  Disc3,
+  Settings2,
+  Timer,
+  Wind,
+  X,
+} from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { assetPath } from "@/lib/asset-path";
@@ -14,6 +25,7 @@ type FleetSpecsOverlayProps = {
   displayBrand: string;
   displayName: string;
   imageSrc: string;
+  engineImageSrc?: string;
   engineLabel?: string;
   powerLabel?: string;
   driveLabel?: string;
@@ -35,11 +47,41 @@ type SpecCategory = (typeof categories)[number];
 const getSpecValue = (car: Car, label: string) =>
   car.specs.find((spec) => spec.label === label)?.value ?? "";
 
+const mobileCategoryMeta: Record<
+  SpecCategory,
+  {
+    shortLabel: string;
+    icon: LucideIcon;
+  }
+> = {
+  Performance: {
+    shortLabel: "Performance",
+    icon: Activity,
+  },
+  "Driving Dynamics & Technology": {
+    shortLabel: "Driving Dynamics & Technology",
+    icon: Settings2,
+  },
+  "Wheels, Tires & Brakes": {
+    shortLabel: "Wheels, Tires & Brakes",
+    icon: Disc3,
+  },
+  "Design & Comfort": {
+    shortLabel: "Design & Comfort",
+    icon: Palette,
+  },
+  "Fuel Consumption & Emission": {
+    shortLabel: "Fuel Consumption & Emission",
+    icon: Leaf,
+  },
+};
+
 export function FleetSpecsOverlay({
   car,
   displayBrand,
   displayName,
   imageSrc,
+  engineImageSrc,
   engineLabel,
   powerLabel,
   driveLabel,
@@ -53,6 +95,7 @@ export function FleetSpecsOverlay({
   const acceleration = getSpecValue(car, "0-60") || "3.1s";
   const drivetrain = driveLabel ?? getSpecValue(car, "Drive") ?? "AWD";
   const engine = engineLabel ?? "V10";
+  const bottomEngineImageSrc = engineImageSrc ?? assetPath("/images/lambo eng.png");
   const interior = getSpecValue(car, "Interior") || "Driver-focused cabin";
   const audio = getSpecValue(car, "Audio") || "Premium audio";
   const topSpeed = getSpecValue(car, "Top Speed") || "325 KM/H";
@@ -82,6 +125,12 @@ export function FleetSpecsOverlay({
       description: string;
       priceLabel: string;
       tiles: { label: string; value: string; detail: string }[];
+      mobileRows: {
+        label: string;
+        value: string;
+        detail: string;
+        icon: LucideIcon;
+      }[];
     }
   > = {
     Performance: {
@@ -97,6 +146,13 @@ export function FleetSpecsOverlay({
         { label: "Top Speed", value: topSpeed, detail: "Maximum velocity" },
         { label: "Drivetrain", value: drivetrain, detail: "Road-ready grip" },
       ],
+      mobileRows: [
+        { label: "Engine", value: "5.2 L", detail: `${engine} configuration`, icon: Settings2 },
+        { label: "Max Power", value: power, detail: "@ 8,000 rpm", icon: Activity },
+        { label: "Max Torque", value: torque, detail: "@ 6,500 rpm", icon: Wind },
+        { label: "0-100 km/h", value: zeroToHundred, detail: "Acceleration", icon: Timer },
+        { label: "Top Speed", value: topSpeed, detail: "(Electronically limited)", icon: Disc3 },
+      ],
     },
     "Driving Dynamics & Technology": {
       title: "Dynamics",
@@ -110,6 +166,13 @@ export function FleetSpecsOverlay({
         { label: "Steering", value: "Dynamic ratio", detail: "Sharper turn-in" },
         { label: "Drive Modes", value: "Strada / Sport / Corsa", detail: "Configurable feel" },
         { label: "Displays", value: "Digital cluster", detail: "Driver-focused tech" },
+      ],
+      mobileRows: [
+        { label: "0-60", value: acceleration, detail: "Immediate response", icon: Timer },
+        { label: "Drivetrain", value: drivetrain, detail: "Traction balance", icon: Disc3 },
+        { label: "Suspension", value: comfort, detail: "Adaptive damping", icon: Settings2 },
+        { label: "Steering", value: "Dynamic ratio", detail: "Sharper turn-in", icon: Activity },
+        { label: "Drive Modes", value: "Strada / Sport / Corsa", detail: "Configurable feel", icon: Palette },
       ],
     },
     "Wheels, Tires & Brakes": {
@@ -125,6 +188,13 @@ export function FleetSpecsOverlay({
         { label: "Rear Setup", value: "Multi-piston calipers", detail: "Balanced braking" },
         { label: "Chassis", value: "Lightweight alloy", detail: "Sharper response" },
       ],
+      mobileRows: [
+        { label: "Wheels", value: wheels, detail: "Performance setup", icon: Disc3 },
+        { label: "Tires", value: tires, detail: "High-grip compound", icon: Disc3 },
+        { label: "Brakes", value: brakes, detail: "Fade-resistant stopping", icon: Activity },
+        { label: "Front Setup", value: "Ventilated discs", detail: "Track-capable", icon: Settings2 },
+        { label: "Rear Setup", value: "Multi-piston calipers", detail: "Balanced braking", icon: Settings2 },
+      ],
     },
     "Design & Comfort": {
       title: "Design & Comfort",
@@ -138,6 +208,13 @@ export function FleetSpecsOverlay({
         { label: "Comfort", value: comfort, detail: "Everyday usability" },
         { label: "Design", value: design, detail: "Aggressive stance" },
         { label: "Roof", value: "Open-top spyder", detail: "Convertible drama" },
+      ],
+      mobileRows: [
+        { label: "Cabin", value: interior, detail: "Luxury finish", icon: Palette },
+        { label: "Audio", value: audio, detail: "Immersive sound", icon: Settings2 },
+        { label: "Seats", value: "Sport bucket seats", detail: "Supportive posture", icon: Disc3 },
+        { label: "Comfort", value: comfort, detail: "Everyday usability", icon: Activity },
+        { label: "Roof", value: "Open-top spyder", detail: "Convertible drama", icon: Wind },
       ],
     },
     "Fuel Consumption & Emission": {
@@ -153,6 +230,13 @@ export function FleetSpecsOverlay({
         { label: "Range", value: getSpecValue(car, "Range") || "410 mi", detail: "Extended driving" },
         { label: "Compliance", value: "EU / GCC spec", detail: "Market-ready setup" },
       ],
+      mobileRows: [
+        { label: "Consumption", value: consumption, detail: "Combined estimate", icon: Leaf },
+        { label: "Emissions", value: emissions, detail: "CO2 output", icon: Wind },
+        { label: "Fuel Type", value: "Premium unleaded", detail: "Required octane", icon: Settings2 },
+        { label: "Tank", value: "83 L", detail: "Touring range", icon: Disc3 },
+        { label: "Range", value: getSpecValue(car, "Range") || "410 mi", detail: "Extended driving", icon: Activity },
+      ],
     },
   };
   const activeContent = categoryContent[activeCategory];
@@ -165,21 +249,143 @@ export function FleetSpecsOverlay({
         <div className="absolute inset-0 bg-[radial-gradient(55%_40%_at_82%_24%,rgba(255,255,255,0.04),transparent_62%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-6 pb-6 pt-5 sm:px-10 sm:pt-6">
-        <SiteHeader
-          title="Fleet"
-          className="shrink-0"
-          onLogoClick={onLogoClick}
-          titleTone="light"
-          compact
-        />
+      <div className="relative z-10 mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-0 pb-0 pt-0 sm:px-10 sm:pb-6 sm:pt-6">
+        <div className="flex min-h-0 flex-1 flex-col sm:hidden">
+          <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+            <div className="bg-[#050505] px-0 pb-6 pt-2">
+              <div className="px-4 pb-3">
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={onLogoClick}
+                    aria-label="Veltro home"
+                    className="inline-flex items-center"
+                  >
+                    <Image
+                      src={assetPath("/icons/veltro_logo.svg")}
+                      alt="Veltro"
+                      width={420}
+                      height={84}
+                      className="h-14 w-auto object-contain"
+                      priority
+                      unoptimized
+                    />
+                  </button>
 
-        <div className="mt-[calc(1rem-0.1cm)] flex min-h-0 flex-1 flex-col gap-3 xl:mt-[calc(1.25rem-0.1cm)] xl:grid xl:grid-cols-[minmax(0,0.98fr)_minmax(470px,1.02fr)] xl:grid-rows-[minmax(0,0.94fr)] xl:gap-4">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    aria-label="Close specifications"
+                    className="inline-flex h-10 w-10 items-center justify-center text-white/88"
+                  >
+                    <X className="h-7 w-7 stroke-[1.5]" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-[1cm] px-5 pb-3">
+                <div className="translate-x-[0.4cm] font-body text-[0.64rem] uppercase tracking-[0.18em] text-white/62">
+                  <span className="text-[var(--brand-red)]">01</span>
+                  <span className="px-2 text-white/34">/</span>
+                  <span>{displayBrand}</span>
+                </div>
+                <h2 className="mt-2 translate-x-[0.3cm] font-display text-[1.72rem] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white">
+                  {displayName}
+                </h2>
+              </div>
+
+              <div className="px-5 pt-1">
+                <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  <div className="flex w-max gap-2.5">
+                  {categories.map((category) => {
+                    const active = category === activeCategory;
+                    const meta = mobileCategoryMeta[category];
+                    const CategoryIcon = meta.icon;
+
+                    return (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => setActiveCategory(category)}
+                        className={`relative flex h-[72px] w-[116px] shrink-0 snap-start flex-col items-center justify-center gap-2 px-3 pb-3 pt-3 text-center transition ${
+                          active
+                            ? "text-[var(--brand-red)]"
+                            : "text-white/72"
+                        }`}
+                      >
+                        {active ? (
+                          <span className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-[var(--brand-red)]" />
+                        ) : null}
+                        <CategoryIcon className={`h-4.5 w-4.5 ${active ? "text-[var(--brand-red)]" : "text-white/65"}`} strokeWidth={1.7} />
+                        <span className={`font-body text-[0.42rem] uppercase leading-[1.3] tracking-[0.08em] ${active ? "text-[var(--brand-red)]" : "text-white/68"}`}>
+                          {meta.shortLabel}
+                        </span>
+                      </button>
+                    );
+                  })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="px-5 pt-4">
+                <div className="rounded-[22px] border border-white/7 bg-[radial-gradient(120%_100%_at_0%_0%,rgba(255,255,255,0.02),rgba(255,255,255,0)_48%),linear-gradient(180deg,#0b0b0c_0%,#070708_100%)] px-5 pb-5 pt-5 shadow-[0_24px_60px_rgba(0,0,0,0.42)]">
+                  <h3 className="font-display text-[1.6rem] font-medium uppercase tracking-[0.08em] text-white">
+                    {activeContent.title}
+                  </h3>
+                  <div className="mt-2 h-px w-10 bg-[var(--brand-red)]" />
+                  <p className="mt-2 text-[0.82rem] leading-[1.36] text-white/58">
+                    {activeContent.description}
+                  </p>
+
+                  <div className="mt-4 space-y-2.5">
+                    {activeContent.mobileRows.map((row) => {
+                      const RowIcon = row.icon;
+
+                      return (
+                        <div
+                          key={`${activeCategory}-${row.label}`}
+                          className="flex items-center gap-3 rounded-[14px] border border-white/10 bg-[#090909] px-3 py-3"
+                        >
+                          <RowIcon className="h-5 w-5 shrink-0 text-white/70" strokeWidth={1.5} />
+
+                          <div className="min-w-0 flex-1">
+                            <div className="font-body text-[0.62rem] uppercase tracking-[0.18em] text-white">
+                              {row.label}
+                            </div>
+                            <div className="mt-0.5 text-[0.8rem] leading-[1.24] text-white/54">
+                              {row.detail}
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 pl-2 font-display text-[0.82rem] uppercase tracking-[0.08em] text-[var(--brand-red)]">
+                            {row.value}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden sm:flex sm:shrink-0">
+          <SiteHeader
+            title="Fleet"
+            className="shrink-0"
+            onLogoClick={onLogoClick}
+            titleTone="light"
+            compact
+          />
+        </div>
+
+        <div className="mt-[calc(1rem-0.1cm)] hidden min-h-0 flex-1 flex-col gap-3 sm:flex xl:mt-[calc(1.25rem-0.1cm)] xl:grid xl:grid-cols-[minmax(0,0.98fr)_minmax(470px,1.02fr)] xl:grid-rows-[minmax(0,0.94fr)] xl:gap-4">
           <section className="relative min-h-0 overflow-hidden border border-[#242428] bg-[#0A0A0B]">
             <div
               className="pointer-events-none absolute inset-0"
               style={{
-                backgroundImage: `url("${assetPath("/images/lambo specs.png")}")`,
+                backgroundImage: `url("${imageSrc}")`,
                 backgroundPosition: "left 0 top 0",
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
@@ -203,7 +409,7 @@ export function FleetSpecsOverlay({
 
               <div className="mt-auto max-w-[20rem]">
                 <p className="type-eyebrow text-white/62">{displayBrand}</p>
-                <h2 className="mt-2 font-display text-[2.25rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[3.2rem]">
+                <h2 className="mt-2 font-display text-[2.1rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[2.85rem]">
                   {displayName}
                 </h2>
                 <p className="mt-2.5 font-display text-[0.76rem] uppercase tracking-[0.16em] text-white/74">
@@ -297,13 +503,12 @@ export function FleetSpecsOverlay({
 
             <div className="relative overflow-hidden border border-white/8 bg-[#0A0A0B]">
               <Image
-                src={assetPath("/images/lambo eng.png")}
+                src={bottomEngineImageSrc}
                 alt=""
                 fill
                 sizes="(max-width: 1279px) 100vw, 45vw"
-                className="object-cover object-center opacity-72"
+                className="object-cover object-center"
               />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.38)_100%)]" />
             </div>
           </section>
         </div>

@@ -20,6 +20,8 @@ type FleetAllViewProps = {
 type FleetGridCard = {
   sourceSlug: string;
   imageSrc: string;
+  specsImageSrc?: string;
+  engineImageSrc?: string;
   brand: string;
   name: string;
   engine: string;
@@ -39,6 +41,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "obsidian-gt",
     imageSrc: assetPath("/lambo fleet.png"),
+    specsImageSrc: assetPath("/images/lambo specs.png"),
+    engineImageSrc: assetPath("/images/lambo eng.png"),
     brand: "Lamborghini",
     name: "Evo Spyder",
     engine: "V10",
@@ -48,6 +52,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "crimson-eclipse",
     imageSrc: assetPath("/porshe fleet.png"),
+    specsImageSrc: assetPath("/images/porshe specs.png"),
+    engineImageSrc: assetPath("/images/porshe eng.png"),
     brand: "Porsche",
     name: "911 Carrera 4S",
     engine: "V10",
@@ -57,6 +63,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "onyx-sabre",
     imageSrc: assetPath("/ferrari fleet.png"),
+    specsImageSrc: assetPath("/images/ferrari specs.png"),
+    engineImageSrc: assetPath("/images/ferrari eng.png"),
     brand: "Ferrari",
     name: "296 GTB",
     engine: "V10",
@@ -66,6 +74,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "velour-phantom",
     imageSrc: assetPath("/lambo fleet.png"),
+    specsImageSrc: assetPath("/images/lambo specs.png"),
+    engineImageSrc: assetPath("/images/lambo eng.png"),
     brand: "Lamborghini",
     name: "Huracan STO",
     engine: "V10",
@@ -75,6 +85,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "ember-revenant",
     imageSrc: assetPath("/porshe fleet.png"),
+    specsImageSrc: assetPath("/images/porshe specs.png"),
+    engineImageSrc: assetPath("/images/porshe eng.png"),
     brand: "Mercedes-Benz",
     name: "AMG GT R",
     engine: "V8 Biturbo",
@@ -84,6 +96,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "midnight-regal",
     imageSrc: assetPath("/ferrari fleet.png"),
+    specsImageSrc: assetPath("/images/ferrari specs.png"),
+    engineImageSrc: assetPath("/images/ferrari eng.png"),
     brand: "BMW",
     name: "M8 Competition",
     engine: "V8",
@@ -93,6 +107,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "velour-phantom",
     imageSrc: assetPath("/lambo fleet.png"),
+    specsImageSrc: assetPath("/images/lambo specs.png"),
+    engineImageSrc: assetPath("/images/lambo eng.png"),
     brand: "Lamborghini",
     name: "Urus",
     engine: "V8",
@@ -102,6 +118,8 @@ const fleetGridCards: FleetGridCard[] = [
   {
     sourceSlug: "crimson-eclipse",
     imageSrc: assetPath("/porshe fleet.png"),
+    specsImageSrc: assetPath("/images/porshe specs.png"),
+    engineImageSrc: assetPath("/images/porshe eng.png"),
     brand: "Porsche",
     name: "Panamera GTS",
     engine: "V8",
@@ -112,7 +130,7 @@ const fleetGridCards: FleetGridCard[] = [
 
 export function FleetAllView({ cars }: FleetAllViewProps) {
   const router = useRouter();
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
   const [activeSpecCard, setActiveSpecCard] = useState<{
     car: Car;
     card: FleetGridCard;
@@ -307,7 +325,8 @@ export function FleetAllView({ cars }: FleetAllViewProps) {
             car={activeSpecCard.car}
             displayBrand={activeSpecCard.card.brand}
             displayName={activeSpecCard.card.name}
-            imageSrc={activeSpecCard.card.imageSrc}
+            imageSrc={activeSpecCard.card.specsImageSrc ?? activeSpecCard.card.imageSrc}
+            engineImageSrc={activeSpecCard.card.engineImageSrc}
             engineLabel={activeSpecCard.card.engine}
             powerLabel={activeSpecCard.card.power}
             driveLabel={activeSpecCard.card.drive}

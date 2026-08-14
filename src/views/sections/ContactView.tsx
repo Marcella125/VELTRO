@@ -23,17 +23,17 @@ const initialFormState: ContactFormState = {
 };
 
 const inputClassName =
-  "w-full border border-white/8 bg-[#0b0b0d] px-4 py-3 text-[14px] text-white placeholder:text-white/22 outline-none transition-[border-color,box-shadow] duration-[var(--transition-normal)] ease-[var(--ease-premium)] focus:border-[var(--brand-red)] focus:shadow-[0_0_0_1px_rgba(177,18,38,0.22)]";
+  "w-full border border-white/10 bg-black/42 px-4 py-3 text-[14px] text-white placeholder:text-white/28 outline-none backdrop-blur-md transition-[border-color,background-color,box-shadow] duration-[var(--transition-normal)] ease-[var(--ease-premium)] focus:border-[var(--brand-red)] focus:bg-black/52 focus:shadow-[0_0_0_1px_rgba(177,18,38,0.22)]";
 
 const contactInfo = [
   {
     title: "Visit Us",
-    lines: ["Platinum Showroom", "Beirut, Lebanon"],
+    lines: ["Veltro Showroom", "Beirut, Lebanon"],
     icon: MapPinned,
   },
   {
     title: "Email Us",
-    lines: ["info@platinum.com"],
+    lines: ["info@veltro.com"],
     icon: Mail,
   },
   {
@@ -51,7 +51,7 @@ const contactInfo = [
 export function ContactView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
 
@@ -101,7 +101,7 @@ export function ContactView() {
       <div className="pointer-events-none fixed inset-0">
         <Image
           src={assetPath("/images/contact.png")}
-          alt="Platinum contact background"
+          alt="Veltro contact background"
           fill
           priority
           className="object-cover object-[50%_calc(50%+0.5cm)]"
@@ -122,25 +122,26 @@ export function ContactView() {
 
         <section className="relative z-10 mt-5 flex flex-1 items-start justify-center sm:mt-7 lg:justify-start">
           <div className="w-full max-w-[620px] lg:mr-auto">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
+            <div className="flex flex-col gap-4">
               <div className="max-w-[18rem]">
                 <h2 className="font-display text-[1.5rem] font-semibold leading-[0.98] tracking-[-0.03em] text-white sm:text-[2rem] lg:text-[2.2rem]">
                   WE&apos;D LOVE TO HEAR FROM YOU<span className="text-[var(--brand-red)]">.</span>
                 </h2>
+                <div className="mt-4 h-px w-8 bg-[var(--brand-red)]" />
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="h-[5.2rem] w-px bg-white/18" />
-                <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+              <div className="overflow-x-auto no-scrollbar">
+                <div className="flex min-w-max items-center gap-2 text-white/72 sm:gap-2.5">
                   {contactInfo.map((item) => {
                     const Icon = item.icon;
                     return (
-                      <div key={item.title} className="flex min-w-0 items-start gap-2.5">
+                      <div key={item.title} className="flex items-center gap-1 whitespace-nowrap">
                         <Icon
-                          className="mt-0.5 size-3.5 shrink-0 text-[var(--brand-red)]"
-                          strokeWidth={1.8}
+                          size={14}
+                          className="shrink-0 text-[var(--brand-red)]"
+                          strokeWidth={1.7}
                         />
-                        <p className="text-[0.72rem] leading-4.5 text-white/68">
+                        <p className="text-[10px] leading-none text-white/72">
                           {item.lines.join(" ")}
                         </p>
                       </div>
@@ -150,85 +151,83 @@ export function ContactView() {
               </div>
             </div>
 
-            <div className="mt-3.5 overflow-hidden border border-white/10 bg-[#050506]/96 shadow-[0_18px_56px_rgba(0,0,0,0.42)]">
-              <div className="bg-[#070708] p-3.5 sm:p-4 lg:p-4">
-                <form onSubmit={handleSubmit} className="flex h-full flex-col">
-                  <div className="space-y-2">
-                    <div>
-                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-full-name">
-                        Full Name
-                      </label>
-                      <input
-                        id="contact-full-name"
-                        type="text"
-                        placeholder="Your name"
-                        value={formState.fullName}
-                        onChange={(event) => updateField("fullName", event.target.value)}
-                        className={inputClassName}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-email">
-                        Email
-                      </label>
-                      <input
-                        id="contact-email"
-                        type="email"
-                        placeholder="Your email"
-                        value={formState.email}
-                        onChange={(event) => updateField("email", event.target.value)}
-                        className={inputClassName}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-subject">
-                        Subject
-                      </label>
-                      <input
-                        id="contact-subject"
-                        type="text"
-                        placeholder="How can we help?"
-                        value={formState.subject}
-                        onChange={(event) => updateField("subject", event.target.value)}
-                        className={inputClassName}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-message">
-                        Message
-                      </label>
-                      <textarea
-                        id="contact-message"
-                        rows={3}
-                        placeholder="Your message"
-                        value={formState.message}
-                        onChange={(event) => updateField("message", event.target.value)}
-                        className={`${inputClassName} min-h-[2.4rem] resize-none`}
-                      />
-                    </div>
+            <div className="mt-5">
+              <form onSubmit={handleSubmit} className="flex h-full flex-col">
+                <div className="space-y-2">
+                  <div>
+                    <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-full-name">
+                      Full Name
+                    </label>
+                    <input
+                      id="contact-full-name"
+                      type="text"
+                      placeholder="Your name"
+                      value={formState.fullName}
+                      onChange={(event) => updateField("fullName", event.target.value)}
+                      className={inputClassName}
+                    />
                   </div>
 
-                  <div className="mt-3">
-                    <button
-                      type="submit"
-                      className="group inline-flex w-full items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-5 py-2.5 font-display text-[0.56rem] uppercase tracking-[0.18em] text-white transition hover:brightness-110"
-                    >
-                      <span>Send Message</span>
-                    </button>
-
-                    {status !== "idle" ? (
-                      <p className="mt-3 text-[0.82rem] leading-5 text-white/54">
-                        {status === "sent"
-                          ? "Your enquiry has been sent."
-                          : "Please complete all fields before sending."}
-                      </p>
-                    ) : null}
+                  <div>
+                    <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-email">
+                      Email
+                    </label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      placeholder="Your email"
+                      value={formState.email}
+                      onChange={(event) => updateField("email", event.target.value)}
+                      className={inputClassName}
+                    />
                   </div>
-                </form>
-              </div>
+
+                  <div>
+                    <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-subject">
+                      Subject
+                    </label>
+                    <input
+                      id="contact-subject"
+                      type="text"
+                      placeholder="How can we help?"
+                      value={formState.subject}
+                      onChange={(event) => updateField("subject", event.target.value)}
+                      className={inputClassName}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="type-eyebrow mb-1.5 block text-white/34" htmlFor="contact-message">
+                      Message
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      rows={3}
+                      placeholder="Your message"
+                      value={formState.message}
+                      onChange={(event) => updateField("message", event.target.value)}
+                      className={`${inputClassName} min-h-[2.4rem] resize-none`}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <button
+                    type="submit"
+                    className="group inline-flex w-full items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-5 py-3 font-display text-[0.56rem] uppercase tracking-[0.18em] text-white transition hover:brightness-110"
+                  >
+                    <span>Send Message</span>
+                  </button>
+
+                  {status !== "idle" ? (
+                    <p className="mt-3 text-[0.82rem] leading-5 text-white/54">
+                      {status === "sent"
+                        ? "Your enquiry has been sent."
+                        : "Please complete all fields before sending."}
+                    </p>
+                  ) : null}
+                </div>
+              </form>
             </div>
           </div>
         </section>

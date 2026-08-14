@@ -78,7 +78,7 @@ export const blogEntries: BlogEntry[] = [
       "Something extraordinary is on the horizon, shaped around sharper curation, stronger visuals, and a more refined fleet story.",
     heroImage: assetPath("/images/blog 1.png"),
     body: [
-      "Platinum continues to refine how it presents the fleet, the stories around it, and the experience clients can expect before they ever make contact.",
+      "Veltro continues to refine how it presents the fleet, the stories around it, and the experience clients can expect before they ever make contact.",
       "That means stronger editorial direction, sharper vehicle presentation, and content that feels closer to the cars themselves: confident, precise, and unmistakably premium.",
       "The next phase is not about noise. It is about a tighter point of view and a more coherent luxury experience across the site and the fleet.",
     ],

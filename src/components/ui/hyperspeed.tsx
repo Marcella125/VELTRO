@@ -1163,7 +1163,7 @@ export function Hyperspeed({
         style={{ transform: "translate(-50%, -50%) scale(0.94)" }}
       >
         <Image
-          src={assetPath("/icons/Platinumlogo.svg")}
+          src={assetPath("/icons/veltro_logo_refined.svg")}
           alt=""
           width={180}
           height={36}

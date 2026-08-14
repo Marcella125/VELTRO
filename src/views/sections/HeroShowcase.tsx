@@ -194,7 +194,7 @@ export function HeroShowcase() {
   const homeHref = "/";
   const prefersReducedMotion = useReducedMotion();
   const specTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
   const [currentApp, setCurrentApp] = useState<"home" | "rideit">("home");
   const [activeTab, setActiveTab] = useState<AppTab>("car");
   const [isHudOpen, setIsHudOpen] = useState(false);
@@ -411,17 +411,18 @@ export function HeroShowcase() {
       </div>
       {/* Mobile background */}
       <div className="fixed inset-0 bg-black sm:hidden">
-        <div className="absolute inset-0">
-          <Image
-            src={assetPath(currentApp === "rideit" ? "/back3.jpg" : "/images/Home bg mobile.png")}
-            alt=""
-            fill
-            priority
-            quality={90}
-            className="object-cover object-center"
-            style={{ objectPosition: "calc(50% - 0.3cm) calc(50% + 2cm)" }}
-          />
-        </div>
+        {currentApp === "rideit" ? (
+          <div className="absolute inset-0">
+            <Image
+              src={assetPath("/back3.jpg")}
+              alt=""
+              fill
+              priority
+              quality={90}
+              className="object-cover object-center"
+            />
+          </div>
+        ) : null}
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
@@ -434,6 +435,7 @@ export function HeroShowcase() {
               isDockOpen={isDockOpen}
               onOpenChange={setIsDockOpen}
               onSelect={handleDockSelect}
+              surfaceClassName="bg-black sm:bg-transparent"
               onLogoClick={() => {
                 if (currentApp === "rideit") {
                   setCurrentApp("home");
@@ -457,50 +459,72 @@ export function HeroShowcase() {
               transition={{ duration: 0.45, ease: "easeInOut" }}
             >
               {/* Mobile hero layout */}
-              <div className="relative flex flex-1 flex-col px-5 pb-8 pt-5 -translate-y-[0.5cm] sm:hidden">
-                <div className="relative z-10 mt-3 -translate-x-[0.2cm]">
-                  <div className="font-body translate-x-[0.28cm] text-[0.88rem] font-medium uppercase tracking-[0.2em] text-white/62">
-                    <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
-                    <span className="px-2 text-white/38">/</span>
-                    <span>{homeHeroMeta.marque}</span>
+              <div className="flex flex-1 flex-col sm:hidden">
+                <div className="relative flex flex-1 flex-col overflow-hidden bg-black">
+                  <div className="relative min-h-0 flex-1">
+                    <Image
+                      src={assetPath("/images/Home bg mobile.png")}
+                      alt="Lamborghini EVO Spyder"
+                      fill
+                      priority
+                      quality={95}
+                      className="object-cover object-center-bottom"
+                      sizes="100vw"
+                    />
+
+                    <div className="absolute inset-x-0 top-0 z-10 px-5 pt-5 max-[390px]:px-4 max-[390px]:pt-4">
+                      <div className="mt-3 -translate-x-[0.2cm] max-[390px]:mt-1 max-[390px]:translate-x-0">
+                        <div className="font-body translate-x-[0.28cm] text-[0.82rem] font-medium uppercase tracking-[0.18em] text-white/62 max-[390px]:translate-x-0 max-[390px]:text-[0.7rem] max-[390px]:tracking-[0.14em]">
+                          <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
+                          <span className="px-2 text-white/38">/</span>
+                          <span>{homeHeroMeta.marque}</span>
+                        </div>
+
+                        <div className="mt-6 max-[390px]:mt-4">
+                          <p className="font-display text-[5.45rem] font-black leading-[0.82] tracking-[-0.09em] text-white max-[390px]:text-[4.1rem] max-[390px]:leading-[0.84]">
+                            {homeHeroMeta.titleLead}
+                          </p>
+                          <p className="font-display -mt-1 text-[2.85rem] font-black leading-[0.9] tracking-[-0.055em] text-[var(--brand-red)] max-[390px]:text-[2.1rem]">
+                            {homeHeroMeta.titleAccent}
+                          </p>
+                        </div>
+
+                        <p className="mt-4 font-body text-[0.8rem] font-medium uppercase tracking-[0.18em] text-white/72 max-[390px]:mt-3 max-[390px]:text-[0.68rem] max-[390px]:tracking-[0.14em]">
+                          <span>V10</span>
+                          <span className="px-2 text-[var(--brand-red)]">•</span>
+                          <span>AWD</span>
+                          <span className="px-2 text-[var(--brand-red)]">•</span>
+                          <span>OPEN AIR</span>
+                        </p>
+
+                        <div className="mt-7 h-px w-14 bg-[var(--brand-red)] max-[390px]:mt-5 max-[390px]:w-10" />
+                      </div>
+
+                      <p className="mt-7 max-w-[15.5rem] font-body text-[16px] leading-[1.28] text-white/82 max-[390px]:mt-5 max-[390px]:max-w-[12rem] max-[390px]:text-[14px] max-[390px]:leading-[1.2]">
+                        Italian performance.
+                        <br />
+                        Open-air exhilaration.
+                      </p>
+
+                      <div className="mt-7 max-[390px]:mt-5">
+                        <button
+                          type="button"
+                          onClick={openEvoSpecs}
+                          className="font-display inline-flex h-[2.4rem] min-w-[12.5rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-white max-[390px]:h-[2.2rem] max-[390px]:min-w-[10.75rem] max-[390px]:px-3 max-[390px]:text-[0.64rem] max-[390px]:tracking-[0.12em]"
+                        >
+                          <span className="text-center">Explore The Evo</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="mt-6">
-                    <p className="font-display text-[6.1rem] font-black leading-[0.82] tracking-[-0.095em] text-white">
-                      {homeHeroMeta.titleLead}
-                    </p>
-                    <p className="font-display -mt-1 text-[3.25rem] font-black leading-[0.9] tracking-[-0.06em] text-[var(--brand-red)]">
-                      {homeHeroMeta.titleAccent}
-                    </p>
-                  </div>
-
-                  <p className="mt-4 font-body text-[0.86875rem] font-medium uppercase tracking-[0.22em] text-white/72">
-                    <span>V10</span>
-                    <span className="px-2 text-[var(--brand-red)]">•</span>
-                    <span>AWD</span>
-                    <span className="px-2 text-[var(--brand-red)]">•</span>
-                    <span>OPEN AIR</span>
-                  </p>
-
-                  <div className="mt-7 h-px w-14 bg-[var(--brand-red)]" />
                 </div>
 
-                <p className="relative z-10 mt-8 max-w-[17rem] font-body text-[19px] leading-[1.28] text-white/82">
-                  Italian performance.
-                  <br />
-                  Open-air exhilaration.
-                </p>
-
-                <div className="relative z-10 mt-8">
-                  <button
-                    type="button"
-                    onClick={openEvoSpecs}
-                    className="font-display inline-flex h-[2.65rem] min-w-[13.85rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4 text-[0.82rem] font-medium uppercase tracking-[0.19em] text-white"
-                  >
-                    <span className="text-center">Explore The Evo</span>
-                  </button>
-                </div>
-
+                <PageFooterNote
+                  showDesktop={false}
+                  mobilePlacement="static"
+                  mobileSurfaceClassName="border-t border-white/8 bg-black"
+                  mobileClassName="left-1/2 w-screen -translate-x-1/2 pb-safe"
+                />
               </div>
 
               {/* Desktop hero layout */}
@@ -664,7 +688,9 @@ export function HeroShowcase() {
         />
       ) : null}
 
-      <PageFooterNote />
+      <PageFooterNote
+        mobileClassName={currentApp === "home" ? "hidden" : ""}
+      />
     </section>
   );
 }

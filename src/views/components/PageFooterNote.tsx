@@ -8,6 +8,8 @@ type PageFooterNoteProps = {
   mobileClassName?: string;
   desktopClassName?: string;
   showDesktop?: boolean;
+  mobilePlacement?: "fixed" | "static";
+  mobileSurfaceClassName?: string;
 };
 
 const socialLinks = [
@@ -32,15 +34,28 @@ export function PageFooterNote({
   mobileClassName,
   desktopClassName,
   showDesktop = true,
+  mobilePlacement = "fixed",
+  mobileSurfaceClassName,
 }: PageFooterNoteProps) {
+  const mobilePlacementClassName =
+    mobilePlacement === "static"
+      ? "relative left-auto bottom-auto min-h-[68px] w-full max-w-none translate-x-0 flex-col items-center justify-center gap-1 whitespace-normal px-6 py-3 text-center"
+      : "fixed bottom-[calc(1.6vh-0.25cm)] left-1/2 w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 items-center gap-3 whitespace-nowrap";
+
   return (
     <>
       <div
-        className={`page-footer-note fixed bottom-[calc(1.6vh-0.25cm)] left-1/2 z-30 flex w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 items-center gap-3 whitespace-nowrap text-[9px] text-white/68 sm:hidden ${
+        className={`page-footer-note z-30 flex text-[9px] text-white/68 sm:hidden ${mobilePlacementClassName} ${
+          mobileSurfaceClassName ?? ""
+        } ${
           mobileClassName ?? ""
         }`}
       >
-        <div className="flex items-center gap-2.5">
+        <div
+          className={`flex items-center ${
+            mobilePlacement === "static" ? "gap-4" : "gap-2.5"
+          }`}
+        >
           {socialLinks.map((item) => (
             <Link
               key={`mobile-${item.label}`}
@@ -54,15 +69,24 @@ export function PageFooterNote({
                 alt={item.label}
                 width={16}
                 height={16}
-                className="h-[16px] w-[16px] object-contain opacity-90"
+                className={`object-contain opacity-90 ${
+                  mobilePlacement === "static"
+                    ? "h-[17px] w-[17px]"
+                    : "h-[16px] w-[16px]"
+                }`}
                 unoptimized
               />
             </Link>
           ))}
         </div>
-        <span className="h-3.5 w-px bg-white/16" />
-        <p className="font-body whitespace-nowrap text-[9px] font-medium tracking-[0.17em] text-white/62">
-          {"\u00A9"} 2026 Platinum. All rights reserved.
+        <p
+          className={`font-body font-medium text-white/62 ${
+            mobilePlacement === "static"
+              ? "whitespace-normal text-[8.5px] tracking-[0.22em]"
+              : "whitespace-nowrap text-[9px] tracking-[0.17em]"
+          }`}
+        >
+          {"\u00A9"} 2026 Veltro. All rights reserved.
         </p>
       </div>
       {showDesktop ? (
@@ -93,7 +117,7 @@ export function PageFooterNote({
           </div>
           <span className="h-4 w-px bg-white/16" />
           <p className="font-body whitespace-nowrap text-[9.5px] font-medium tracking-[0.17em] text-white/62">
-            {"\u00A9"} 2026 Platinum. All rights reserved.
+            {"\u00A9"} 2026 Veltro. All rights reserved.
           </p>
         </div>
       ) : null}

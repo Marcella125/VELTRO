@@ -4,10 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { assetPath } from "@/lib/asset-path";
+import { primarySiteRoutes, warmupRouteAssets } from "@/lib/site-navigation";
 import { HamburgerToggle } from "@/views/components/HamburgerToggle";
-
-const DEFAULT_MENU_OPEN = true;
-let persistedMenuOpen = DEFAULT_MENU_OPEN;
 
 type SiteHeaderProps = {
   title: string;
@@ -32,10 +30,9 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [internalMenuOpen, setInternalMenuOpen] = useState(persistedMenuOpen);
+  const [internalMenuOpen, setInternalMenuOpen] = useState(false);
   const isMenuControlled = menuOpen !== undefined;
   const isMenuOpen = isMenuControlled ? menuOpen : internalMenuOpen;
-  const shouldHideTitle = hideTitleOnMobile ?? true;
   const homeHref = "/";
   const titleClassName =
     titleTone === "dark" ? "text-[#111111]/84" : "text-white/80";
@@ -53,22 +50,15 @@ export function SiteHeader({
   ];
 
   useEffect(() => {
-    const nextOpen = persistedMenuOpen;
-    if (!isMenuControlled) {
-      setInternalMenuOpen(nextOpen);
-    }
-    onMenuOpenChange?.(nextOpen);
-  }, [isMenuControlled, onMenuOpenChange]);
-
-  useEffect(() => {
-    persistedMenuOpen = isMenuOpen;
-  }, [isMenuOpen]);
-
-  useEffect(() => {
-    navItems.forEach((item) => {
-      router.prefetch(item.href);
+    primarySiteRoutes.forEach((href) => {
+      router.prefetch(href);
     });
   }, [router]);
+
+  const prepareRoute = (href: string) => {
+    router.prefetch(href);
+    warmupRouteAssets(href);
+  };
 
   const handleMenuOpenChange = (next: boolean) => {
     if (!isMenuControlled) {
@@ -90,7 +80,7 @@ export function SiteHeader({
       >
         <Link
           href={homeHref}
-          aria-label="Platinum home"
+          aria-label="Veltro home"
           className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center"
           onClick={(event) => {
             if (!onLogoClick) return;
@@ -99,12 +89,12 @@ export function SiteHeader({
           }}
         >
           <Image
-            src={assetPath("/icons/Platinumlogo.svg")}
-            alt="Platinum"
-            width={120}
-            height={24}
+            src={assetPath("/icons/veltro_logo.svg")}
+            alt="Veltro"
+            width={680}
+            height={136}
             className={`w-auto object-contain ${
-              compact ? "h-4 sm:h-4.5" : "h-5"
+              compact ? "h-14 sm:h-15" : "h-22"
             }`}
             priority
             unoptimized
@@ -113,15 +103,19 @@ export function SiteHeader({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div
             className={`pointer-events-auto ${
-              shouldHideTitle ? "hidden sm:flex" : "flex"
+              isMenuOpen ? "flex" : "hidden"
             } items-center gap-6 transition-[opacity,visibility] duration-200 ${
-              isMenuOpen ? "visible opacity-100" : "invisible opacity-0"
+              isMenuOpen
+                ? "visible opacity-100"
+                : "invisible opacity-0"
             }`}
           >
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
+                onMouseEnter={() => prepareRoute(item.href)}
+                onFocus={() => prepareRoute(item.href)}
                 className={`group flex flex-col items-center transition-transform duration-200 ${
                   isMenuOpen ? "translate-y-0" : "-translate-y-1"
                 }`}

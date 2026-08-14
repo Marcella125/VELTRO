@@ -1,9 +1,9 @@
 import { SiteSettings } from "@/models/site-settings.model";
 
 const settings: SiteSettings = {
-  siteName: "Platinum",
+  siteName: "Veltro",
   tagline: "Luxury vehicles curated for night drives and boardroom arrivals.",
-  contactEmail: "concierge@platinumrental.com",
+  contactEmail: "concierge@veltrorental.com",
   phone: "+1 (555) 011-4200",
 };
 

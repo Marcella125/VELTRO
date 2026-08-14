@@ -15,7 +15,7 @@ export function BlogDetailView() {
   const router = useRouter();
   const homeHref = "/";
   const params = useParams<{ slug?: string }>();
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
 
   const navigateTo = (href: string) => {
     router.push(href);
@@ -44,7 +44,7 @@ export function BlogDetailView() {
       <div className="pointer-events-none fixed inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
-          alt="Platinum blog background"
+          alt="Veltro blog background"
           fill
           priority
           className="object-cover object-center"

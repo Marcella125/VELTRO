@@ -27,6 +27,8 @@ type BrandFilter = {
 
 type FleetPresentation = {
   imageSrc: string;
+  specsImageSrc?: string;
+  engineImageSrc?: string;
   displayBrand?: string;
   displayName?: string;
   displayEngine?: string;
@@ -70,6 +72,8 @@ const brandFilters: BrandFilter[] = [
 const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   "obsidian-gt": {
     imageSrc: assetPath("/lambo fleet.png"),
+    specsImageSrc: assetPath("/images/lambo specs.png"),
+    engineImageSrc: assetPath("/images/lambo eng.png"),
     displayBrand: "Lamborghini",
     displayName: "Evo Spyder",
     displayEngine: "V10",
@@ -78,6 +82,8 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   },
   "crimson-eclipse": {
     imageSrc: assetPath("/porshe fleet.png"),
+    specsImageSrc: assetPath("/images/porshe specs.png"),
+    engineImageSrc: assetPath("/images/porshe eng.png"),
     displayBrand: "Porsche",
     displayName: "911 Carrera 4S",
     displayEngine: "Flat-6",
@@ -86,6 +92,8 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   },
   "onyx-sabre": {
     imageSrc: assetPath("/ferrari fleet.png"),
+    specsImageSrc: assetPath("/images/ferrari specs.png"),
+    engineImageSrc: assetPath("/images/ferrari eng.png"),
     displayBrand: "Ferrari",
     displayName: "296 GTB",
     displayEngine: "V6 Hybrid",
@@ -94,6 +102,8 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   },
   "velour-phantom": {
     imageSrc: assetPath("/lambo fleet.png"),
+    specsImageSrc: assetPath("/images/lambo specs.png"),
+    engineImageSrc: assetPath("/images/lambo eng.png"),
     displayBrand: "Lamborghini",
     displayName: "Huracan STO",
     displayEngine: "V10",
@@ -102,6 +112,8 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   },
   "ember-revenant": {
     imageSrc: assetPath("/porshe fleet.png"),
+    specsImageSrc: assetPath("/images/porshe specs.png"),
+    engineImageSrc: assetPath("/images/porshe eng.png"),
     displayBrand: "Mercedes-Benz",
     displayName: "AMG GT R",
     displayEngine: "V8 Biturbo",
@@ -110,6 +122,8 @@ const fleetPresentationBySlug: Record<string, FleetPresentation> = {
   },
   "midnight-regal": {
     imageSrc: assetPath("/ferrari fleet.png"),
+    specsImageSrc: assetPath("/images/ferrari specs.png"),
+    engineImageSrc: assetPath("/images/ferrari eng.png"),
     displayBrand: "BMW",
     displayName: "M8 Competition",
     displayEngine: "V8",
@@ -127,7 +141,7 @@ function chunkArray<T>(items: T[], size: number): T[][] {
 
 export function FleetView({ cars }: FleetViewProps) {
   const router = useRouter();
-  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [isDockOpen, setIsDockOpen] = useState(true);
   const [activeBrandFilter, setActiveBrandFilter] =
     useState<ActiveBrandFilter>("all");
   const [activeSpecCar, setActiveSpecCar] = useState<Car | null>(null);
@@ -197,7 +211,7 @@ export function FleetView({ cars }: FleetViewProps) {
       <div className="pointer-events-none absolute inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
-          alt="Platinum fleet background"
+          alt="Veltro fleet background"
           fill
           priority
           className="object-cover object-center"
@@ -399,7 +413,8 @@ export function FleetView({ cars }: FleetViewProps) {
             car={activeSpecCar}
             displayBrand={activeSpecPresentation?.displayBrand ?? activeSpecCar.brand}
             displayName={activeSpecPresentation?.displayName ?? activeSpecCar.name}
-            imageSrc={activeSpecPresentation?.imageSrc ?? assetPath("/images/cars.png")}
+            imageSrc={activeSpecPresentation?.specsImageSrc ?? activeSpecPresentation?.imageSrc ?? assetPath("/images/cars.png")}
+            engineImageSrc={activeSpecPresentation?.engineImageSrc}
             engineLabel={activeSpecPresentation?.displayEngine}
             powerLabel={activeSpecPresentation?.displayPower}
             driveLabel={activeSpecPresentation?.displayDrive}
