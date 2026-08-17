@@ -25,7 +25,7 @@ export function TrackHudFooter() {
             </Link>
             <span className="text-white/40">&#8226;</span>
             <Link
-              href="/fleet"
+              href="/fleet/all"
               className="transition hover:text-white hover:underline hover:decoration-white/40"
             >
               Fleet

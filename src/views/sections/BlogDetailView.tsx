@@ -15,7 +15,7 @@ export function BlogDetailView() {
   const router = useRouter();
   const homeHref = "/";
   const params = useParams<{ slug?: string }>();
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const [isDockOpen, setIsDockOpen] = useState(false);
 
   const navigateTo = (href: string) => {
     router.push(href);
@@ -36,7 +36,7 @@ export function BlogDetailView() {
   );
 
   const handleViewCar = () => {
-    navigateTo("/fleet");
+    navigateTo("/fleet/all");
   };
 
   return (
@@ -56,13 +56,14 @@ export function BlogDetailView() {
         <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-350 flex-col px-6 pb-12 pt-5 sm:px-10 sm:pt-6">
-        <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 sm:-mx-10 sm:px-10">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-350 flex-col px-5 pb-12 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
+        <div className="sticky top-0 z-40 -mx-5 px-5 pb-3 max-[390px]:-mx-4 max-[390px]:px-4 sm:-mx-10 sm:px-10">
           <InternalPageHeader
             title="Blogs"
             isDockOpen={isDockOpen}
             onOpenChange={setIsDockOpen}
             onSelect={handleDockSelect}
+            surfaceClassName="bg-black sm:bg-transparent"
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
@@ -196,8 +197,15 @@ export function BlogDetailView() {
 
           </>
         )}
+
+        <PageFooterNote
+          showDesktop={false}
+          mobilePlacement="static"
+          mobileSurfaceClassName="border-t border-white/8 bg-black"
+          mobileClassName="w-full pb-safe sm:hidden"
+        />
       </div>
-      <PageFooterNote />
+      <PageFooterNote mobileClassName="hidden" />
     </main>
   );
 }

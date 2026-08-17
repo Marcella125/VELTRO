@@ -31,6 +31,7 @@ export function InternalPageHeader({
           title={title}
           className={`relative z-30 ${surfaceClassName ?? ""}`}
           onLogoClick={onLogoClick}
+          onSelect={onSelect}
           titleTone="light"
           compact
           menuOpen={isDockOpen}

@@ -392,3 +392,26 @@ nextjs-portal {
   width: 0;
   height: 0;
 }
+
+.platinum-red-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c1121f rgba(255, 255, 255, 0.06);
+}
+
+.platinum-red-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.platinum-red-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+}
+
+.platinum-red-scroll::-webkit-scrollbar-thumb {
+  background: #c1121f;
+  border-radius: 999px;
+}
+
+.platinum-red-scroll::-webkit-scrollbar-thumb:hover {
+  background: #d11421;
+}

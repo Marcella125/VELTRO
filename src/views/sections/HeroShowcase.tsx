@@ -194,7 +194,7 @@ export function HeroShowcase() {
   const homeHref = "/";
   const prefersReducedMotion = useReducedMotion();
   const specTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const [isDockOpen, setIsDockOpen] = useState(false);
   const [currentApp, setCurrentApp] = useState<"home" | "rideit">("home");
   const [activeTab, setActiveTab] = useState<AppTab>("car");
   const [isHudOpen, setIsHudOpen] = useState(false);
@@ -429,7 +429,7 @@ export function HeroShowcase() {
         {/* Header */}
         <div className="relative z-30">
           <div className="absolute inset-x-0 top-0 h-full bg-black sm:hidden" />
-          <div className="mx-auto w-full max-w-350 px-6 pt-5 sm:px-10 sm:pt-6">
+          <div className="mx-auto w-full max-w-350 px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
             <InternalPageHeader
               title={headerTitle}
               isDockOpen={isDockOpen}
@@ -473,10 +473,10 @@ export function HeroShowcase() {
                     />
 
                     <div className="absolute inset-x-0 top-0 z-10 px-5 pt-5 max-[390px]:px-4 max-[390px]:pt-4">
-                      <div className="mt-3 -translate-x-[0.2cm] max-[390px]:mt-1 max-[390px]:translate-x-0">
-                        <div className="font-body translate-x-[0.28cm] text-[0.82rem] font-medium uppercase tracking-[0.18em] text-white/62 max-[390px]:translate-x-0 max-[390px]:text-[0.7rem] max-[390px]:tracking-[0.14em]">
+                      <div className="mt-3 max-[390px]:mt-1">
+                        <div className="ml-[0.2cm] inline-flex items-center gap-2 font-body text-[0.82rem] font-medium uppercase leading-none tracking-[0.18em] text-white/62 max-[390px]:text-[0.7rem] max-[390px]:tracking-[0.14em]">
                           <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
-                          <span className="px-2 text-white/38">/</span>
+                          <span className="text-white/38">/</span>
                           <span>{homeHeroMeta.marque}</span>
                         </div>
 
@@ -523,7 +523,7 @@ export function HeroShowcase() {
                   showDesktop={false}
                   mobilePlacement="static"
                   mobileSurfaceClassName="border-t border-white/8 bg-black"
-                  mobileClassName="left-1/2 w-screen -translate-x-1/2 pb-safe"
+                  mobileClassName="w-full pb-safe"
                 />
               </div>
 

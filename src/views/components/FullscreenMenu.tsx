@@ -65,7 +65,7 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
           <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-white/18" />
           <div className="pointer-events-none absolute inset-0">
             <Image
-              src={assetPath("/images/menu mobile.png")}
+              src={assetPath("/images/menumobile.png")}
               alt=""
               fill
               priority
@@ -74,7 +74,7 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
             />
           </div>
 
-          <div className="relative z-10 px-6 pb-6 pt-5">
+          <div className="relative z-10 px-5 pb-6 pt-5 max-[390px]:px-4">
             <div className="relative h-12">
               <Link
                 href="/"
@@ -88,9 +88,9 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
                 <Image
                   src={assetPath("/icons/veltro_logo.svg")}
                   alt="Veltro"
-                  width={120}
-                  height={24}
-                  className="h-4 w-auto object-contain"
+                  width={680}
+                  height={136}
+                  className="h-14 w-auto object-contain"
                   priority
                   unoptimized
                 />
@@ -120,7 +120,9 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
                     key={entry.id}
                     type="button"
                     onClick={() => onSelect(entry.id)}
-                    className="group flex w-full items-center border-b border-white/10 py-5 text-left"
+                    className={`group flex w-full items-center py-5 text-left ${
+                      index < menuEntries.length - 1 ? "border-b border-white/10" : ""
+                    }`}
                     initial={{ opacity: 0, x: -18 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{
@@ -129,10 +131,10 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
                       ease: [0.22, 1, 0.36, 1],
                     }}
                   >
-                    <span className="min-w-[1.9rem] font-display text-[0.8rem] tracking-[0.12em] text-[var(--brand-red)]">
+                    <span className="min-w-[1.7rem] font-display text-[0.72rem] tracking-[0.1em] text-[var(--brand-red)]">
                       {entry.order}
                     </span>
-                    <span className="ml-3 font-display text-[0.9rem] uppercase tracking-[0.28em] text-white/88">
+                    <span className="ml-3 font-display text-[0.8rem] uppercase tracking-[0.22em] text-white/88">
                       {entry.label}
                     </span>
                     <ChevronRight

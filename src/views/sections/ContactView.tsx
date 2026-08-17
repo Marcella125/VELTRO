@@ -51,7 +51,7 @@ const contactInfo = [
 export function ContactView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const [isDockOpen, setIsDockOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
 
@@ -109,13 +109,14 @@ export function ContactView() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0.34)_40%,rgba(0,0,0,0.52)_100%)]" />
       </div>
 
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-6 pb-8 pt-5 sm:px-10 sm:pb-10 sm:pt-6 lg:h-dvh">
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6 lg:h-dvh">
         <div className="relative z-30">
           <InternalPageHeader
             title="Contact"
             isDockOpen={isDockOpen}
             onOpenChange={setIsDockOpen}
             onSelect={handleDockSelect}
+            surfaceClassName="bg-black sm:bg-transparent"
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
@@ -130,24 +131,25 @@ export function ContactView() {
                 <div className="mt-4 h-px w-8 bg-[var(--brand-red)]" />
               </div>
 
-              <div className="overflow-x-auto no-scrollbar">
-                <div className="flex min-w-max items-center gap-2 text-white/72 sm:gap-2.5">
-                  {contactInfo.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <div key={item.title} className="flex items-center gap-1 whitespace-nowrap">
-                        <Icon
-                          size={14}
-                          className="shrink-0 text-[var(--brand-red)]"
-                          strokeWidth={1.7}
-                        />
-                        <p className="text-[10px] leading-none text-white/72">
-                          {item.lines.join(" ")}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2.5">
+                {contactInfo.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.title}
+                      className="flex min-w-0 items-center gap-1.5 sm:min-w-max sm:whitespace-nowrap"
+                    >
+                      <Icon
+                        size={14}
+                        className="shrink-0 text-[var(--brand-red)]"
+                        strokeWidth={1.7}
+                      />
+                      <p className="truncate text-[10px] leading-none text-white/72 sm:truncate-none">
+                        {item.lines.join(" ")}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -231,9 +233,16 @@ export function ContactView() {
             </div>
           </div>
         </section>
+
+        <PageFooterNote
+          showDesktop={false}
+          mobilePlacement="static"
+          mobileSurfaceClassName="border-t border-white/8 bg-black"
+          mobileClassName="w-full pb-safe sm:hidden"
+        />
       </div>
 
-      <PageFooterNote />
+      <PageFooterNote mobileClassName="hidden" />
     </main>
   );
 }

@@ -10,6 +10,7 @@ type PageFooterNoteProps = {
   showDesktop?: boolean;
   mobilePlacement?: "fixed" | "static";
   mobileSurfaceClassName?: string;
+  mobileSize?: "default" | "compact";
 };
 
 const socialLinks = [
@@ -36,10 +37,14 @@ export function PageFooterNote({
   showDesktop = true,
   mobilePlacement = "fixed",
   mobileSurfaceClassName,
+  mobileSize = "default",
 }: PageFooterNoteProps) {
+  const useCompactMobileSize = mobileSize === "compact";
   const mobilePlacementClassName =
     mobilePlacement === "static"
-      ? "relative left-auto bottom-auto min-h-[68px] w-full max-w-none translate-x-0 flex-col items-center justify-center gap-1 whitespace-normal px-6 py-3 text-center"
+      ? useCompactMobileSize
+        ? "relative left-auto bottom-auto w-full max-w-none translate-x-0 flex-col items-center justify-center gap-1 whitespace-normal px-6 py-2 text-center"
+        : "relative left-auto bottom-auto min-h-[68px] w-full max-w-none translate-x-0 flex-col items-center justify-center gap-1 whitespace-normal px-6 py-3 text-center"
       : "fixed bottom-[calc(1.6vh-0.25cm)] left-1/2 w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 items-center gap-3 whitespace-nowrap";
 
   return (
@@ -53,7 +58,7 @@ export function PageFooterNote({
       >
         <div
           className={`flex items-center ${
-            mobilePlacement === "static" ? "gap-4" : "gap-2.5"
+            useCompactMobileSize ? "gap-2.5" : mobilePlacement === "static" ? "gap-4" : "gap-2.5"
           }`}
         >
           {socialLinks.map((item) => (
@@ -70,7 +75,9 @@ export function PageFooterNote({
                 width={16}
                 height={16}
                 className={`object-contain opacity-90 ${
-                  mobilePlacement === "static"
+                  useCompactMobileSize
+                    ? "h-[16px] w-[16px]"
+                    : mobilePlacement === "static"
                     ? "h-[17px] w-[17px]"
                     : "h-[16px] w-[16px]"
                 }`}
@@ -81,7 +88,9 @@ export function PageFooterNote({
         </div>
         <p
           className={`font-body font-medium text-white/62 ${
-            mobilePlacement === "static"
+            useCompactMobileSize
+              ? "whitespace-nowrap text-[9px] tracking-[0.17em]"
+              : mobilePlacement === "static"
               ? "whitespace-normal text-[8.5px] tracking-[0.22em]"
               : "whitespace-nowrap text-[9px] tracking-[0.17em]"
           }`}

@@ -250,8 +250,8 @@ export function FleetSpecsOverlay({
       </div>
 
       <div className="relative z-10 mx-auto flex h-dvh w-full max-w-350 flex-col overflow-hidden px-0 pb-0 pt-0 sm:px-10 sm:pb-6 sm:pt-6">
-        <div className="flex min-h-0 flex-1 flex-col sm:hidden">
-          <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden sm:hidden">
+          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
             <div className="bg-[#050505] px-0 pb-6 pt-2">
               <div className="px-4 pb-3">
                 <div className="flex items-center justify-between">
@@ -283,18 +283,18 @@ export function FleetSpecsOverlay({
                 </div>
               </div>
 
-              <div className="mt-[1cm] px-5 pb-3">
-                <div className="translate-x-[0.4cm] font-body text-[0.64rem] uppercase tracking-[0.18em] text-white/62">
+              <div className="mt-[0.7cm] px-4 pb-3 max-[390px]:mt-[0.58cm] max-[390px]:px-3.5">
+                <div className="ml-[0.6cm] font-body text-[0.64rem] uppercase tracking-[0.18em] text-white/62 max-[390px]:ml-[0.35cm] max-[390px]:text-[0.58rem] max-[390px]:tracking-[0.15em]">
                   <span className="text-[var(--brand-red)]">01</span>
                   <span className="px-2 text-white/34">/</span>
                   <span>{displayBrand}</span>
                 </div>
-                <h2 className="mt-2 translate-x-[0.3cm] font-display text-[1.72rem] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white">
+                <h2 className="mt-2 ml-[0.5cm] font-display text-[1.72rem] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white max-[390px]:ml-[0.28cm] max-[390px]:text-[1.5rem]">
                   {displayName}
                 </h2>
               </div>
 
-              <div className="px-5 pt-1">
+              <div className="px-5 pt-1 max-[390px]:px-4">
                 <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <div className="flex w-max gap-2.5">
                   {categories.map((category) => {
@@ -307,7 +307,7 @@ export function FleetSpecsOverlay({
                         key={category}
                         type="button"
                         onClick={() => setActiveCategory(category)}
-                        className={`relative flex h-[72px] w-[116px] shrink-0 snap-start flex-col items-center justify-center gap-2 px-3 pb-3 pt-3 text-center transition ${
+                        className={`relative flex h-[72px] w-[116px] shrink-0 snap-start flex-col items-center justify-center gap-2 px-3 pb-3 pt-3 text-center transition max-[390px]:h-[62px] max-[390px]:w-[102px] max-[390px]:gap-1.5 max-[390px]:px-2 max-[390px]:pb-2.5 max-[390px]:pt-2.5 ${
                           active
                             ? "text-[var(--brand-red)]"
                             : "text-white/72"
@@ -316,8 +316,8 @@ export function FleetSpecsOverlay({
                         {active ? (
                           <span className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-[var(--brand-red)]" />
                         ) : null}
-                        <CategoryIcon className={`h-4.5 w-4.5 ${active ? "text-[var(--brand-red)]" : "text-white/65"}`} strokeWidth={1.7} />
-                        <span className={`font-body text-[0.42rem] uppercase leading-[1.3] tracking-[0.08em] ${active ? "text-[var(--brand-red)]" : "text-white/68"}`}>
+                        <CategoryIcon className={`h-4.5 w-4.5 max-[390px]:h-4 max-[390px]:w-4 ${active ? "text-[var(--brand-red)]" : "text-white/65"}`} strokeWidth={1.7} />
+                        <span className={`font-body text-[0.42rem] uppercase leading-[1.3] tracking-[0.08em] max-[390px]:text-[0.36rem] max-[390px]:leading-[1.2] ${active ? "text-[var(--brand-red)]" : "text-white/68"}`}>
                           {meta.shortLabel}
                         </span>
                       </button>
@@ -327,37 +327,37 @@ export function FleetSpecsOverlay({
                 </div>
               </div>
 
-              <div className="px-5 pt-4">
-                <div className="rounded-[22px] border border-white/7 bg-[radial-gradient(120%_100%_at_0%_0%,rgba(255,255,255,0.02),rgba(255,255,255,0)_48%),linear-gradient(180deg,#0b0b0c_0%,#070708_100%)] px-5 pb-5 pt-5 shadow-[0_24px_60px_rgba(0,0,0,0.42)]">
-                  <h3 className="font-display text-[1.6rem] font-medium uppercase tracking-[0.08em] text-white">
+              <div className="px-5 pt-4 max-[390px]:px-4 max-[390px]:pt-3.5">
+                <div className="mx-auto w-full max-w-[25rem] rounded-[22px] border border-white/7 bg-[radial-gradient(120%_100%_at_0%_0%,rgba(255,255,255,0.02),rgba(255,255,255,0)_48%),linear-gradient(180deg,#0b0b0c_0%,#070708_100%)] px-5 pb-5 pt-5 shadow-[0_24px_60px_rgba(0,0,0,0.42)] max-[390px]:max-w-[22.5rem] max-[390px]:rounded-[18px] max-[390px]:px-4 max-[390px]:pb-4 max-[390px]:pt-4">
+                  <h3 className="font-display text-[1.6rem] font-medium uppercase tracking-[0.08em] text-white max-[390px]:text-[1.35rem]">
                     {activeContent.title}
                   </h3>
                   <div className="mt-2 h-px w-10 bg-[var(--brand-red)]" />
-                  <p className="mt-2 text-[0.82rem] leading-[1.36] text-white/58">
+                  <p className="mt-2 text-[0.82rem] leading-[1.36] text-white/58 max-[390px]:text-[0.75rem] max-[390px]:leading-[1.32]">
                     {activeContent.description}
                   </p>
 
-                  <div className="mt-4 space-y-2.5">
+                  <div className="platinum-red-scroll mt-3.5 max-h-[calc(100dvh-26.75rem)] space-y-2 overflow-y-auto pr-1 max-[390px]:mt-3 max-[390px]:max-h-[calc(100dvh-24.25rem)] max-[390px]:space-y-1.5">
                     {activeContent.mobileRows.map((row) => {
                       const RowIcon = row.icon;
 
                       return (
                         <div
                           key={`${activeCategory}-${row.label}`}
-                          className="flex items-center gap-3 rounded-[14px] border border-white/10 bg-[#090909] px-3 py-3"
+                          className="flex items-center gap-3 rounded-[14px] border border-white/10 bg-[#090909] px-3 py-2.5 max-[390px]:gap-2.5 max-[390px]:rounded-[12px] max-[390px]:px-2.5 max-[390px]:py-2"
                         >
-                          <RowIcon className="h-5 w-5 shrink-0 text-white/70" strokeWidth={1.5} />
+                          <RowIcon className="h-5 w-5 shrink-0 text-white/70 max-[390px]:h-4.5 max-[390px]:w-4.5" strokeWidth={1.5} />
 
                           <div className="min-w-0 flex-1">
-                            <div className="font-body text-[0.62rem] uppercase tracking-[0.18em] text-white">
+                            <div className="font-body text-[0.62rem] uppercase tracking-[0.18em] text-white max-[390px]:text-[0.56rem] max-[390px]:tracking-[0.15em]">
                               {row.label}
                             </div>
-                            <div className="mt-0.5 text-[0.8rem] leading-[1.24] text-white/54">
+                            <div className="mt-0.5 text-[0.78rem] leading-[1.2] text-white/54 max-[390px]:text-[0.7rem] max-[390px]:leading-[1.16]">
                               {row.detail}
                             </div>
                           </div>
 
-                          <div className="shrink-0 pl-2 font-display text-[0.82rem] uppercase tracking-[0.08em] text-[var(--brand-red)]">
+                          <div className="shrink-0 pl-2 font-display text-[0.8rem] uppercase tracking-[0.08em] text-[var(--brand-red)] max-[390px]:text-[0.72rem]">
                             {row.value}
                           </div>
                         </div>
@@ -513,7 +513,7 @@ export function FleetSpecsOverlay({
           </section>
         </div>
       </div>
-      <PageFooterNote />
+      <PageFooterNote mobileClassName="hidden" />
     </div>
   );
 }

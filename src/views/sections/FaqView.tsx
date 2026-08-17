@@ -38,7 +38,7 @@ const faqs = [
 export function FaqView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const [isDockOpen, setIsDockOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   useEffect(() => {
@@ -83,18 +83,19 @@ export function FaqView() {
         <div className="absolute inset-0 shadow-[inset_0_0_180px_rgba(0,0,0,0.82)]" />
       </div>
 
-      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-6 pb-6 pt-5 sm:px-10 sm:pb-8 sm:pt-6">
-        <div className="sticky top-0 z-40 -mx-6 px-6 pb-3 sm:-mx-10 sm:px-10">
+      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
+        <div className="sticky top-0 z-40 -mx-5 px-5 pb-3 max-[390px]:-mx-4 max-[390px]:px-4 sm:-mx-10 sm:px-10">
           <InternalPageHeader
             title="FAQ"
             isDockOpen={isDockOpen}
             onOpenChange={setIsDockOpen}
             onSelect={handleDockSelect}
+            surfaceClassName="bg-black sm:bg-transparent"
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
 
-        <section className="relative z-10 flex flex-1 items-start justify-start pb-12 pt-2 sm:pb-16 sm:pt-5 lg:pt-6">
+        <section className="relative z-10 flex flex-1 items-start justify-start pt-2 sm:pt-5 lg:pt-6">
           <div className="w-full max-w-[46rem]">
             <div className="max-w-[18rem] sm:max-w-[21rem] lg:max-w-[22rem]">
               <h1 className="font-display text-[1.5rem] font-semibold leading-[0.98] tracking-[-0.03em] text-white sm:text-[2rem] lg:text-[2.2rem]">
@@ -164,9 +165,16 @@ export function FaqView() {
             </div>
           </div>
         </section>
+
+        <PageFooterNote
+          showDesktop={false}
+          mobilePlacement="static"
+          mobileSurfaceClassName="border-t border-white/8 bg-black"
+          mobileClassName="w-full pb-safe sm:hidden"
+        />
       </div>
 
-      <PageFooterNote />
+      <PageFooterNote mobileClassName="hidden" />
     </main>
   );
 }

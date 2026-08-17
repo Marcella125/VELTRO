@@ -104,7 +104,7 @@ export function CarDetails() {
   const router = useRouter();
   const homeHref = "/";
   const [index, setIndex] = useState(0);
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const [isDockOpen, setIsDockOpen] = useState(false);
 
   const navigateTo = (href: string) => {
     router.push(href);
@@ -124,7 +124,7 @@ export function CarDetails() {
         <div className="pointer-events-none absolute left-[38%] top-44 h-64 w-64 rounded-full bg-[#b3242d]/25 blur-[130px]" />
         <div className="pointer-events-none absolute bottom-0 right-0 h-72 w-80 bg-[linear-gradient(135deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.0)_55%)] opacity-40" />
         <div className="pointer-events-none absolute -right-8 bottom-0 h-56 w-72 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.08)_0,rgba(255,255,255,0.08)_2px,transparent_2px,transparent_12px)] opacity-[0.12]" />
-        <div className="relative z-20 mx-auto w-full max-w-350 px-6 pt-5 sm:px-10 sm:pt-6 lg:px-0">
+        <div className="relative z-20 mx-auto w-full max-w-350 px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6 lg:px-0">
           <InternalPageHeader
             title="Lamborghini EVO Spyder"
             isDockOpen={isDockOpen}

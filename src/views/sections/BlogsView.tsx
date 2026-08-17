@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
@@ -12,19 +12,26 @@ import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 import { blogEntries } from "@/data/blogs";
 
-const blogFilters = ["All", "Automotive", "Lifestyle", "Experience", "News"] as const;
+const blogFilters = ["All", "Automotive", "Lifestyle", "Experience", "News", "Stories"] as const;
 
 type BlogFilter = (typeof blogFilters)[number];
 
 export function BlogsView() {
   const router = useRouter();
   const homeHref = "/";
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const mobileCarouselRef = useRef<HTMLDivElement | null>(null);
+  const [isDockOpen, setIsDockOpen] = useState(false);
   const [activeBlogId, setActiveBlogId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<BlogFilter>("All");
+  const [activeMobileSlide, setActiveMobileSlide] = useState(0);
 
   const filteredBlogs = useMemo(() => {
     if (activeFilter === "All") return blogEntries;
+    if (activeFilter === "Stories") {
+      return blogEntries.filter(
+        (entry) => entry.category === "Experience" || entry.category === "Lifestyle"
+      );
+    }
     return blogEntries.filter((entry) => entry.category === activeFilter);
   }, [activeFilter]);
 
@@ -45,33 +52,24 @@ export function BlogsView() {
     };
   }, []);
 
+  useEffect(() => {
+    setActiveMobileSlide(0);
+    if (mobileCarouselRef.current) {
+      mobileCarouselRef.current.scrollTo({ left: 0, behavior: "auto" });
+    }
+  }, [activeFilter]);
+
   const navigateTo = (href: string) => {
     router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
-    if (id === "home") {
-      navigateTo(homeHref);
-      return;
-    }
-    if (id === "fleet") {
-      navigateTo("/fleet");
-      return;
-    }
-    if (id === "blogs") {
-      return;
-    }
-    if (id === "mission") {
-      navigateTo("/mission");
-      return;
-    }
-    if (id === "contact") {
-      navigateTo("/contact");
-      return;
-    }
-    if (id === "faq") {
-      navigateTo("/faq");
-    }
+    if (id === "home") return navigateTo(homeHref);
+    if (id === "fleet") return navigateTo("/fleet");
+    if (id === "blogs") return;
+    if (id === "mission") return navigateTo("/mission");
+    if (id === "contact") return navigateTo("/contact");
+    if (id === "faq") return navigateTo("/faq");
   };
 
   return (
@@ -92,36 +90,69 @@ export function BlogsView() {
         <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/66 via-black/28 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-6 pb-12 pt-5 sm:px-10 sm:pt-6">
+      <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
         <div className="relative z-30">
           <InternalPageHeader
             title="Blogs"
             isDockOpen={isDockOpen}
             onOpenChange={setIsDockOpen}
             onSelect={handleDockSelect}
+            surfaceClassName="bg-black sm:bg-transparent"
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
 
-        <section className="relative z-10 mt-3 sm:mt-6">
-          <div className="overflow-x-auto pb-3 no-scrollbar">
-            <div className="flex min-w-max items-center gap-4 pb-4 text-[0.64rem] uppercase tracking-[0.14em] text-white/58 sm:gap-5">
+        <section className="relative z-10 mt-7 flex min-h-0 flex-1 flex-col">
+          <div className="text-[0.64rem] uppercase tracking-[0.14em] text-white/58">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center sm:hidden">
+              {blogFilters.map((filter) => {
+                const isActive = activeFilter === filter;
+
+                return (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setActiveFilter(filter)}
+                    className={`min-h-10 min-w-[5.25rem] px-1 py-2 transition ${
+                      isActive ? "text-white" : "text-white/58"
+                    }`}
+                  >
+                    <span
+                      className={`inline-flex h-full items-center border-b pb-1 ${
+                        isActive
+                          ? "border-[var(--brand-red)]"
+                          : "border-transparent"
+                      }`}
+                    >
+                      {filter}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="hidden items-center gap-x-5 gap-y-3 sm:flex sm:flex-wrap">
               {blogFilters.map((filter, index) => {
                 const isActive = activeFilter === filter;
+
                 return (
-                  <div key={filter} className="flex items-center gap-4 sm:gap-5">
+                  <div key={filter} className="flex items-center gap-x-5">
                     <button
                       type="button"
                       onClick={() => setActiveFilter(filter)}
                       className={`transition ${
-                        isActive
-                          ? filter === "All"
-                            ? "border border-[var(--brand-red)] px-4 py-2 text-white"
-                            : "text-white"
-                          : "text-white/58 hover:text-white/82"
+                        isActive ? "text-white" : "text-white/58 hover:text-white/82"
                       }`}
                     >
-                      {filter}
+                      <span
+                        className={`inline-flex items-center border-b pb-1 ${
+                          isActive
+                            ? "border-[var(--brand-red)]"
+                            : "border-transparent"
+                        }`}
+                      >
+                        {filter}
+                      </span>
                     </button>
                     {index < blogFilters.length - 1 ? (
                       <span className="text-white/24">|</span>
@@ -132,7 +163,92 @@ export function BlogsView() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:-mt-[0.75rem] sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-4">
+          <div
+            ref={mobileCarouselRef}
+            className="no-scrollbar mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden sm:hidden"
+            onScroll={(event) => {
+              const target = event.currentTarget;
+              const slideWidth = target.clientWidth + 16;
+              if (slideWidth <= 0) return;
+              const nextIndex = Math.round(target.scrollLeft / slideWidth);
+              if (nextIndex !== activeMobileSlide) {
+                setActiveMobileSlide(nextIndex);
+              }
+            }}
+          >
+            {filteredBlogs.map((entry) => (
+              <button
+                key={`${entry.id}-mobile`}
+                type="button"
+                onClick={() => setActiveBlogId(entry.id)}
+                className="group flex min-h-[31rem] w-full shrink-0 snap-center flex-col overflow-hidden border border-white/10 bg-[#0b0c0e] text-left shadow-[0_24px_70px_rgba(0,0,0,0.52)] transition-[transform,border-color,box-shadow] duration-300 max-[390px]:min-h-[28.5rem]"
+                aria-haspopup="dialog"
+                aria-expanded={activeBlog?.id === entry.id}
+              >
+                <div className="relative h-[15.5rem] overflow-hidden border-b border-white/8 shadow-[inset_0_-26px_36px_rgba(0,0,0,0.5)] max-[390px]:h-[14rem]">
+                  <Image
+                    src={entry.heroImage}
+                    alt={entry.title}
+                    fill
+                    className="object-cover object-center grayscale transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.28)_45%,rgba(0,0,0,0.58)_100%)]" />
+                </div>
+
+                <div className="flex flex-1 flex-col px-3 pb-3 pt-3">
+                  <p className="type-button text-[0.54rem] uppercase tracking-[0.2em] text-[var(--brand-red)]">
+                    {entry.category}
+                  </p>
+
+                  <h2 className="mt-2 type-card-title text-[1rem] leading-[1.08] text-white">
+                    {entry.title}
+                  </h2>
+
+                  <p className="mt-2 line-clamp-2 text-[0.72rem] leading-4.5 text-white/58">
+                    {entry.summary}
+                  </p>
+
+                  <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/8 pt-3">
+                    <div className="flex flex-wrap items-center gap-1.5 text-[0.52rem] uppercase tracking-[0.16em] text-white/42">
+                      <span>{entry.publishedAt}</span>
+                      <span className="text-white/24">•</span>
+                      <span>{entry.readTime}</span>
+                    </div>
+
+                    <span className="inline-flex size-6 items-center justify-center text-[var(--brand-red)] transition-transform duration-300 group-hover:translate-x-1">
+                      <ArrowRight className="size-3" strokeWidth={1.8} />
+                    </span>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-3 flex items-center justify-center gap-2 sm:hidden">
+            {filteredBlogs.map((entry, index) => (
+              <button
+                key={`${entry.id}-dot`}
+                type="button"
+                aria-label={`Go to blog ${index + 1}`}
+                onClick={() => {
+                  const carousel = mobileCarouselRef.current;
+                  if (!carousel) return;
+                  carousel.scrollTo({
+                    left: index * (carousel.clientWidth + 16),
+                    behavior: "smooth",
+                  });
+                  setActiveMobileSlide(index);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-200 ${
+                  activeMobileSlide === index
+                    ? "w-6 bg-[var(--brand-red)]"
+                    : "w-1.5 bg-white/28"
+                }`}
+              />
+            ))}
+          </div>
+
+          <div className="hidden min-h-0 grid-cols-1 gap-3 overflow-y-auto pb-4 sm:mt-3 sm:grid sm:grid-cols-2 sm:gap-4 lg:mt-4 lg:grid-cols-3 lg:gap-4">
             {filteredBlogs.map((entry) => (
               <button
                 key={entry.id}
@@ -181,9 +297,16 @@ export function BlogsView() {
             ))}
           </div>
         </section>
+
+        <PageFooterNote
+          showDesktop={false}
+          mobilePlacement="static"
+          mobileSurfaceClassName="border-t border-white/8 bg-black"
+          mobileClassName="w-full pb-safe sm:hidden"
+        />
       </div>
 
-      <PageFooterNote />
+      <PageFooterNote mobileClassName="hidden" />
 
       <AnimatePresence>
         {activeBlog ? (
@@ -206,40 +329,40 @@ export function BlogsView() {
               onClick={(event) => event.stopPropagation()}
             >
               <div className="relative flex h-full min-h-0 flex-col sm:max-h-[min(88vh,760px)]">
-                  <div className="relative border-b border-white/10 px-4 pb-4 pt-[max(1.15rem,env(safe-area-inset-top))] sm:px-6 sm:py-6 lg:px-8">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="type-button text-[0.66rem] uppercase tracking-[0.22em] text-[var(--brand-red)] sm:text-[0.7rem]">
-                          {activeBlog.category}
-                        </p>
-                        <h2
-                          id={`blog-modal-title-${activeBlog.id}`}
-                          className="mt-3 type-section-title max-w-2xl text-[1.72rem] leading-[1.04] text-white sm:text-[1.8rem] sm:leading-[1.08] lg:text-[2.2rem]"
-                        >
-                          {activeBlog.title}
-                        </h2>
-                        <div className="mt-4 flex flex-wrap items-center gap-2 text-[0.66rem] uppercase tracking-[0.2em] text-white/40">
-                          <span>{activeBlog.publishedAt}</span>
-                          <span className="text-white/22">•</span>
-                          <span>{activeBlog.readTime}</span>
-                        </div>
+                <div className="relative border-b border-white/10 px-4 pb-4 pt-[max(1.15rem,env(safe-area-inset-top))] sm:px-6 sm:py-6 lg:px-8">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="type-button text-[0.66rem] uppercase tracking-[0.22em] text-[var(--brand-red)] sm:text-[0.7rem]">
+                        {activeBlog.category}
+                      </p>
+                      <h2
+                        id={`blog-modal-title-${activeBlog.id}`}
+                        className="mt-3 type-section-title max-w-2xl text-[1.72rem] leading-[1.04] text-white sm:text-[1.8rem] sm:leading-[1.08] lg:text-[2.2rem]"
+                      >
+                        {activeBlog.title}
+                      </h2>
+                      <div className="mt-4 flex flex-wrap items-center gap-2 text-[0.66rem] uppercase tracking-[0.2em] text-white/40">
+                        <span>{activeBlog.publishedAt}</span>
+                        <span className="text-white/22">•</span>
+                        <span>{activeBlog.readTime}</span>
                       </div>
-
-                      <CloseButton
-                        onClick={() => setActiveBlogId(null)}
-                        className="mt-0.5 shrink-0 border-transparent! bg-transparent! shadow-none hover:border-transparent! hover:bg-transparent!"
-                      />
                     </div>
-                  </div>
 
-                  <div className="relative flex-1 overflow-y-auto px-[max(1.5rem,env(safe-area-inset-left))] pb-[max(1.5rem,env(safe-area-inset-bottom))] pr-[max(2rem,env(safe-area-inset-right))] pt-5 platinum-blog-scroll sm:px-6 sm:py-6 lg:px-8 lg:py-7">
-                    <div className="mx-auto max-w-[42rem] space-y-5 pr-2 text-left text-[0.98rem] leading-7 text-white/78 sm:pr-0 sm:text-[1.02rem] sm:leading-8">
-                      <p className="text-white/62">{activeBlog.summary}</p>
-                      {activeBlog.body.map((paragraph, index) => (
-                        <p key={`${activeBlog.id}-paragraph-${index}`}>{paragraph}</p>
-                      ))}
-                    </div>
+                    <CloseButton
+                      onClick={() => setActiveBlogId(null)}
+                      className="mt-0.5 shrink-0 border-transparent! bg-transparent! shadow-none hover:border-transparent! hover:bg-transparent!"
+                    />
                   </div>
+                </div>
+
+                <div className="relative flex-1 overflow-y-auto px-[max(1.5rem,env(safe-area-inset-left))] pb-[max(1.5rem,env(safe-area-inset-bottom))] pr-[max(2rem,env(safe-area-inset-right))] pt-5 platinum-blog-scroll sm:px-6 sm:py-6 lg:px-8 lg:py-7">
+                  <div className="mx-auto max-w-[42rem] space-y-5 pr-2 text-left text-[0.98rem] leading-7 text-white/78 sm:pr-0 sm:text-[1.02rem] sm:leading-8">
+                    <p className="text-white/62">{activeBlog.summary}</p>
+                    {activeBlog.body.map((paragraph, index) => (
+                      <p key={`${activeBlog.id}-paragraph-${index}`}>{paragraph}</p>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>

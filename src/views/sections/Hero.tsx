@@ -35,7 +35,7 @@ export function Hero({ cars, tagline }: HeroProps) {
           <p className="max-w-xl text-base text-zinc-400">{tagline}</p>
           <div className="flex items-center gap-6">
             <Link
-              href="/fleet"
+              href="/fleet/all"
               className="inline-flex items-center gap-3 rounded-full border border-red-600/60 bg-red-600/10 px-6 py-3 text-xs uppercase tracking-[0.3em] text-red-200 transition hover:bg-red-600/20"
             >
               Reserve now
