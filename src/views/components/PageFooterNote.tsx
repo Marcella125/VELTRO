@@ -9,6 +9,7 @@ type PageFooterNoteProps = {
   desktopClassName?: string;
   showDesktop?: boolean;
   mobilePlacement?: "fixed" | "static";
+  desktopPlacement?: "fixed" | "static";
   mobileSurfaceClassName?: string;
   mobileSize?: "default" | "compact";
 };
@@ -36,6 +37,7 @@ export function PageFooterNote({
   desktopClassName,
   showDesktop = true,
   mobilePlacement = "fixed",
+  desktopPlacement = "fixed",
   mobileSurfaceClassName,
   mobileSize = "default",
 }: PageFooterNoteProps) {
@@ -46,6 +48,10 @@ export function PageFooterNote({
         ? "relative left-auto bottom-auto w-full max-w-none translate-x-0 flex-col items-center justify-center gap-1 whitespace-normal px-6 py-2 text-center"
         : "relative left-auto bottom-auto min-h-[68px] w-full max-w-none translate-x-0 flex-col items-center justify-center gap-1 whitespace-normal px-6 py-3 text-center"
       : "fixed bottom-[calc(1.6vh-0.25cm)] left-1/2 w-max max-w-[calc(100vw-1.5rem)] -translate-x-1/2 items-center gap-3 whitespace-nowrap";
+  const desktopPlacementClassName =
+    desktopPlacement === "static"
+      ? "relative mx-auto w-full max-w-none justify-center py-5"
+      : "fixed bottom-[calc(3.1vh-0.4cm)] left-1/2 w-max max-w-[calc(100vw-2rem)] -translate-x-1/2";
 
   return (
     <>
@@ -100,7 +106,7 @@ export function PageFooterNote({
       </div>
       {showDesktop ? (
         <div
-          className={`page-footer-note fixed bottom-[calc(3.1vh-0.4cm)] left-1/2 z-30 hidden w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3.5 whitespace-nowrap text-white/68 sm:flex ${
+          className={`page-footer-note z-30 hidden items-center gap-3.5 whitespace-nowrap text-white/68 sm:flex ${desktopPlacementClassName} ${
             desktopClassName ?? ""
           }`}
         >

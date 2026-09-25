@@ -35,13 +35,15 @@ const faqs = [
   },
 ] as const;
 
-export function FaqView() {
+export function FaqView({ embedded = false }: { embedded?: boolean }) {
+  const Root = embedded ? "div" : "main";
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   useEffect(() => {
+    if (embedded) return;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
 
@@ -49,13 +51,17 @@ export function FaqView() {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, []);
+  }, [embedded]);
 
   const navigateTo = (href: string) => {
     router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
+    if (embedded) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (id === "home") return navigateTo(homeHref);
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
@@ -65,8 +71,8 @@ export function FaqView() {
   };
 
   return (
-    <main className="relative h-dvh overflow-hidden bg-black text-white">
-      <div className="pointer-events-none fixed inset-0">
+    <Root className="relative h-dvh overflow-hidden bg-black text-white">
+      <div className={`pointer-events-none ${embedded ? "absolute" : "fixed"} inset-0`}>
         <Image
           src={assetPath("/images/FAQ.png")}
           alt="Veltro FAQ background"
@@ -84,7 +90,7 @@ export function FaqView() {
       </div>
 
       <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
-        <div className="sticky top-0 z-40 -mx-5 px-5 pb-3 max-[390px]:-mx-4 max-[390px]:px-4 sm:-mx-10 sm:px-10">
+        <div className={`sticky top-0 z-40 -mx-5 px-5 pb-3 max-[390px]:-mx-4 max-[390px]:px-4 sm:-mx-10 sm:px-10 ${embedded ? "hidden" : ""}`}>
           <InternalPageHeader
             title="FAQ"
             isDockOpen={isDockOpen}
@@ -94,6 +100,7 @@ export function FaqView() {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
+        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">FAQ&apos;S<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 flex flex-1 items-start justify-start pt-2 sm:pt-5 lg:pt-6">
           <div className="w-full max-w-[46rem]">
@@ -175,6 +182,6 @@ export function FaqView() {
       </div>
 
       <PageFooterNote mobileClassName="hidden" />
-    </main>
+    </Root>
   );
 }

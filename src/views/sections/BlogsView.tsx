@@ -16,7 +16,8 @@ const blogFilters = ["All", "Automotive", "Lifestyle", "Experience", "News", "St
 
 type BlogFilter = (typeof blogFilters)[number];
 
-export function BlogsView() {
+export function BlogsView({ embedded = false }: { embedded?: boolean }) {
+  const Root = embedded ? "div" : "main";
   const router = useRouter();
   const homeHref = "/";
   const mobileCarouselRef = useRef<HTMLDivElement | null>(null);
@@ -43,6 +44,7 @@ export function BlogsView() {
   useOverlayBehavior(Boolean(activeBlog), () => setActiveBlogId(null));
 
   useEffect(() => {
+    if (embedded) return;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
 
@@ -50,7 +52,7 @@ export function BlogsView() {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, []);
+  }, [embedded]);
 
   useEffect(() => {
     setActiveMobileSlide(0);
@@ -64,6 +66,10 @@ export function BlogsView() {
   };
 
   const handleDockSelect = (id: string) => {
+    if (embedded) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (id === "home") return navigateTo(homeHref);
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return;
@@ -73,8 +79,8 @@ export function BlogsView() {
   };
 
   return (
-    <main className="relative h-dvh overflow-hidden bg-black text-white">
-      <div className="pointer-events-none fixed inset-0">
+    <Root className="relative h-dvh overflow-hidden bg-black text-white">
+      <div className={`pointer-events-none ${embedded ? "absolute" : "fixed"} inset-0`}>
         <Image
           src={assetPath("/images/bgcar.png")}
           alt="Veltro blog background"
@@ -91,7 +97,7 @@ export function BlogsView() {
       </div>
 
       <div className="relative mx-auto flex h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
-        <div className="relative z-30">
+        <div className={`relative z-30 ${embedded ? "hidden" : ""}`}>
           <InternalPageHeader
             title="Blogs"
             isDockOpen={isDockOpen}
@@ -101,10 +107,11 @@ export function BlogsView() {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
+        {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Blogs<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 mt-7 flex min-h-0 flex-1 flex-col">
           <div className="text-[0.64rem] uppercase tracking-[0.14em] text-white/58">
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center sm:hidden">
+            <div className="hidden flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center sm:hidden">
               {blogFilters.map((filter) => {
                 const isActive = activeFilter === filter;
 
@@ -368,6 +375,6 @@ export function BlogsView() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </main>
+    </Root>
   );
 }

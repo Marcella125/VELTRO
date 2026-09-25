@@ -48,7 +48,8 @@ const contactInfo = [
   },
 ] as const;
 
-export function ContactView() {
+export function ContactView({ embedded = false }: { embedded?: boolean }) {
+  const Root = embedded ? "div" : "main";
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
@@ -56,6 +57,7 @@ export function ContactView() {
   const [formState, setFormState] = useState<ContactFormState>(initialFormState);
 
   useEffect(() => {
+    if (embedded) return;
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
 
@@ -63,13 +65,17 @@ export function ContactView() {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, []);
+  }, [embedded]);
 
   const navigateTo = (href: string) => {
     router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
+    if (embedded) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (id === "home") return navigateTo(homeHref);
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
@@ -97,8 +103,8 @@ export function ContactView() {
   };
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-black text-white lg:h-dvh">
-      <div className="pointer-events-none fixed inset-0">
+    <Root className="relative min-h-dvh overflow-hidden bg-black text-white lg:h-dvh">
+      <div className={`pointer-events-none ${embedded ? "absolute" : "fixed"} inset-0`}>
         <Image
           src={assetPath("/images/contact.png")}
           alt="Veltro contact background"
@@ -110,7 +116,7 @@ export function ContactView() {
       </div>
 
       <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6 lg:h-dvh">
-        <div className="relative z-30">
+        <div className={`relative z-30 ${embedded ? "hidden" : ""}`}>
           <InternalPageHeader
             title="Contact"
             isDockOpen={isDockOpen}
@@ -120,6 +126,7 @@ export function ContactView() {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
+        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Contact<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 mt-5 flex flex-1 items-start justify-center sm:mt-7 lg:justify-start">
           <div className="w-full max-w-[620px] lg:mr-auto">
@@ -243,6 +250,6 @@ export function ContactView() {
       </div>
 
       <PageFooterNote mobileClassName="hidden" />
-    </main>
+    </Root>
   );
 }

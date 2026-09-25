@@ -18,8 +18,8 @@ const menuEntries = [
   { id: "fleet", order: "02", label: "Fleet" },
   { id: "blogs", order: "03", label: "Blogs" },
   { id: "mission", order: "04", label: "Mission" },
-  { id: "contact", order: "05", label: "Contact" },
-  { id: "faq", order: "06", label: "FAQ" },
+  { id: "faq", order: "05", label: "FAQ'S" },
+  { id: "contact", order: "06", label: "Contact" },
 ];
 
 export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {

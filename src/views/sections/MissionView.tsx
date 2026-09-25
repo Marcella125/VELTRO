@@ -15,24 +15,30 @@ const missionHighlights = [
   { number: "04", label: "Passion Driven" },
 ] as const;
 
-export function MissionView() {
+export function MissionView({ embedded = false }: { embedded?: boolean }) {
+  const Root = embedded ? "div" : "main";
   const router = useRouter();
   const homeHref = "/";
   const [isDockOpen, setIsDockOpen] = useState(false);
 
   useEffect(() => {
+    if (embedded) return;
     document.body.classList.add("mission-desktop-lock");
 
     return () => {
       document.body.classList.remove("mission-desktop-lock");
     };
-  }, []);
+  }, [embedded]);
 
   const navigateTo = (href: string) => {
     router.push(href);
   };
 
   const handleDockSelect = (id: string) => {
+    if (embedded) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (id === "home") return navigateTo(homeHref);
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
@@ -42,8 +48,8 @@ export function MissionView() {
   };
 
   return (
-    <main className="relative min-h-dvh overflow-hidden bg-black text-white lg:h-dvh lg:min-h-dvh">
-      <div className="pointer-events-none fixed inset-0">
+    <Root className="relative min-h-dvh overflow-hidden bg-black text-white lg:h-dvh lg:min-h-dvh">
+      <div className={`pointer-events-none ${embedded ? "absolute" : "fixed"} inset-0`}>
         <Image
           src={assetPath("/images/Mission bg.png")}
           alt="Veltro mission background"
@@ -56,7 +62,7 @@ export function MissionView() {
       </div>
 
       <div className="relative mx-auto flex min-h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6 lg:h-dvh lg:min-h-dvh lg:pb-6">
-        <div className="relative z-30">
+        <div className={`relative z-30 ${embedded ? "hidden" : ""}`}>
           <InternalPageHeader
             title="Mission"
             isDockOpen={isDockOpen}
@@ -66,6 +72,7 @@ export function MissionView() {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
+        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Mission<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 flex flex-1 flex-col justify-between pt-12 sm:pt-14 lg:pb-20 lg:pt-14">
           <div className="max-w-[18rem] sm:max-w-[21rem] lg:max-w-[22rem]">
@@ -114,6 +121,6 @@ export function MissionView() {
       </div>
 
       <PageFooterNote mobileClassName="hidden" />
-    </main>
+    </Root>
   );
 }

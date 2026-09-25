@@ -189,7 +189,7 @@ const evoSpecCar: Car = {
   ],
 };
 
-export function HeroShowcase() {
+export function HeroShowcase({ embedded = false }: { embedded?: boolean }) {
   const router = useRouter();
   const homeHref = "/";
   const prefersReducedMotion = useReducedMotion();
@@ -210,6 +210,10 @@ export function HeroShowcase() {
 
   useEffect(() => {
     const body = document.body;
+    if (embedded) {
+      body.classList.remove("home-scroll-hidden");
+      return;
+    }
     if (currentApp === "home") {
       body.classList.add("home-scroll-hidden");
       return;
@@ -218,7 +222,7 @@ export function HeroShowcase() {
     return () => {
       body.classList.remove("home-scroll-hidden");
     };
-  }, [currentApp]);
+  }, [currentApp, embedded]);
 
   // Keep body scroll enabled so every page remains scrollable.
 
@@ -364,12 +368,21 @@ export function HeroShowcase() {
   };
 
   const activeRideItTab = rideitTabs[activeTab] ?? rideitTabs.car;
-  const headerTitle = currentApp === "rideit" ? "" : "Home";
+  const headerTitle = currentApp === "rideit" || embedded ? "" : "Home";
   const showRideItDock = currentApp === "rideit" && !isHudOpen;
 
   const handleDockSelect = (id: string) => {
+    if (embedded && id !== "home") {
+      setIsDockOpen(false);
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (id === "home") {
       setCurrentApp("home");
+      if (embedded) {
+        document.getElementById("home")?.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
       router.push(homeHref);
       return;
     }
@@ -397,7 +410,7 @@ export function HeroShowcase() {
   return (
     <section className="relative min-h-screen">
       {/* Background slideshow (desktop) */}
-      <div className="fixed inset-0 hidden sm:block">
+      <div className={`${embedded ? "absolute" : "fixed"} inset-0 hidden sm:block`}>
         <div className="absolute inset-0">
           <Image
             src={currentApp === "home" ? assetPath("/Home bg.png") : slideSrc}
@@ -410,7 +423,7 @@ export function HeroShowcase() {
         </div>
       </div>
       {/* Mobile background */}
-      <div className="fixed inset-0 bg-black sm:hidden">
+      <div className={`${embedded ? "absolute" : "fixed"} inset-0 bg-black sm:hidden`}>
         {currentApp === "rideit" ? (
           <div className="absolute inset-0">
             <Image
@@ -427,7 +440,7 @@ export function HeroShowcase() {
 
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* Header */}
-        <div className="relative z-30">
+        <div className={`relative z-30 ${embedded ? "invisible" : ""}`}>
           <div className="absolute inset-x-0 top-0 h-full bg-black sm:hidden" />
           <div className="mx-auto w-full max-w-350 px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
             <InternalPageHeader
@@ -446,6 +459,14 @@ export function HeroShowcase() {
             />
           </div>
         </div>
+
+        {embedded && currentApp === "home" ? (
+          <div className="relative z-20 mx-auto flex h-16 w-full max-w-350 shrink-0 items-end px-5 pb-2 max-[390px]:px-4 sm:h-20 sm:px-10 sm:pb-3">
+            <h2 className="font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:text-[2.4rem]">
+              Home<span className="text-[var(--brand-red)]">.</span>
+            </h2>
+          </div>
+        ) : null}
 
         <AnimatePresence mode="sync">
           {/* HERO VIEW */}
@@ -472,24 +493,24 @@ export function HeroShowcase() {
                       sizes="100vw"
                     />
 
-                    <div className="absolute inset-x-0 top-0 z-10 px-5 pt-5 max-[390px]:px-4 max-[390px]:pt-4">
-                      <div className="mt-3 max-[390px]:mt-1">
-                        <div className="ml-[0.2cm] inline-flex items-center gap-2 font-body text-[0.82rem] font-medium uppercase leading-none tracking-[0.18em] text-white/62 max-[390px]:text-[0.7rem] max-[390px]:tracking-[0.14em]">
+                    <div className="absolute inset-x-0 top-0 z-10 px-5 pt-5 max-[430px]:px-4 max-[430px]:pt-4.5 max-[390px]:pt-4">
+                      <div className="mt-3 max-[430px]:mt-2 max-[390px]:mt-1">
+                        <div className="ml-[0.2cm] inline-flex items-center gap-2 font-body text-[0.82rem] font-medium uppercase leading-none tracking-[0.18em] text-white/62 max-[430px]:text-[0.76rem] max-[430px]:tracking-[0.16em] max-[390px]:text-[0.7rem] max-[390px]:tracking-[0.14em]">
                           <span className="text-[var(--brand-red)]">{homeHeroMeta.eyebrow}</span>
                           <span className="text-white/38">/</span>
                           <span>{homeHeroMeta.marque}</span>
                         </div>
 
-                        <div className="mt-6 max-[390px]:mt-4">
-                          <p className="font-display text-[5.45rem] font-black leading-[0.82] tracking-[-0.09em] text-white max-[390px]:text-[4.1rem] max-[390px]:leading-[0.84]">
+                        <div className="mt-6 max-[430px]:mt-5 max-[390px]:mt-4">
+                          <p className="font-display text-[5.45rem] font-black leading-[0.82] tracking-[-0.09em] text-white max-[430px]:text-[4.7rem] max-[430px]:leading-[0.83] max-[390px]:text-[4.1rem] max-[390px]:leading-[0.84]">
                             {homeHeroMeta.titleLead}
                           </p>
-                          <p className="font-display -mt-1 text-[2.85rem] font-black leading-[0.9] tracking-[-0.055em] text-[var(--brand-red)] max-[390px]:text-[2.1rem]">
+                          <p className="font-display -mt-1 text-[2.85rem] font-black leading-[0.9] tracking-[-0.055em] text-[var(--brand-red)] max-[430px]:text-[2.45rem] max-[390px]:text-[2.1rem]">
                             {homeHeroMeta.titleAccent}
                           </p>
                         </div>
 
-                        <p className="mt-4 font-body text-[0.8rem] font-medium uppercase tracking-[0.18em] text-white/72 max-[390px]:mt-3 max-[390px]:text-[0.68rem] max-[390px]:tracking-[0.14em]">
+                        <p className="mt-4 font-body text-[0.8rem] font-medium uppercase tracking-[0.18em] text-white/72 max-[430px]:mt-3.5 max-[430px]:text-[0.74rem] max-[430px]:tracking-[0.15em] max-[390px]:mt-3 max-[390px]:text-[0.68rem] max-[390px]:tracking-[0.14em]">
                           <span>V10</span>
                           <span className="px-2 text-[var(--brand-red)]">•</span>
                           <span>AWD</span>
@@ -497,20 +518,20 @@ export function HeroShowcase() {
                           <span>OPEN AIR</span>
                         </p>
 
-                        <div className="mt-7 h-px w-14 bg-[var(--brand-red)] max-[390px]:mt-5 max-[390px]:w-10" />
+                        <div className="mt-7 h-px w-14 bg-[var(--brand-red)] max-[430px]:mt-6 max-[430px]:w-12 max-[390px]:mt-5 max-[390px]:w-10" />
                       </div>
 
-                      <p className="mt-7 max-w-[15.5rem] font-body text-[16px] leading-[1.28] text-white/82 max-[390px]:mt-5 max-[390px]:max-w-[12rem] max-[390px]:text-[14px] max-[390px]:leading-[1.2]">
+                      <p className="mt-7 max-w-[15.5rem] font-body text-[16px] leading-[1.28] text-white/82 max-[430px]:mt-6 max-[430px]:max-w-[13.5rem] max-[430px]:text-[15px] max-[430px]:leading-[1.24] max-[390px]:mt-5 max-[390px]:max-w-[12rem] max-[390px]:text-[14px] max-[390px]:leading-[1.2]">
                         Italian performance.
                         <br />
                         Open-air exhilaration.
                       </p>
 
-                      <div className="mt-7 max-[390px]:mt-5">
+                      <div className="mt-7 max-[430px]:mt-6 max-[390px]:mt-5">
                         <button
                           type="button"
                           onClick={openEvoSpecs}
-                          className="font-display inline-flex h-[2.4rem] min-w-[12.5rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-white max-[390px]:h-[2.2rem] max-[390px]:min-w-[10.75rem] max-[390px]:px-3 max-[390px]:text-[0.64rem] max-[390px]:tracking-[0.12em]"
+                          className="font-display inline-flex h-[2.4rem] min-w-[12.5rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4 text-[0.72rem] font-medium uppercase tracking-[0.16em] text-white max-[430px]:h-[2.3rem] max-[430px]:min-w-[11.5rem] max-[430px]:px-3.5 max-[430px]:text-[0.68rem] max-[430px]:tracking-[0.14em] max-[390px]:h-[2.2rem] max-[390px]:min-w-[10.75rem] max-[390px]:px-3 max-[390px]:text-[0.64rem] max-[390px]:tracking-[0.12em]"
                         >
                           <span className="text-center">Explore The Evo</span>
                         </button>

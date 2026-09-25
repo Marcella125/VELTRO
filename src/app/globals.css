@@ -163,6 +163,20 @@ body {
   background: #000;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.one-page-site > section {
+  position: relative;
+  min-height: 100dvh;
+  isolation: isolate;
+}
+
+.one-page-site > section .page-footer-note {
+  display: none !important;
+}
+
 html,
 body {
   scrollbar-width: none;

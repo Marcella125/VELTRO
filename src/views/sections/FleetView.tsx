@@ -14,6 +14,7 @@ import type { Car } from "@/models/car.model";
 
 type FleetViewProps = {
   cars: Car[];
+  embedded?: boolean;
 };
 
 type ActiveBrandFilter = "all" | BrandFilter["id"];
@@ -139,7 +140,8 @@ function chunkArray<T>(items: T[], size: number): T[][] {
   );
 }
 
-export function FleetView({ cars }: FleetViewProps) {
+export function FleetView({ cars, embedded = false }: FleetViewProps) {
+  const Root = embedded ? "div" : "main";
   const router = useRouter();
   const mobileCarouselRef = useRef<HTMLDivElement | null>(null);
   const [isDockOpen, setIsDockOpen] = useState(false);
@@ -169,6 +171,7 @@ export function FleetView({ cars }: FleetViewProps) {
   const vehiclePages = useMemo(() => chunkArray(filteredCars, 3), [filteredCars]);
 
   useEffect(() => {
+    if (embedded) return;
     document.body.classList.remove("home-scroll-hidden");
     document.body.classList.remove("rideit-open");
     if (window.innerWidth >= 768) {
@@ -180,7 +183,7 @@ export function FleetView({ cars }: FleetViewProps) {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
     };
-  }, []);
+  }, [embedded]);
 
   useEffect(() => {
     setActivePageIndex(0);
@@ -194,6 +197,10 @@ export function FleetView({ cars }: FleetViewProps) {
   }, [activeBrandFilter]);
 
   const handleDockSelect = (id: string) => {
+    if (embedded) {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (id === "fleet") {
       return;
     }
@@ -218,7 +225,7 @@ export function FleetView({ cars }: FleetViewProps) {
   const currentPageCars = vehiclePages[activePageIndex] ?? [];
 
   return (
-    <main className="relative h-dvh overflow-x-hidden overflow-y-hidden text-[#F5F5F5]">
+    <Root className="relative h-dvh overflow-x-hidden overflow-y-hidden text-[#F5F5F5]">
       <div className="pointer-events-none absolute inset-0">
         <Image
           src={assetPath("/images/bgcar.png")}
@@ -237,16 +244,10 @@ export function FleetView({ cars }: FleetViewProps) {
 
       <div className="relative z-10 flex h-dvh flex-col overflow-x-hidden overflow-y-hidden">
         <div className="mx-auto flex w-full max-w-350 flex-1 flex-col overflow-x-hidden overflow-y-hidden px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
-          <header className="relative z-40 shrink-0">
-            <InternalPageHeader
-              title="Fleet"
-              isDockOpen={isDockOpen}
-              onOpenChange={setIsDockOpen}
-              onSelect={handleDockSelect}
-              surfaceClassName="bg-black sm:bg-transparent"
-              onLogoClick={() => navigateTo("/")}
-            />
+          <header className={`relative z-40 shrink-0 ${embedded ? "hidden" : ""}`}>
+            <InternalPageHeader title="Fleet" isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleDockSelect} surfaceClassName="bg-black sm:bg-transparent" onLogoClick={() => navigateTo("/")} />
           </header>
+          {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Fleet<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
           <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto md:overflow-hidden">
             <section className="relative z-30 mt-3 shrink-0 pb-3 sm:mt-4">
@@ -347,7 +348,7 @@ export function FleetView({ cars }: FleetViewProps) {
                           <article
                             key={car.id}
                             className={`relative flex min-h-0 flex-col overflow-hidden border border-white/8 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:shadow-[0_24px_60px_rgba(0,0,0,0.48)] ${
-                              index >= 2 ? "hidden md:flex" : ""
+                              index >= 2 ? "hidden min-[411px]:flex md:flex" : ""
                             }`}
                           >
                             <button
@@ -355,7 +356,7 @@ export function FleetView({ cars }: FleetViewProps) {
                               onClick={() => setActiveSpecCar(car)}
                               className="group block w-full text-left"
                             >
-                              <div className="relative h-[20rem] overflow-hidden md:h-[22rem] lg:h-[24rem]">
+                              <div className="relative h-[20rem] overflow-hidden bg-black max-[430px]:h-[13.6rem] max-[402px]:h-[12.6rem] max-[390px]:h-[12rem] md:h-[22rem] lg:h-[24rem]">
                                 <Image
                                   src={presentation.imageSrc}
                                   alt={displayName}
@@ -363,35 +364,35 @@ export function FleetView({ cars }: FleetViewProps) {
                                   priority={absoluteIndex < 3}
                                   loading={absoluteIndex < 3 ? "eager" : "lazy"}
                                   sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-                                  className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                                  className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03] max-[430px]:object-contain max-[430px]:object-bottom max-[430px]:px-0 max-[430px]:py-0"
                                 />
                                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.28)_0%,rgba(0,0,0,0.08)_34%,rgba(0,0,0,0.35)_100%)]" />
 
-                                <div className="absolute left-0 top-0 z-10 min-w-0 px-5 pt-4 md:px-6 md:pt-5">
+                                <div className="absolute left-0 top-0 z-10 min-w-0 px-5 pt-4 max-[430px]:px-3 max-[430px]:pt-2.5 max-[390px]:px-2.75 max-[390px]:pt-2.25 md:px-6 md:pt-5">
                                   <div className="min-w-0">
-                                    <p className="type-eyebrow text-white/62">
+                                    <p className="type-eyebrow text-white/62 max-[430px]:text-[0.46rem] max-[430px]:tracking-[0.1em] max-[390px]:text-[0.42rem]">
                                       <span className="text-[var(--brand-red)]">
                                         {String(absoluteIndex + 1).padStart(2, "0")}
                                       </span>
                                       <span>{` / ${displayBrand}`}</span>
                                     </p>
-                                    <h2 className="-translate-x-[0.1cm] mt-2 font-display text-[1.95rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white md:text-[2.25rem] lg:text-[2.45rem]">
+                                    <h2 className="-translate-x-[0.1cm] mt-2 font-display text-[1.95rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white max-[430px]:mt-0.75 max-[430px]:text-[1.18rem] max-[390px]:text-[1rem] md:text-[2.25rem] lg:text-[2.45rem]">
                                       {displayName}
                                     </h2>
                                   </div>
                                 </div>
 
-                                <div className="absolute bottom-8 right-5 z-10 flex flex-col items-end text-right md:bottom-5 md:right-6">
-                                  <span className="font-display text-[1.22rem] font-semibold leading-none text-white md:text-[1.34rem]">
+                                <div className="absolute bottom-8 right-5 z-10 flex flex-col items-end text-right max-[430px]:bottom-2.25 max-[430px]:right-3 max-[390px]:bottom-2 max-[390px]:right-2.5 md:bottom-5 md:right-6">
+                                  <span className="font-display text-[1.22rem] font-semibold leading-none text-white max-[430px]:text-[0.78rem] max-[390px]:text-[0.72rem] md:text-[1.34rem]">
                                     {formatPrice(car.pricePerDay)}
                                   </span>
-                                  <span className="mt-1 font-display text-[0.68rem] uppercase tracking-[0.18em] text-white/62 md:text-[0.74rem]">
+                                  <span className="mt-0.5 font-display text-[0.68rem] uppercase tracking-[0.18em] text-white/62 max-[430px]:text-[0.42rem] max-[430px]:tracking-[0.1em] max-[390px]:text-[0.38rem] md:text-[0.74rem]">
                                     Rent Per Day
                                   </span>
                                 </div>
 
-                                <div className="absolute bottom-8 left-4 z-10 md:bottom-5 md:left-5">
-                                  <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-3 py-1.5 text-[0.52rem] font-medium uppercase tracking-[0.18em] text-white transition group-hover:brightness-110 md:px-3.5 md:text-[0.58rem]">
+                                <div className="absolute bottom-8 left-4 z-10 max-[430px]:bottom-2.25 max-[430px]:left-2.5 max-[390px]:bottom-2 max-[390px]:left-2.25 md:bottom-5 md:left-5">
+                                  <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-3 py-1.5 text-[0.52rem] font-medium uppercase tracking-[0.18em] text-white transition group-hover:brightness-110 max-[430px]:px-1.5 max-[430px]:py-0.75 max-[430px]:text-[0.35rem] max-[430px]:tracking-[0.1em] max-[390px]:px-1.25 max-[390px]:text-[0.32rem] md:px-3.5 md:text-[0.58rem]">
                                     <span>Book This Vehicle</span>
                                   </span>
                                 </div>
@@ -444,11 +445,14 @@ export function FleetView({ cars }: FleetViewProps) {
             engineLabel={activeSpecPresentation?.displayEngine}
             powerLabel={activeSpecPresentation?.displayPower}
             driveLabel={activeSpecPresentation?.displayDrive}
-            onClose={() => setActiveSpecCar(null)}
+            onClose={() => {
+              setActiveSpecCar(null);
+              navigateTo("/fleet/all");
+            }}
             onLogoClick={() => navigateTo("/")}
           />
         ) : null}
       </AnimatePresence>
-    </main>
+    </Root>
   );
 }

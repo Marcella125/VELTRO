@@ -1,5 +1,5 @@
-import { HeroShowcase } from "@/views/sections/HeroShowcase";
+import { StaticRentalExperience } from "@/views/sections/StaticRentalExperience";
 
 export function HomeExperience() {
-  return <HeroShowcase />;
+  return <StaticRentalExperience />;
 }

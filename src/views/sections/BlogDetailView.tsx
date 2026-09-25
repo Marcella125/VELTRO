@@ -86,8 +86,8 @@ export function BlogDetailView() {
           <>
             {/* Mobile layout */}
             <section className="relative mt-4 sm:hidden">
-              <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl">
-                <div className="relative h-64 w-full">
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl max-[430px]:rounded-[1.35rem] max-[390px]:rounded-[1.2rem]">
+                <div className="relative h-64 w-full max-[430px]:h-58 max-[390px]:h-52">
                   <Image
                     src={blog.heroImage}
                     alt={blog.title}
@@ -98,20 +98,20 @@ export function BlogDetailView() {
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0.65)_100%)]" />
                 </div>
 
-                <div className="px-5 py-5">
-                  <h1 className="text-[20px] font-semibold tracking-[0.04em] text-white/95">
+                <div className="px-5 py-5 max-[430px]:px-4.5 max-[430px]:py-4.5 max-[390px]:px-4 max-[390px]:py-4">
+                  <h1 className="text-[20px] font-semibold tracking-[0.04em] text-white/95 max-[430px]:text-[18px] max-[390px]:text-[17px]">
                     {blog.title}
                   </h1>
-                  <p className="mt-3 text-[13px] leading-6 text-white/75">
+                  <p className="mt-3 text-[13px] leading-6 text-white/75 max-[430px]:text-[12px] max-[430px]:leading-5.5">
                     {blog.summary}
                   </p>
-                  <div className="mt-4 space-y-4 text-[13px] leading-6 text-white/70">
+                  <div className="mt-4 space-y-4 text-[13px] leading-6 text-white/70 max-[430px]:space-y-3.5 max-[430px]:text-[12px] max-[430px]:leading-5.5">
                     {blog.body.map((paragraph, index) => (
                       <p key={`${blog.id}-mobile-body-${index}`}>{paragraph}</p>
                     ))}
                   </div>
 
-                  <div className="mt-6 space-y-3">
+                  <div className="mt-6 space-y-3 max-[430px]:mt-5">
                     <PrimaryButton
                       type="button"
                       onClick={handleViewCar}

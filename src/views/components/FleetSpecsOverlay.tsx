@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Activity,
+  ArrowLeft,
   type LucideIcon,
   Leaf,
   Palette,
@@ -11,14 +12,11 @@ import {
   Settings2,
   Timer,
   Wind,
-  X,
 } from "lucide-react";
-import { useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
-import { SiteHeader } from "@/views/components/SiteHeader";
 
 type FleetSpecsOverlayProps = {
   car: Car;
@@ -87,9 +85,8 @@ export function FleetSpecsOverlay({
   driveLabel,
   onClose,
   onLogoClick,
-  backLabel = "Back To Fleet",
+  backLabel = "Go Back To Fleet",
 }: FleetSpecsOverlayProps) {
-  const prefersReducedMotion = useReducedMotion();
   const [activeCategory, setActiveCategory] = useState<SpecCategory>("Performance");
   const power = powerLabel ?? getSpecValue(car, "Power") ?? "640 HP";
   const acceleration = getSpecValue(car, "0-60") || "3.1s";
@@ -113,10 +110,7 @@ export function FleetSpecsOverlay({
     `${displayBrand} ${displayName} blends dramatic presence, sharp dynamics, and premium driver focus.`; 
   const whatsappNumber = "+96170335113";
   const whatsappMessage = `Hello, I'm interested in the ${displayBrand} ${displayName} rental. Please share availability.`;
-  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(
-    /[^\d+]/g,
-    ""
-  )}?text=${encodeURIComponent(whatsappMessage)}`;
+  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(whatsappMessage)}`;
   const categoryContent: Record<
     SpecCategory,
     {
@@ -275,26 +269,27 @@ export function FleetSpecsOverlay({
                   <button
                     type="button"
                     onClick={onClose}
-                    aria-label="Close specifications"
-                    className="inline-flex h-10 w-10 items-center justify-center text-white/88"
+                    aria-label={backLabel}
+                    className="inline-flex h-10 items-center justify-center gap-2 text-[0.55rem] font-medium uppercase tracking-[0.16em] text-white/78 transition hover:text-white"
                   >
-                    <X className="h-7 w-7 stroke-[1.5]" />
+                    <ArrowLeft className="h-4 w-4 text-[var(--brand-red)]" strokeWidth={1.7} />
+                    <span>{backLabel}</span>
                   </button>
                 </div>
               </div>
 
-              <div className="mt-[0.7cm] px-4 pb-3 max-[390px]:mt-[0.58cm] max-[390px]:px-3.5">
-                <div className="ml-[0.6cm] font-body text-[0.64rem] uppercase tracking-[0.18em] text-white/62 max-[390px]:ml-[0.35cm] max-[390px]:text-[0.58rem] max-[390px]:tracking-[0.15em]">
+              <div className="mt-[0.7cm] px-4 pb-3 max-[430px]:mt-[0.62cm] max-[430px]:px-3.75 max-[390px]:mt-[0.58cm] max-[390px]:px-3.5">
+                <div className="ml-[0.6cm] font-body text-[0.64rem] uppercase tracking-[0.18em] text-white/62 max-[430px]:ml-[0.42cm] max-[430px]:text-[0.6rem] max-[430px]:tracking-[0.16em] max-[390px]:ml-[0.35cm] max-[390px]:text-[0.58rem] max-[390px]:tracking-[0.15em]">
                   <span className="text-[var(--brand-red)]">01</span>
                   <span className="px-2 text-white/34">/</span>
                   <span>{displayBrand}</span>
                 </div>
-                <h2 className="mt-2 ml-[0.5cm] font-display text-[1.72rem] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white max-[390px]:ml-[0.28cm] max-[390px]:text-[1.5rem]">
+                <h2 className="mt-2 ml-[0.5cm] font-display text-[1.72rem] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white max-[430px]:ml-[0.35cm] max-[430px]:text-[1.58rem] max-[390px]:ml-[0.28cm] max-[390px]:text-[1.5rem]">
                   {displayName}
                 </h2>
               </div>
 
-              <div className="px-5 pt-1 max-[390px]:px-4">
+              <div className="px-5 pt-1 max-[430px]:px-4.5 max-[390px]:px-4">
                 <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <div className="flex w-max gap-2.5">
                   {categories.map((category) => {
@@ -307,7 +302,7 @@ export function FleetSpecsOverlay({
                         key={category}
                         type="button"
                         onClick={() => setActiveCategory(category)}
-                        className={`relative flex h-[72px] w-[116px] shrink-0 snap-start flex-col items-center justify-center gap-2 px-3 pb-3 pt-3 text-center transition max-[390px]:h-[62px] max-[390px]:w-[102px] max-[390px]:gap-1.5 max-[390px]:px-2 max-[390px]:pb-2.5 max-[390px]:pt-2.5 ${
+                        className={`relative flex h-[72px] w-[116px] shrink-0 snap-start flex-col items-center justify-center gap-2 px-3 pb-3 pt-3 text-center transition max-[430px]:h-[66px] max-[430px]:w-[108px] max-[430px]:gap-1.5 max-[430px]:px-2.5 max-[430px]:pb-2.5 max-[430px]:pt-2.5 max-[390px]:h-[62px] max-[390px]:w-[102px] max-[390px]:gap-1.5 max-[390px]:px-2 max-[390px]:pb-2.5 max-[390px]:pt-2.5 ${
                           active
                             ? "text-[var(--brand-red)]"
                             : "text-white/72"
@@ -316,8 +311,8 @@ export function FleetSpecsOverlay({
                         {active ? (
                           <span className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-[var(--brand-red)]" />
                         ) : null}
-                        <CategoryIcon className={`h-4.5 w-4.5 max-[390px]:h-4 max-[390px]:w-4 ${active ? "text-[var(--brand-red)]" : "text-white/65"}`} strokeWidth={1.7} />
-                        <span className={`font-body text-[0.42rem] uppercase leading-[1.3] tracking-[0.08em] max-[390px]:text-[0.36rem] max-[390px]:leading-[1.2] ${active ? "text-[var(--brand-red)]" : "text-white/68"}`}>
+                        <CategoryIcon className={`h-4.5 w-4.5 max-[430px]:h-4 max-[430px]:w-4 max-[390px]:h-4 max-[390px]:w-4 ${active ? "text-[var(--brand-red)]" : "text-white/65"}`} strokeWidth={1.7} />
+                        <span className={`font-body text-[0.42rem] uppercase leading-[1.3] tracking-[0.08em] max-[430px]:text-[0.38rem] max-[430px]:leading-[1.22] max-[390px]:text-[0.36rem] max-[390px]:leading-[1.2] ${active ? "text-[var(--brand-red)]" : "text-white/68"}`}>
                           {meta.shortLabel}
                         </span>
                       </button>
@@ -327,57 +322,89 @@ export function FleetSpecsOverlay({
                 </div>
               </div>
 
-              <div className="px-5 pt-4 max-[390px]:px-4 max-[390px]:pt-3.5">
-                <div className="mx-auto w-full max-w-[25rem] rounded-[22px] border border-white/7 bg-[radial-gradient(120%_100%_at_0%_0%,rgba(255,255,255,0.02),rgba(255,255,255,0)_48%),linear-gradient(180deg,#0b0b0c_0%,#070708_100%)] px-5 pb-5 pt-5 shadow-[0_24px_60px_rgba(0,0,0,0.42)] max-[390px]:max-w-[22.5rem] max-[390px]:rounded-[18px] max-[390px]:px-4 max-[390px]:pb-4 max-[390px]:pt-4">
-                  <h3 className="font-display text-[1.6rem] font-medium uppercase tracking-[0.08em] text-white max-[390px]:text-[1.35rem]">
+              <div className="px-5 pt-4 max-[430px]:px-4.5 max-[430px]:pt-3.75 max-[390px]:px-4 max-[390px]:pt-3.5">
+                <div className="mx-auto w-full max-w-[25rem] rounded-[22px] border border-white/7 bg-[radial-gradient(120%_100%_at_0%_0%,rgba(255,255,255,0.02),rgba(255,255,255,0)_48%),linear-gradient(180deg,#0b0b0c_0%,#070708_100%)] px-5 pb-5 pt-5 shadow-[0_24px_60px_rgba(0,0,0,0.42)] max-[430px]:max-w-[23.5rem] max-[430px]:rounded-[20px] max-[430px]:px-4.5 max-[430px]:pb-4.5 max-[430px]:pt-4.5 max-[390px]:max-w-[22.5rem] max-[390px]:rounded-[18px] max-[390px]:px-4 max-[390px]:pb-4 max-[390px]:pt-4">
+                  <h3 className="font-display text-[1.6rem] font-medium uppercase tracking-[0.08em] text-white max-[430px]:text-[1.45rem] max-[390px]:text-[1.35rem]">
                     {activeContent.title}
                   </h3>
                   <div className="mt-2 h-px w-10 bg-[var(--brand-red)]" />
-                  <p className="mt-2 text-[0.82rem] leading-[1.36] text-white/58 max-[390px]:text-[0.75rem] max-[390px]:leading-[1.32]">
+                  <p className="mt-2 text-[0.82rem] leading-[1.36] text-white/58 max-[430px]:text-[0.78rem] max-[430px]:leading-[1.33] max-[390px]:text-[0.75rem] max-[390px]:leading-[1.32]">
                     {activeContent.description}
                   </p>
 
-                  <div className="platinum-red-scroll mt-3.5 max-h-[calc(100dvh-26.75rem)] space-y-2 overflow-y-auto pr-1 max-[390px]:mt-3 max-[390px]:max-h-[calc(100dvh-24.25rem)] max-[390px]:space-y-1.5">
+                  <div className="platinum-red-scroll mt-3.5 max-h-[calc(100dvh-26.75rem)] space-y-2 overflow-y-auto pr-1 max-[430px]:mt-3 max-[430px]:max-h-[calc(100dvh-25rem)] max-[430px]:space-y-1.5 max-[390px]:mt-3 max-[390px]:max-h-[calc(100dvh-24.25rem)] max-[390px]:space-y-1.5">
                     {activeContent.mobileRows.map((row) => {
                       const RowIcon = row.icon;
 
                       return (
                         <div
                           key={`${activeCategory}-${row.label}`}
-                          className="flex items-center gap-3 rounded-[14px] border border-white/10 bg-[#090909] px-3 py-2.5 max-[390px]:gap-2.5 max-[390px]:rounded-[12px] max-[390px]:px-2.5 max-[390px]:py-2"
+                          className="flex items-center gap-3 rounded-[14px] border border-white/10 bg-[#090909] px-3 py-2.5 max-[430px]:gap-2.5 max-[430px]:rounded-[12px] max-[430px]:px-2.5 max-[430px]:py-2.25 max-[390px]:gap-2.5 max-[390px]:rounded-[12px] max-[390px]:px-2.5 max-[390px]:py-2"
                         >
-                          <RowIcon className="h-5 w-5 shrink-0 text-white/70 max-[390px]:h-4.5 max-[390px]:w-4.5" strokeWidth={1.5} />
+                          <RowIcon className="h-5 w-5 shrink-0 text-white/70 max-[430px]:h-4.5 max-[430px]:w-4.5 max-[390px]:h-4.5 max-[390px]:w-4.5" strokeWidth={1.5} />
 
                           <div className="min-w-0 flex-1">
-                            <div className="font-body text-[0.62rem] uppercase tracking-[0.18em] text-white max-[390px]:text-[0.56rem] max-[390px]:tracking-[0.15em]">
+                            <div className="font-body text-[0.62rem] uppercase tracking-[0.18em] text-white max-[430px]:text-[0.58rem] max-[430px]:tracking-[0.16em] max-[390px]:text-[0.56rem] max-[390px]:tracking-[0.15em]">
                               {row.label}
                             </div>
-                            <div className="mt-0.5 text-[0.78rem] leading-[1.2] text-white/54 max-[390px]:text-[0.7rem] max-[390px]:leading-[1.16]">
+                            <div className="mt-0.5 text-[0.78rem] leading-[1.2] text-white/54 max-[430px]:text-[0.72rem] max-[430px]:leading-[1.18] max-[390px]:text-[0.7rem] max-[390px]:leading-[1.16]">
                               {row.detail}
                             </div>
                           </div>
 
-                          <div className="shrink-0 pl-2 font-display text-[0.8rem] uppercase tracking-[0.08em] text-[var(--brand-red)] max-[390px]:text-[0.72rem]">
+                          <div className="shrink-0 pl-2 font-display text-[0.8rem] uppercase tracking-[0.08em] text-[var(--brand-red)] max-[430px]:text-[0.74rem] max-[390px]:text-[0.72rem]">
                             {row.value}
                           </div>
                         </div>
                       );
                     })}
                   </div>
+
+                  <Link
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 flex h-10 w-full items-center justify-center gap-2 bg-[var(--brand-red)] px-3 text-center text-[0.52rem] font-semibold uppercase tracking-[0.13em] text-white transition hover:brightness-110"
+                  >
+                    Book on WhatsApp
+                    <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="hidden sm:flex sm:shrink-0">
-          <SiteHeader
-            title="Fleet"
-            className="shrink-0"
-            onLogoClick={onLogoClick}
-            titleTone="light"
-            compact
-          />
+        <div className="hidden h-13 shrink-0 items-center justify-between sm:flex">
+          <button
+            type="button"
+            onClick={onLogoClick}
+            aria-label="Veltro home"
+            className="inline-flex items-center"
+          >
+            <Image
+              src={assetPath("/icons/veltro_logo.svg")}
+              alt="Veltro"
+              width={680}
+              height={136}
+              className="h-15 w-auto object-contain"
+              priority
+              unoptimized
+            />
+          </button>
+
+          <p className="absolute left-1/2 -translate-x-1/2 font-display text-[0.62rem] font-medium uppercase tracking-[0.2em] text-white/62">
+            {displayBrand} {displayName}
+          </p>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-10 items-center gap-2 text-[0.58rem] font-medium uppercase tracking-[0.17em] text-white/72 transition hover:text-white"
+          >
+            <ArrowLeft className="h-4 w-4 text-[var(--brand-red)]" strokeWidth={1.7} />
+            <span>{backLabel}</span>
+          </button>
         </div>
 
         <div className="mt-[calc(1rem-0.1cm)] hidden min-h-0 flex-1 flex-col gap-3 sm:flex xl:mt-[calc(1.25rem-0.1cm)] xl:grid xl:grid-cols-[minmax(0,0.98fr)_minmax(470px,1.02fr)] xl:grid-rows-[minmax(0,0.94fr)] xl:gap-4">
@@ -423,9 +450,10 @@ export function FleetSpecsOverlay({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="font-display mt-4 inline-flex min-w-[12.8rem] items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-4.5 py-3 text-[0.68rem] font-medium uppercase tracking-[0.19em] text-white transition hover:brightness-110"
+                  className="mt-4 flex h-11 w-full max-w-[15rem] items-center justify-center gap-2 bg-[var(--brand-red)] px-3 text-center text-[0.52rem] font-semibold uppercase tracking-[0.13em] text-white transition hover:brightness-110"
                 >
-                  <span>WhatsApp</span>
+                  <span>Book on WhatsApp</span>
+                  <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </div>

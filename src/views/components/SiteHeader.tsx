@@ -41,16 +41,22 @@ export function SiteHeader({
   const titleClassName =
     titleTone === "dark" ? "text-[#111111]/84" : "text-white/80";
   const navItems = [
-    { href: "/", label: "Home", active: pathname === "/" },
-    { href: "/fleet", label: "Fleet", active: pathname?.startsWith("/fleet") },
-    { href: "/blogs", label: "Blogs", active: pathname?.startsWith("/blogs") },
-    { href: "/mission", label: "Mission", active: pathname?.startsWith("/mission") },
+    { id: "home", href: "/", label: "Home", active: pathname === "/" },
     {
+      id: "fleet",
+      href: "/fleet",
+      label: "Fleet",
+      active: pathname?.startsWith("/fleet") || pathname?.startsWith("/cars"),
+    },
+    { id: "blogs", href: "/blogs", label: "Blogs", active: pathname?.startsWith("/blogs") },
+    { id: "mission", href: "/mission", label: "Mission", active: pathname?.startsWith("/mission") },
+    { id: "faq", href: "/faq", label: "FAQ'S", active: pathname?.startsWith("/faq") },
+    {
+      id: "contact",
       href: "/contact",
       label: "Contact",
       active: pathname?.startsWith("/contact"),
     },
-    { href: "/faq", label: "FAQ", active: pathname?.startsWith("/faq") },
   ];
 
   useEffect(() => {
@@ -111,8 +117,15 @@ export function SiteHeader({
             />
           </Link>
           <div className="pointer-events-none absolute inset-0 hidden items-center justify-center sm:flex">
+            <span
+              className={`font-display text-[0.68rem] font-medium uppercase tracking-[0.2em] ${titleClassName} transition-opacity duration-200 ${
+                isMenuOpen ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              {title}
+            </span>
             <div
-              className={`pointer-events-auto ${
+              className={`pointer-events-auto absolute ${
                 isMenuOpen ? "flex" : "hidden"
               } items-center gap-6 transition-[opacity,visibility] duration-200 ${
                 isMenuOpen
@@ -124,6 +137,11 @@ export function SiteHeader({
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={(event) => {
+                    if (!onSelect) return;
+                    event.preventDefault();
+                    handleMenuSelect(item.id);
+                  }}
                   onMouseEnter={() => prepareRoute(item.href)}
                   onFocus={() => prepareRoute(item.href)}
                   className={`group flex flex-col items-center transition-transform duration-200 ${
@@ -152,6 +170,15 @@ export function SiteHeader({
               ))}
             </div>
           </div>
+          {!hideTitleOnMobile ? (
+            <span
+              className={`pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-[0.62rem] font-medium uppercase tracking-[0.18em] ${titleClassName} transition-opacity duration-200 sm:hidden ${
+                isMenuOpen ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              {title}
+            </span>
+          ) : null}
           <div className="absolute right-0 top-1/2 -translate-y-1/2">
             <HamburgerToggle
               open={isMenuOpen}

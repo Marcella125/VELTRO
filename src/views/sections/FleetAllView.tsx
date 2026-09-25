@@ -1,526 +1,96 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
-import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { ArrowRight, CalendarDays, CarFront, ChevronDown, Gauge, MapPin, Menu, Users, X } from "lucide-react";
 import { assetPath } from "@/lib/asset-path";
-import { formatPrice } from "@/lib/utils";
 import type { Car } from "@/models/car.model";
-import { FleetSpecsOverlay } from "@/views/components/FleetSpecsOverlay";
-import { PageFooterNote } from "@/views/components/PageFooterNote";
-import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 
-type FleetAllViewProps = {
-  cars: Car[];
-};
+type FleetAllViewProps = { cars: Car[] };
+type Brand = "All cars" | "Lamborghini" | "Porsche" | "Ferrari" | "Mercedes" | "BMW";
 
-type FleetGridCard = {
-  sourceSlug: string;
-  imageSrc: string;
-  specsImageSrc?: string;
-  engineImageSrc?: string;
-  brand: string;
-  name: string;
-  engine: string;
-  power: string;
-  drive: string;
-};
+const vehicleImages = {
+  Lamborghini: assetPath("/lambo fleet.png"),
+  Porsche: assetPath("/porshe fleet.png"),
+  Ferrari: assetPath("/ferrari fleet.png"),
+  Mercedes: assetPath("/porshe fleet.png"),
+  BMW: assetPath("/ferrari fleet.png"),
+} as const;
 
-type FleetBrandFilter =
-  | "all"
-  | "Lamborghini"
-  | "Porsche"
-  | "Ferrari"
-  | "Mercedes-Benz"
-  | "BMW";
+const fleetVehicles = [
+  { slug: "obsidian-gt", brand: "Lamborghini", name: "EVO Spyder", engine: "V10", power: "640 HP", seats: "2 Seats", price: "$1,600" },
+  { slug: "crimson-eclipse", brand: "Porsche", name: "911 Carrera 4S", engine: "3.0L TT", power: "443 HP", seats: "4 Seats", price: "$1,850" },
+  { slug: "onyx-sabre", brand: "Ferrari", name: "296 GTB", engine: "V6 Hybrid", power: "819 HP", seats: "2 Seats", price: "$1,200" },
+  { slug: "velour-phantom", brand: "Lamborghini", name: "Huracan STO", engine: "V10", power: "640 HP", seats: "2 Seats", price: "$1,980" },
+  { slug: "ember-revenant", brand: "Mercedes", name: "AMG GT R", engine: "V8 Biturbo", power: "585 HP", seats: "2 Seats", price: "$2,100" },
+  { slug: "midnight-regal", brand: "BMW", name: "M8 Competition", engine: "V8", power: "625 HP", seats: "4 Seats", price: "$2,400" },
+] as const;
 
-const fleetGridCards: FleetGridCard[] = [
-  {
-    sourceSlug: "obsidian-gt",
-    imageSrc: assetPath("/lambo fleet.png"),
-    specsImageSrc: assetPath("/images/lambo specs.png"),
-    engineImageSrc: assetPath("/images/lambo eng.png"),
-    brand: "Lamborghini",
-    name: "Evo Spyder",
-    engine: "V10",
-    power: "640 HP",
-    drive: "AWD",
-  },
-  {
-    sourceSlug: "crimson-eclipse",
-    imageSrc: assetPath("/porshe fleet.png"),
-    specsImageSrc: assetPath("/images/porshe specs.png"),
-    engineImageSrc: assetPath("/images/porshe eng.png"),
-    brand: "Porsche",
-    name: "911 Carrera 4S",
-    engine: "V10",
-    power: "450 HP",
-    drive: "AWD",
-  },
-  {
-    sourceSlug: "onyx-sabre",
-    imageSrc: assetPath("/ferrari fleet.png"),
-    specsImageSrc: assetPath("/images/ferrari specs.png"),
-    engineImageSrc: assetPath("/images/ferrari eng.png"),
-    brand: "Ferrari",
-    name: "296 GTB",
-    engine: "V10",
-    power: "830 HP",
-    drive: "RWD",
-  },
-  {
-    sourceSlug: "velour-phantom",
-    imageSrc: assetPath("/lambo fleet.png"),
-    specsImageSrc: assetPath("/images/lambo specs.png"),
-    engineImageSrc: assetPath("/images/lambo eng.png"),
-    brand: "Lamborghini",
-    name: "Huracan STO",
-    engine: "V10",
-    power: "640 HP",
-    drive: "RWD",
-  },
-  {
-    sourceSlug: "ember-revenant",
-    imageSrc: assetPath("/porshe fleet.png"),
-    specsImageSrc: assetPath("/images/porshe specs.png"),
-    engineImageSrc: assetPath("/images/porshe eng.png"),
-    brand: "Mercedes-Benz",
-    name: "AMG GT R",
-    engine: "V8 Biturbo",
-    power: "585 HP",
-    drive: "RWD",
-  },
-  {
-    sourceSlug: "midnight-regal",
-    imageSrc: assetPath("/ferrari fleet.png"),
-    specsImageSrc: assetPath("/images/ferrari specs.png"),
-    engineImageSrc: assetPath("/images/ferrari eng.png"),
-    brand: "BMW",
-    name: "M8 Competition",
-    engine: "V8",
-    power: "625 HP",
-    drive: "AWD",
-  },
-  {
-    sourceSlug: "velour-phantom",
-    imageSrc: assetPath("/lambo fleet.png"),
-    specsImageSrc: assetPath("/images/lambo specs.png"),
-    engineImageSrc: assetPath("/images/lambo eng.png"),
-    brand: "Lamborghini",
-    name: "Urus",
-    engine: "V8",
-    power: "650 HP",
-    drive: "AWD",
-  },
-  {
-    sourceSlug: "crimson-eclipse",
-    imageSrc: assetPath("/porshe fleet.png"),
-    specsImageSrc: assetPath("/images/porshe specs.png"),
-    engineImageSrc: assetPath("/images/porshe eng.png"),
-    brand: "Porsche",
-    name: "Panamera GTS",
-    engine: "V8",
-    power: "460 HP",
-    drive: "AWD",
-  },
-];
+const brands: Brand[] = ["All cars", "Lamborghini", "Porsche", "Ferrari", "Mercedes", "BMW"];
 
-function chunkArray<T>(items: T[], size: number): T[][] {
-  return Array.from(
-    { length: Math.ceil(items.length / size) },
-    (_, index) => items.slice(index * size, index * size + size)
-  );
+const whatsappNumber = "96170335113";
+
+function getWhatsAppBookingUrl(brand: string, name: string) {
+  const message = `Hi, I'm interested in booking the ${brand} ${name}. Please share availability.`;
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
 export function FleetAllView({ cars }: FleetAllViewProps) {
-  const router = useRouter();
-  const mobileCarouselRef = useRef<HTMLDivElement | null>(null);
-  const [isDockOpen, setIsDockOpen] = useState(false);
-  const [activeSpecCard, setActiveSpecCard] = useState<{
-    car: Car;
-    card: FleetGridCard;
-  } | null>(null);
-  const [activeBrand, setActiveBrand] = useState<FleetBrandFilter>("all");
-  const [activeMobileSlide, setActiveMobileSlide] = useState(0);
-
-  useOverlayBehavior(Boolean(activeSpecCard), () => setActiveSpecCard(null));
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-    };
-  }, []);
-
-  const carBySlug = useMemo(
-    () => new Map(cars.map((car) => [car.slug, car])),
-    [cars]
-  );
-
-  const brandFilters: FleetBrandFilter[] = [
-    "Lamborghini",
-    "Porsche",
-    "Ferrari",
-    "Mercedes-Benz",
-    "BMW",
-  ];
-
-  const visibleCards = useMemo(
-    () =>
-      activeBrand === "all"
-        ? fleetGridCards
-        : fleetGridCards.filter((card) => card.brand === activeBrand),
-    [activeBrand]
-  );
-  const mobileSlides = useMemo(() => chunkArray(visibleCards, 2), [visibleCards]);
-
-  useEffect(() => {
-    setActiveMobileSlide(0);
-    if (mobileCarouselRef.current) {
-      mobileCarouselRef.current.scrollTo({ left: 0, behavior: "auto" });
-    }
-  }, [activeBrand]);
-
-  const navigateTo = (href: string) => {
-    router.push(href);
-  };
-
-  const handleDockSelect = (id: string) => {
-    if (id === "fleet") {
-      navigateTo("/fleet");
-      return;
-    }
-    if (id === "home") return navigateTo("/");
-    if (id === "blogs") return navigateTo("/blogs");
-    if (id === "mission") return navigateTo("/mission");
-    if (id === "contact") return navigateTo("/contact");
-    if (id === "faq") return navigateTo("/faq");
-  };
+  const [activeBrand, setActiveBrand] = useState<Brand>("All cars");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const availableSlugs = useMemo(() => new Set(cars.map((car) => car.slug)), [cars]);
+  const visibleVehicles = fleetVehicles.filter((vehicle) => activeBrand === "All cars" || vehicle.brand === activeBrand);
 
   return (
-    <main className="relative h-dvh overflow-hidden text-[#F5F5F5]">
-      <div className="pointer-events-none absolute inset-0">
-        <Image
-          src={assetPath("/images/bgcar.png")}
-          alt=""
-          fill
-          priority
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,#1f1f1f_0%,#111111_38%,#050505_70%,#000_100%)] opacity-[0.78]" />
-        <div className="absolute inset-0 bg-[radial-gradient(92%_66%_at_50%_48%,rgba(255,255,255,0.18),transparent_68%)]" />
-        <div className="absolute inset-0 bg-black/54" />
-        <div className="absolute inset-0 shadow-[inset_0_0_140px_rgba(0,0,0,0.74)]" />
-        <div className="absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black/60 via-black/24 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/66 via-black/28 to-transparent" />
-      </div>
+    <main className="min-h-screen bg-black text-white">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/8 bg-black/90 backdrop-blur-xl">
+        <div className="relative mx-auto flex h-[4.5rem] max-w-350 items-center px-5 sm:px-10">
+          <Link href="/#home" aria-label="Veltro home"><Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} className="h-11 w-auto" priority unoptimized /></Link>
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 xl:flex">
+            {[['/#fleet','Fleet'],['/#experience','Experience'],['/#mission','About'],['/#blogs','Journal'],['/#faq','FAQ'],['/#contact','Contact']].map(([href,label]) => <Link key={href} href={href} className="text-[0.58rem] uppercase tracking-[0.15em] text-white/55 transition hover:text-white">{label}</Link>)}
+          </nav>
+          <Link href="/#contact" className="ml-auto hidden h-9 items-center gap-2 bg-[var(--brand-red)] px-5 text-[0.57rem] font-semibold uppercase tracking-[0.15em] xl:flex">Book a car <ArrowRight size={13}/></Link>
+          <button type="button" onClick={() => setMenuOpen((value) => !value)} className="ml-auto grid size-10 place-items-center xl:hidden" aria-label="Toggle menu">{menuOpen ? <X size={21}/> : <Menu size={21}/>}</button>
+        </div>
+        {menuOpen ? <nav className="border-t border-white/8 bg-black px-5 py-3 xl:hidden">{[['/#fleet','Fleet'],['/#experience','Experience'],['/#mission','About'],['/#blogs','Journal'],['/#faq','FAQ'],['/#contact','Contact']].map(([href,label]) => <Link key={href} href={href} className="flex items-center justify-between border-b border-white/8 py-3 text-xs uppercase tracking-[0.15em] text-white/65">{label}<ArrowRight size={13} className="text-[var(--brand-red)]"/></Link>)}</nav> : null}
+      </header>
 
-      <div className="relative z-10 mx-auto flex h-dvh w-full max-w-350 flex-col px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
-        <header className="relative z-40 shrink-0">
-          <InternalPageHeader
-            title="Fleet"
-            isDockOpen={isDockOpen}
-            onOpenChange={setIsDockOpen}
-            onSelect={handleDockSelect}
-            surfaceClassName="bg-black sm:bg-transparent"
-            onLogoClick={() => navigateTo("/")}
-          />
-        </header>
-
-        <section className="mt-7 flex min-h-0 flex-1 flex-col gap-4">
-          <div className="text-[0.64rem] uppercase tracking-[0.14em] text-white/58">
-            <div className="sm:hidden">
-              <div className="grid grid-cols-3 gap-x-3 gap-y-3 text-center">
-                <button
-                  type="button"
-                  onClick={() => setActiveBrand("all")}
-                  className={`min-h-10 px-2 py-2 transition ${
-                    activeBrand === "all"
-                      ? "text-white"
-                      : "text-white/58"
-                  }`}
-                >
-                  <span
-                    className={`inline-flex h-full items-center border-b pb-1 ${
-                      activeBrand === "all"
-                        ? "border-[var(--brand-red)]"
-                        : "border-transparent"
-                    }`}
-                  >
-                    All Vehicles
-                  </span>
-                </button>
-                {brandFilters.map((brand) => (
-                  <button
-                    key={brand}
-                    type="button"
-                    onClick={() => setActiveBrand(brand)}
-                    className={`min-h-10 px-1 transition ${
-                      activeBrand === brand ? "text-white" : "text-white/58"
-                    }`}
-                  >
-                    <span
-                      className={`inline-flex h-full items-center border-b pb-1 ${
-                        activeBrand === brand
-                          ? "border-[var(--brand-red)]"
-                          : "border-transparent"
-                      }`}
-                    >
-                      {brand}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="hidden items-center justify-between gap-4 sm:flex">
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-                <button
-                  type="button"
-                  onClick={() => setActiveBrand("all")}
-                  className={`transition ${
-                    activeBrand === "all"
-                      ? "text-white"
-                      : "text-white/58 hover:text-white/82"
-                  }`}
-                >
-                  <span
-                    className={`inline-flex items-center border-b pb-1 ${
-                      activeBrand === "all"
-                        ? "border-[var(--brand-red)]"
-                        : "border-transparent"
-                    }`}
-                  >
-                    All Vehicles
-                  </span>
-                </button>
-                {brandFilters.map((brand, index) => (
-                  <div key={brand} className="flex items-center gap-x-5">
-                    <button
-                      type="button"
-                      onClick={() => setActiveBrand(brand)}
-                      className={`transition ${
-                        activeBrand === brand
-                          ? "text-white"
-                          : "text-white/58 hover:text-white/82"
-                      }`}
-                    >
-                      {brand}
-                    </button>
-                    {index < brandFilters.length - 1 ? (
-                      <span className="text-white/24">|</span>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <span>Sort By</span>
-                <span className="font-semibold text-white">Newest</span>
-                <ChevronDown className="size-3 text-[var(--brand-red)]" strokeWidth={1.8} />
-              </div>
-            </div>
+      <section className="relative overflow-hidden border-b border-white/8 px-5 pb-8 pt-28 sm:px-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_84%_25%,rgba(177,18,38,.14),transparent_30%),linear-gradient(110deg,#080808,#000)]" />
+        <div className="relative z-10 mx-auto max-w-350">
+          <p className="text-[0.6rem] uppercase tracking-[0.3em] text-white/50">Fleet</p>
+          <h1 className="mt-2 font-display text-[clamp(2.2rem,4vw,4.2rem)] font-black uppercase leading-none tracking-[-0.045em]">Find your next drive<span className="text-[var(--brand-red)]">.</span></h1>
+          <p className="mt-3 text-sm text-white/52">A curated fleet of the world&apos;s most desirable cars, ready for your next journey.</p>
+          <div className="mt-7 grid overflow-hidden rounded border border-white/14 bg-[#11161b]/95 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+            {[[CalendarDays,"Pickup date","Select date"],[CalendarDays,"Return date","Select date"],[MapPin,"Location","Select location"],[CarFront,"Brand","All brands"]].map(([Icon,label,value])=>{const FieldIcon=Icon as typeof CalendarDays;return <button key={label as string} type="button" className="flex min-h-17 items-center gap-3 border-b border-white/10 px-4 text-left md:border-b-0 md:border-r"><FieldIcon size={18} className="text-white/62"/><span className="flex-1"><span className="block text-[0.5rem] uppercase tracking-[0.16em] text-white/48">{label as string}</span><span className="mt-1 block text-xs text-white/66">{value as string}</span></span><ChevronDown size={13} className="text-white/42"/></button>})}
+            <button type="button" className="m-3 flex min-h-11 items-center justify-center gap-2 bg-[var(--brand-red)] px-7 text-[0.57rem] font-semibold uppercase tracking-[0.16em]">Search vehicles <ArrowRight size={13}/></button>
           </div>
+        </div>
+      </section>
 
-          <div className="min-h-0 flex-1">
-            <div
-              ref={mobileCarouselRef}
-              className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden sm:hidden"
-              onScroll={(event) => {
-                const target = event.currentTarget;
-                const slideWidth = target.clientWidth + 16;
-                if (slideWidth <= 0) return;
-                const nextIndex = Math.round(target.scrollLeft / slideWidth);
-                if (nextIndex !== activeMobileSlide) {
-                  setActiveMobileSlide(nextIndex);
-                }
-              }}
-            >
-              {mobileSlides.map((slide, slideIndex) => (
-                <div
-                  key={`mobile-slide-${slideIndex}`}
-                  className="flex w-full shrink-0 snap-center flex-col gap-4"
-                >
-                  {slide.map((card, cardIndex) => {
-                    const sourceCar = carBySlug.get(card.sourceSlug) ?? cars[0];
-                    const absoluteIndex = slideIndex * 2 + cardIndex;
-
-                    return (
-                      <article
-                        key={`${card.name}-mobile-${absoluteIndex}`}
-                        className="relative aspect-[1.4/1] overflow-hidden border border-white/8 bg-black/20 transition-[transform,border-color,box-shadow] duration-300"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setActiveSpecCard({ car: sourceCar, card })}
-                          className="group block h-full w-full text-left"
-                        >
-                          <div className="relative h-full overflow-hidden">
-                            <Image
-                              src={card.imageSrc}
-                              alt={card.name}
-                              fill
-                              priority={absoluteIndex < 2}
-                              loading={absoluteIndex < 2 ? "eager" : "lazy"}
-                              sizes="100vw"
-                              className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
-                            />
-                            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.05)_35%,rgba(0,0,0,0.42)_100%)]" />
-
-                            <div className="absolute left-0 top-0 z-10 px-3.5 pt-3.5">
-                              <p className="type-eyebrow text-[8.5px] text-white/62">
-                                <span className="text-[var(--brand-red)]">
-                                  {String(absoluteIndex + 1).padStart(2, "0")}
-                                </span>
-                                <span>{` / ${card.brand}`}</span>
-                              </p>
-                              <h2 className="mt-1.5 font-display text-[17.1px] font-black uppercase leading-[0.94] tracking-[-0.05em] text-white">
-                                {card.name}
-                              </h2>
-                            </div>
-
-                            <div className="absolute bottom-2 right-3.5 z-10 flex flex-col items-end text-right">
-                              <span className="font-display text-[12.4px] font-semibold leading-none text-white">
-                                {formatPrice(sourceCar.pricePerDay)}
-                              </span>
-                              <span className="mt-1 font-display text-[7.6px] uppercase tracking-[0.16em] text-white/62">
-                                Rent Per Day
-                              </span>
-                            </div>
-
-                            <div className="absolute bottom-2 left-3 z-10">
-                              <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-2 py-1 text-[6.2px] font-medium uppercase tracking-[0.16em] text-white transition group-hover:brightness-110">
-                                <span>Book This Vehicle</span>
-                              </span>
-                            </div>
-                          </div>
-                        </button>
-                      </article>
-                    );
-                  })}
+      <section className="relative px-5 py-9 sm:px-10">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_5%,rgba(255,255,255,.045),transparent_36%),radial-gradient(circle_at_8%_85%,rgba(177,18,38,.09),transparent_26%),#000]" />
+        <div className="relative z-10 mx-auto max-w-350">
+          <div className="flex flex-wrap gap-3">{brands.map((brand) => <button key={brand} type="button" onClick={() => setActiveBrand(brand)} className={`rounded border px-3 py-1.5 text-[0.52rem] font-semibold uppercase tracking-[0.14em] transition ${activeBrand === brand ? 'border-[var(--brand-red)] text-[var(--brand-red)]' : 'border-transparent text-white/48 hover:text-white'}`}>{brand}</button>)}</div>
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {visibleVehicles.map((vehicle, index) => {
+              const canOpenDetails = availableSlugs.has(vehicle.slug);
+              return <article key={`${vehicle.slug}-${index}`} className="overflow-hidden border border-white/14 bg-[linear-gradient(180deg,#080808,#020202)] shadow-[0_18px_50px_rgba(0,0,0,.42)]">
+                <div className="flex items-center justify-between px-5 pt-5"><p className="text-[0.54rem] uppercase tracking-[0.16em] text-white/50"><span className="text-[var(--brand-red)]">{String(index + 1).padStart(2,'0')}</span> / {vehicle.brand}</p><span className="flex items-center gap-2 text-[0.52rem] text-white/52"><i className="size-1.5 rounded-full bg-[var(--brand-red)]"/>Available now</span></div>
+                <h2 className="px-5 pt-2 font-display text-[1.75rem] font-black uppercase tracking-[-0.045em]">{vehicle.name}</h2>
+                <div className="relative mt-2 h-[18rem]"><Image src={vehicleImages[vehicle.brand]} alt={vehicle.name} fill className="object-cover"/></div>
+                <div className="grid grid-cols-3 border-y border-white/10 px-5 py-3 text-[0.54rem] text-white/58"><span className="flex items-center gap-2"><Gauge size={13}/>{vehicle.engine}</span><span className="flex items-center justify-center gap-2"><Gauge size={13}/>{vehicle.power}</span><span className="flex items-center justify-end gap-2"><Users size={13}/>{vehicle.seats}</span></div>
+                <div className="px-5 py-4"><strong className="text-2xl">{vehicle.price}</strong><span className="ml-2 text-[0.55rem] text-white/40">/ day</span></div>
+                <div className="grid grid-cols-2 gap-2 px-4 pb-4">
+                  <a href={getWhatsAppBookingUrl(vehicle.brand, vehicle.name)} target="_blank" rel="noreferrer" className="flex h-11 items-center justify-center gap-2 bg-[var(--brand-red)] px-2 text-center text-[0.52rem] font-semibold uppercase tracking-[0.13em] transition hover:brightness-110">Book on WhatsApp <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" /></a>
+                  <Link href={canOpenDetails ? `/cars/${vehicle.slug}` : '/#contact'} className="flex h-11 items-center justify-center gap-2 border border-white/22 bg-white/[.03] px-2 text-center text-[0.52rem] font-semibold uppercase tracking-[0.13em] text-white/78 transition hover:border-white/42 hover:bg-white/[.07] hover:text-white">View specifications <ArrowRight size={12}/></Link>
                 </div>
-              ))}
-            </div>
-
-            <div className="mt-3 flex items-center justify-center gap-2 sm:hidden">
-              {mobileSlides.map((_, index) => (
-                <button
-                  key={`mobile-slide-dot-${index}`}
-                  type="button"
-                  aria-label={`Go to vehicle slide ${index + 1}`}
-                  onClick={() => {
-                    const carousel = mobileCarouselRef.current;
-                    if (!carousel) return;
-                    carousel.scrollTo({
-                      left: index * (carousel.clientWidth + 16),
-                      behavior: "smooth",
-                    });
-                    setActiveMobileSlide(index);
-                  }}
-                  className={`h-1.5 rounded-full transition-all duration-200 ${
-                    activeMobileSlide === index
-                      ? "w-6 bg-[var(--brand-red)]"
-                      : "w-1.5 bg-white/28"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <div className="hidden min-h-0 flex-1 grid-cols-1 gap-3 sm:grid sm:grid-cols-2 sm:gap-4 xl:grid-cols-4 xl:gap-4">
-              {visibleCards.map((card, index) => {
-                const sourceCar = carBySlug.get(card.sourceSlug) ?? cars[0];
-
-                return (
-                  <article
-                    key={`${card.name}-desktop-${index}`}
-                    className="relative aspect-[1.4/1] overflow-hidden border border-white/8 bg-black/20 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:shadow-[0_24px_60px_rgba(0,0,0,0.48)] sm:aspect-[1.38/1] xl:aspect-[1.32/1]"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setActiveSpecCard({ car: sourceCar, card })}
-                      className="group block h-full w-full text-left"
-                    >
-                      <div className="relative h-full overflow-hidden">
-                        <Image
-                          src={card.imageSrc}
-                          alt={card.name}
-                          fill
-                          priority={index < 4}
-                          loading={index < 4 ? "eager" : "lazy"}
-                          sizes="(max-width: 1279px) 50vw, 25vw"
-                          className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.05)_35%,rgba(0,0,0,0.42)_100%)]" />
-
-                        <div className="absolute left-0 top-0 z-10 px-3.5 pt-3.5">
-                          <p className="type-eyebrow text-[8.5px] text-white/62">
-                            <span className="text-[var(--brand-red)]">
-                              {String(index + 1).padStart(2, "0")}
-                            </span>
-                            <span>{` / ${card.brand}`}</span>
-                          </p>
-                          <h2 className="mt-1.5 font-display text-[17.1px] font-black uppercase leading-[0.94] tracking-[-0.05em] text-white sm:text-[22.7px] xl:text-[16.3px]">
-                            {card.name}
-                          </h2>
-                        </div>
-
-                        <div className="absolute bottom-2 right-3.5 z-10 flex flex-col items-end text-right">
-                          <span className="font-display text-[12.4px] font-semibold leading-none text-white sm:text-[14px] xl:text-[12.9px]">
-                            {formatPrice(sourceCar.pricePerDay)}
-                          </span>
-                          <span className="mt-1 font-display text-[7.6px] uppercase tracking-[0.16em] text-white/62 sm:text-[8.5px] xl:text-[7.8px]">
-                            Rent Per Day
-                          </span>
-                        </div>
-
-                        <div className="absolute bottom-2 left-3 z-10">
-                          <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-2 py-1 text-[6.2px] font-medium uppercase tracking-[0.16em] text-white transition group-hover:brightness-110 sm:px-2.5 sm:text-[6.8px]">
-                            <span>Book This Vehicle</span>
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  </article>
-                );
-              })}
-            </div>
+              </article>;
+            })}
           </div>
-
-        </section>
-
-        <PageFooterNote
-          showDesktop={false}
-          mobilePlacement="static"
-          mobileSurfaceClassName="border-t border-white/8 bg-black"
-          mobileClassName="w-full pb-safe sm:hidden"
-        />
-      </div>
-      <PageFooterNote mobileClassName="hidden" />
-
-      <AnimatePresence>
-        {activeSpecCard ? (
-          <FleetSpecsOverlay
-            car={activeSpecCard.car}
-            displayBrand={activeSpecCard.card.brand}
-            displayName={activeSpecCard.card.name}
-            imageSrc={activeSpecCard.card.specsImageSrc ?? activeSpecCard.card.imageSrc}
-            engineImageSrc={activeSpecCard.card.engineImageSrc}
-            engineLabel={activeSpecCard.card.engine}
-            powerLabel={activeSpecCard.card.power}
-            driveLabel={activeSpecCard.card.drive}
-            onClose={() => setActiveSpecCard(null)}
-            onLogoClick={() => navigateTo("/")}
-          />
-        ) : null}
-      </AnimatePresence>
+        </div>
+      </section>
     </main>
   );
 }
-
-
