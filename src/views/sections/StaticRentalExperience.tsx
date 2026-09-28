@@ -33,6 +33,7 @@ const navigation = [
   ["experience", "Experience"],
   ["mission", "About"],
   ["blogs", "Journal"],
+  ["why-us", "Why Choose Us"],
   ["faq", "FAQ"],
   ["contact", "Contact"],
 ] as const;
@@ -276,6 +277,56 @@ export function StaticRentalExperience() {
           <Eyebrow>From our journal</Eyebrow><h2 className="mt-3 max-w-4xl font-display text-[clamp(2rem,4vw,4.25rem)] font-black uppercase leading-[0.92] tracking-[-0.055em] text-[#111214]">Stories that fuel the journey<span className="text-[var(--brand-red)]">.</span></h2>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {blogEntries.map((entry) => <article key={entry.id} className="border border-black/20 bg-[#111214] text-white shadow-[0_18px_45px_rgba(0,0,0,.18)]"><div className="relative h-52 overflow-hidden"><Image src={entry.heroImage} alt={entry.title} fill className="object-cover transition duration-500 hover:scale-105"/></div><div className="p-5"><p className="text-[0.56rem] uppercase tracking-[0.15em] text-[var(--brand-red)]">{entry.category}</p><h3 className="mt-3 text-xl font-semibold leading-tight">{entry.title}</h3><p className="mt-3 line-clamp-3 text-xs leading-5 text-white/55">{entry.summary}</p><div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-[0.52rem] uppercase tracking-[0.13em] text-white/42"><span>{entry.publishedAt} · {entry.readTime}</span><ArrowRight size={13} className="text-[var(--brand-red)]"/></div></div></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="why-us" className="relative flex min-h-dvh scroll-mt-16 items-center overflow-hidden border-t border-white/8 bg-black py-20 sm:scroll-mt-[4.5rem] sm:py-24 lg:h-[calc(100dvh-4.5rem)] lg:min-h-0 lg:py-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_92%_4%,rgba(177,18,38,.18),transparent_28%),radial-gradient(circle_at_8%_92%,rgba(255,255,255,.045),transparent_25%)]" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/15 to-transparent" />
+
+        <div className="relative z-10 mx-auto w-full max-w-350 px-5 sm:px-10 lg:flex lg:h-full lg:flex-col">
+          <div className="flex shrink-0 flex-col gap-4 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <Eyebrow>The Veltro standard</Eyebrow>
+              <h2 className="mt-2 max-w-3xl font-display text-[clamp(2.25rem,4.2vw,4.5rem)] font-black uppercase leading-[0.88] tracking-[-0.065em] text-white">Why the drive<br />feels different<span className="text-[var(--brand-red)]">.</span></h2>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-white/50 sm:text-base lg:pb-1">Exceptional cars are only the beginning. We combine personal service, absolute clarity, and obsessive attention to detail around every journey.</p>
+          </div>
+
+          <div className="mt-6 grid gap-8 lg:min-h-0 lg:flex-1 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch lg:gap-10">
+            <div className="group relative min-h-[25rem] overflow-hidden border border-white/10 sm:min-h-[24rem] lg:min-h-0">
+              <Image src={assetPath("/images/lambo specs.png")} alt="Veltro Lamborghini prepared for a premium rental experience" fill sizes="(max-width: 1023px) 100vw, 58vw" className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.025]" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.06)_28%,rgba(0,0,0,.88)_100%)]" />
+              <div className="absolute left-0 top-0 flex items-center gap-3 bg-black/75 px-4 py-3 backdrop-blur-md">
+                <span className="size-1.5 rounded-full bg-[var(--brand-red)] shadow-[0_0_12px_rgba(177,18,38,.8)]" />
+                <span className="text-[0.52rem] font-semibold uppercase tracking-[0.2em] text-white/70">Prepared for you</span>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 p-6 lg:p-6 xl:p-8">
+                <p className="text-[0.54rem] font-semibold uppercase tracking-[0.24em] text-[var(--brand-red)]">More than a rental</p>
+                <h3 className="mt-2 max-w-xl font-display text-[clamp(1.5rem,2.4vw,2.5rem)] font-bold uppercase leading-[1] tracking-[-0.04em] text-white">A complete experience, built around your journey.</h3>
+              </div>
+            </div>
+
+            <div className="flex flex-col justify-center gap-2">
+              {[
+                [Gem, "Curated without compromise", "Every vehicle is selected for character, condition, and an unforgettable drive."],
+                [ShieldCheck, "Clarity at every step", "Straightforward terms and careful preparation mean there are no unwanted surprises."],
+                [Headphones, "A concierge, not a call centre", "One responsive local team supports you from first enquiry to final handover."],
+                [Star, "Service shaped around you", "Timing, delivery, and the finer details are coordinated to fit your plans."],
+              ].map(([Icon, title, copy]) => {
+                const BenefitIcon = Icon as typeof Gem;
+                return (
+                  <article key={title as string} className="group grid grid-cols-[2.75rem_1fr] gap-4 py-5 sm:grid-cols-[3rem_1fr] sm:gap-5 lg:py-3.5 xl:py-4.5">
+                    <span className="grid size-11 place-items-center text-[var(--brand-red)] transition duration-300 group-hover:bg-[var(--brand-red)]/8"><BenefitIcon size={19} strokeWidth={1.55} /></span>
+                    <div>
+                      <h3 className="font-display text-[0.92rem] font-bold uppercase tracking-[0.025em] text-white sm:text-[1.02rem]">{title as string}</h3>
+                      <p className="mt-2 max-w-md text-[0.72rem] leading-5 text-white/43 sm:text-[0.78rem] sm:leading-5.5">{copy as string}</p>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
