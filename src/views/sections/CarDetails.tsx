@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -92,30 +92,12 @@ const presentations: Record<string, VehiclePresentation> = {
   },
 };
 
-const whatsappNumber = "+96170335113";
-
 export function CarDetails({ car }: CarDetailsProps) {
   const router = useRouter();
-  const [isDockOpen, setIsDockOpen] = useState(true);
+  const [isDockOpen, setIsDockOpen] = useState(false);
   const presentation = presentations[car.slug] ?? presentations["obsidian-gt"];
 
-  useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 640px)");
-    const syncMenu = () => setIsDockOpen(desktop.matches);
-    const frame = window.requestAnimationFrame(syncMenu);
-    desktop.addEventListener("change", syncMenu);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      desktop.removeEventListener("change", syncMenu);
-    };
-  }, []);
-
   const navigateTo = (href: string) => router.push(href);
-  const whatsappUrl = useMemo(() => {
-    const message = `Hi, I'm interested in the ${presentation.brand} ${presentation.name}. Please share availability and pricing.`;
-    return `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
-  }, [presentation.brand, presentation.name]);
-
   const specs = [
     { label: "Year", value: String(presentation.year), icon: CalendarDays },
     { label: "Color", value: presentation.color, icon: Palette },
@@ -141,10 +123,10 @@ export function CarDetails({ car }: CarDetailsProps) {
         <div className="absolute inset-0 bg-black/58 shadow-[inset_0_0_150px_rgba(0,0,0,0.82)]" />
       </div>
 
-      <header className="relative z-50 hidden h-[84px] border-b border-white/10 bg-black/82 backdrop-blur-md lg:block">
-        <div className="relative flex h-full w-full items-center px-[4vw]">
+      <header className="relative z-50 hidden h-[84px] border-b border-white/8 bg-black/92 backdrop-blur-md lg:block">
+        <div className="relative mx-auto flex h-full w-full max-w-350 items-center px-10">
           <Link href="/" aria-label="Veltro home" className="flex shrink-0 items-center">
-            <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-14 w-auto object-contain" />
+            <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-11 w-auto object-contain" />
           </Link>
 
           <nav className="absolute left-1/2 flex -translate-x-1/2 items-center gap-10 xl:gap-12" aria-label="Primary navigation">
@@ -156,22 +138,22 @@ export function CarDetails({ car }: CarDetailsProps) {
               ["FAQ", "/#faq"],
               ["Contact", "/#contact"],
             ].map(([label, href]) => (
-              <Link key={label} href={href} className={`text-[0.6rem] font-medium uppercase tracking-[0.2em] transition-colors hover:text-white ${label === "Fleet" ? "text-white" : "text-white/68"}`}>
+              <Link key={label} href={href} className={`text-[0.58rem] font-medium uppercase tracking-[0.2em] transition-colors hover:text-white ${label === "Fleet" ? "text-white" : "text-white/58"}`}>
                 {label}
               </Link>
             ))}
           </nav>
 
-          <a href={whatsappUrl} target="_blank" rel="noreferrer" className="ml-auto inline-flex h-11 min-w-[162px] items-center justify-center gap-4 bg-[var(--brand-red)] px-6 text-[0.59rem] font-semibold uppercase tracking-[0.19em] text-white transition-colors hover:bg-[var(--brand-red-dark)]">
+          <Link href="/fleet/all" className="ml-auto inline-flex h-11 min-w-[162px] items-center justify-center gap-4 bg-[var(--brand-red)] px-6 text-[0.57rem] font-semibold uppercase tracking-[0.19em] text-white transition-colors hover:bg-[var(--brand-red-dark)]">
             Book a Car
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.7} aria-hidden="true" />
-          </a>
+          </Link>
         </div>
       </header>
 
       <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-350 flex-col px-5 pb-6 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6 lg:h-[calc(100dvh-84px)] lg:min-h-0 lg:pb-7 lg:pt-4">
         <div className="relative z-50 shrink-0 lg:hidden">
-          <InternalPageHeader title={`${presentation.brand} ${presentation.name}`} isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleMenuSelect} onLogoClick={() => navigateTo("/")} />
+          <InternalPageHeader title="Vehicle Specifications" isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleMenuSelect} surfaceClassName="bg-black sm:bg-transparent" onLogoClick={() => navigateTo("/")} />
         </div>
 
         <div className="mt-5 grid min-h-0 flex-1 gap-6 lg:mt-0 lg:grid-cols-[minmax(0,1.75fr)_minmax(310px,0.75fr)] lg:gap-7 xl:gap-9">
@@ -187,7 +169,7 @@ export function CarDetails({ car }: CarDetailsProps) {
             <div className="grid min-h-[520px] flex-1 grid-cols-1 gap-2.5 sm:grid-cols-[minmax(0,1.9fr)_minmax(190px,0.85fr)] sm:grid-rows-2 lg:min-h-0">
               {presentation.images.map((image, index) => (
                 <figure key={image.src} className={`group relative min-h-56 overflow-hidden border border-white/10 bg-[#090909] ${index === 0 ? "sm:row-span-2" : ""}`}>
-                  <Image src={image.src} alt={`${presentation.brand} ${presentation.name} ${image.label}`} fill priority sizes={index === 0 ? "(max-width: 1023px) 100vw, 58vw" : "(max-width: 1023px) 100vw, 24vw"} className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025] ${image.position ?? "object-center"}`} />
+                  <Image src={image.src} alt={`${presentation.brand} ${presentation.name} ${image.label}`} fill priority={index === 0} sizes={index === 0 ? "(max-width: 1023px) 100vw, 58vw" : "(max-width: 1023px) 100vw, 24vw"} className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025] ${image.position ?? "object-center"}`} />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(0,0,0,0.72)_100%)]" />
                   <figcaption className="absolute bottom-3 left-3 flex items-center gap-2 text-[0.55rem] font-medium uppercase tracking-[0.2em] text-white/75"><span className="text-[var(--brand-red)]">0{index + 1}</span><span className="h-px w-5 bg-white/35" />{image.label}</figcaption>
                 </figure>
@@ -212,7 +194,7 @@ export function CarDetails({ car }: CarDetailsProps) {
             </div>
 
             <div className="shrink-0 space-y-2.5">
-              <PrimaryButton href={whatsappUrl} target="_blank" rel="noreferrer" className="w-full"><Image src={assetPath("/icons/whatsapp.svg")} alt="" width={16} height={16} className="h-4 w-4" />Book on WhatsApp</PrimaryButton>
+              <PrimaryButton href="/fleet/all" className="w-full"><Image src={assetPath("/icons/whatsapp.svg")} alt="" width={16} height={16} className="h-4 w-4" />Check Availability</PrimaryButton>
               <button type="button" onClick={() => navigateTo("/fleet/all")} className="h-10 w-full border border-white/12 text-[0.58rem] font-medium uppercase tracking-[0.18em] text-white/62 transition hover:border-white/30 hover:text-white">Back to fleet</button>
             </div>
           </aside>

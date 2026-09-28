@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import {
   Activity,
   ArrowLeft,
@@ -14,6 +13,7 @@ import {
   Wind,
 } from "lucide-react";
 import { useState } from "react";
+import { PrimaryButton } from "@/components/ui/primary-button";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
@@ -108,9 +108,6 @@ export function FleetSpecsOverlay({
   const dailyPrice = new Intl.NumberFormat("en-US").format(car.pricePerDay);
   const description =
     `${displayBrand} ${displayName} blends dramatic presence, sharp dynamics, and premium driver focus.`; 
-  const whatsappNumber = "+96170335113";
-  const whatsappMessage = `Hello, I'm interested in the ${displayBrand} ${displayName} rental. Please share availability.`;
-  const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, "")}?text=${encodeURIComponent(whatsappMessage)}`;
   const categoryContent: Record<
     SpecCategory,
     {
@@ -360,15 +357,13 @@ export function FleetSpecsOverlay({
                     })}
                   </div>
 
-                  <Link
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-3 flex h-10 w-full items-center justify-center gap-2 bg-[var(--brand-red)] px-3 text-center text-[0.52rem] font-semibold uppercase tracking-[0.13em] text-white transition hover:brightness-110"
+                  <PrimaryButton
+                    href="/fleet/all"
+                    className="mt-3 w-full"
                   >
-                    Book on WhatsApp
+                    Check Availability
                     <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" />
-                  </Link>
+                  </PrimaryButton>
                 </div>
               </div>
             </div>
@@ -446,15 +441,13 @@ export function FleetSpecsOverlay({
                   <span className="px-2 text-[var(--brand-red)]">/</span>
                   <span>{drivetrain}</span>
                 </p>
-                <Link
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 flex h-11 w-full max-w-[15rem] items-center justify-center gap-2 bg-[var(--brand-red)] px-3 text-center text-[0.52rem] font-semibold uppercase tracking-[0.13em] text-white transition hover:brightness-110"
+                <PrimaryButton
+                  href="/fleet/all"
+                  className="mt-4 w-full max-w-[15rem]"
                 >
-                  <span>Book on WhatsApp</span>
+                  <span>Check Availability</span>
                   <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" />
-                </Link>
+                </PrimaryButton>
               </div>
             </div>
           </section>

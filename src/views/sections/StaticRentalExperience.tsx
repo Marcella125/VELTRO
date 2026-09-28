@@ -8,7 +8,7 @@ import {
   CalendarDays,
   CarFront,
   ChevronDown,
-  Clock3,
+  Facebook,
   Gauge,
   Gem,
   FileText,
@@ -69,13 +69,6 @@ const fleet = [
     price: "$1,200",
   },
 ] as const;
-
-const whatsappNumber = "96170335113";
-
-function getWhatsAppBookingUrl(brand: string, name: string) {
-  const message = `Hi, I'm interested in booking the ${brand} ${name}. Please share availability.`;
-  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-}
 
 const faqs = [
   ["How do I make a reservation?", "Choose your vehicle and contact our concierge. We confirm availability, dates, delivery, and final booking details with you directly."],
@@ -231,7 +224,7 @@ export function StaticRentalExperience() {
                   <span className="flex items-center justify-end gap-1.5 whitespace-nowrap"><Users size={12}/>{car.seats}</span>
                 </div>
                 <div className="px-4 py-3"><strong className="text-[1.25rem] font-semibold">{car.price}</strong><span className="ml-2.5 text-[0.47rem] uppercase tracking-[0.14em] text-white/42">Rent per day</span></div>
-                <a href={getWhatsAppBookingUrl(car.brand, car.name)} target="_blank" rel="noreferrer" className="mx-3.5 mb-3.5 flex h-9 w-[calc(100%-1.75rem)] items-center justify-center gap-2 bg-[var(--brand-red)] text-[0.54rem] font-semibold uppercase tracking-[0.16em] transition hover:brightness-110">Book on WhatsApp <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" /></a>
+                <Link href="/fleet/all" className="mx-3.5 mb-3.5 flex h-9 w-[calc(100%-1.75rem)] items-center justify-center gap-2 bg-[var(--brand-red)] text-[0.54rem] font-semibold uppercase tracking-[0.16em] transition hover:brightness-110">Check Availability <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" /></Link>
               </article>
             ))}
           </div>
@@ -311,7 +304,7 @@ export function StaticRentalExperience() {
             <form onSubmit={submitContact} className="rounded-2xl border border-black/20 bg-[#111214] p-5 shadow-[0_24px_70px_rgba(0,0,0,.2)] sm:p-7"><div className="grid gap-4">{[["Full name","Your name","text"],["Email","Your email","email"],["Subject","How can we help?","text"]].map(([label,placeholder,type])=><label key={label} className="text-[0.55rem] uppercase tracking-[0.14em] text-white/58">{label}<input required type={type} placeholder={placeholder} className="mt-2 h-11 w-full rounded-lg border border-white/12 bg-[#070809] px-3 text-sm normal-case tracking-normal text-white placeholder:text-white/30 outline-none focus:border-[var(--brand-red)]"/></label>)}<label className="text-[0.55rem] uppercase tracking-[0.14em] text-white/58">Message<textarea required rows={4} placeholder="Your message" className="mt-2 w-full resize-none rounded-lg border border-white/12 bg-[#070809] p-3 text-sm normal-case tracking-normal text-white placeholder:text-white/30 outline-none focus:border-[var(--brand-red)]"/></label><button className="mt-2 flex h-12 items-center justify-center gap-2 rounded-lg bg-[var(--brand-red)] text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white">Send message <ArrowRight size={13}/></button>{formStatus?<p className="text-xs text-white/58">{formStatus}</p>:null}</div></form>
           </div>
         </div>
-        <footer className="relative z-10 border-t border-white/10 bg-black/90"><div className="mx-auto flex w-full max-w-350 flex-col gap-5 px-5 py-6 sm:flex-row sm:items-center sm:px-10"><Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} className="h-9 w-auto self-start" unoptimized/><nav className="flex flex-wrap gap-5 sm:ml-auto">{navigation.map(([id,label])=><button key={id} type="button" onClick={()=>navigate(id)} className="text-[0.52rem] uppercase tracking-[0.13em] text-white/45">{label}</button>)}</nav><div className="flex gap-3 text-white/55"><Instagram size={14}/><Clock3 size={14}/></div></div><div className="mx-auto flex max-w-350 justify-between border-t border-white/8 px-5 py-4 text-[0.5rem] text-white/30 sm:px-10"><span>© 2026 Veltro. All rights reserved.</span><span>Privacy Policy · Terms of Service</span></div></footer>
+        <footer className="relative z-10 border-t border-white/10 bg-black/90"><div className="mx-auto flex w-full max-w-350 flex-col gap-5 px-5 py-6 sm:flex-row sm:items-center sm:px-10"><Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} className="h-9 w-auto self-start" unoptimized/><nav className="flex flex-wrap gap-5 sm:ml-auto">{navigation.map(([id,label])=><button key={id} type="button" onClick={()=>navigate(id)} className="text-[0.52rem] uppercase tracking-[0.13em] text-white/45">{label}</button>)}</nav><div className="flex gap-3 text-white/55"><Instagram size={14}/><Facebook size={14}/></div></div><div className="mx-auto flex max-w-350 justify-between border-t border-white/8 px-5 py-4 text-[0.5rem] text-white/30 sm:px-10"><span>© 2026 Veltro. All rights reserved.</span><span>Privacy Policy · Terms of Service</span></div></footer>
       </section>
     </main>
   );
