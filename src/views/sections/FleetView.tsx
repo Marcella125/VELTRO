@@ -185,16 +185,14 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
     };
   }, [embedded]);
 
-  useEffect(() => {
+  const handleBrandFilterChange = (filter: ActiveBrandFilter) => {
+    setActiveBrandFilter(filter);
     setActivePageIndex(0);
-  }, [activeBrandFilter]);
-
-  useEffect(() => {
     setActiveMobileSlide(0);
     if (mobileCarouselRef.current) {
       mobileCarouselRef.current.scrollTo({ left: 0, behavior: "auto" });
     }
-  }, [activeBrandFilter]);
+  };
 
   const handleDockSelect = (id: string) => {
     if (embedded) {
@@ -222,7 +220,30 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
   const hasNextPage = activePageIndex < vehiclePages.length - 1;
   const showFleetArrows =
     activeBrandFilter === "all" || filteredCars.length > 4;
-  const currentPageCars = vehiclePages[activePageIndex] ?? [];
+
+  const handleMobileScroll = () => {
+    const carousel = mobileCarouselRef.current;
+    if (!carousel) return;
+
+    const slides = Array.from(carousel.children) as HTMLElement[];
+    if (!slides.length) return;
+
+    const nearestSlide = slides.reduce(
+      (nearest, slide, index) => {
+        const distance = Math.abs(slide.offsetLeft - carousel.scrollLeft);
+        return distance < nearest.distance ? { index, distance } : nearest;
+      },
+      { index: 0, distance: Number.POSITIVE_INFINITY }
+    );
+
+    setActiveMobileSlide(nearestSlide.index);
+  };
+
+  const scrollToMobileSlide = (index: number) => {
+    const carousel = mobileCarouselRef.current;
+    const slide = carousel?.children.item(index) as HTMLElement | null;
+    slide?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+  };
 
   return (
     <Root className="relative h-dvh overflow-x-hidden overflow-y-hidden text-[#F5F5F5]">
@@ -274,7 +295,7 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
                         type="button"
                         aria-pressed={isActive}
                         aria-label={filter.alt}
-                        onClick={() => setActiveBrandFilter(filter.id)}
+                        onClick={() => handleBrandFilterChange(filter.id)}
                         className="group relative flex min-h-11 items-center justify-center px-0.5 py-2 md:flex-none md:px-2"
                       >
                         {filter.logoSrc ? (
@@ -331,24 +352,27 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
                     ←
                   </button>
 
-                  <div className="flex min-h-0 flex-1 flex-col">
+                  <div className="flex min-h-0 min-w-0 flex-1 flex-col">
                     <div
                       ref={mobileCarouselRef}
-                      className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:gap-6"
+                      onScroll={handleMobileScroll}
+                      aria-label="Fleet vehicles"
+                      className="no-scrollbar flex min-h-0 min-w-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain md:grid md:snap-none md:grid-cols-2 md:overflow-visible md:gap-4 lg:grid-cols-3 lg:gap-6"
                     >
-                      {currentPageCars.map((car, index) => {
+                      {filteredCars.map((car, index) => {
                         const presentation = fleetPresentationBySlug[car.slug] ?? {
                           imageSrc: assetPath("/images/cars.png"),
                         };
-                        const absoluteIndex = activePageIndex * 3 + index;
+                        const absoluteIndex = index;
+                        const isOnActiveDesktopPage = Math.floor(index / 3) === activePageIndex;
                         const displayBrand = presentation.displayBrand ?? car.brand;
                         const displayName = presentation.displayName ?? car.name;
 
                         return (
                           <article
                             key={car.id}
-                            className={`relative flex min-h-0 flex-col overflow-hidden border border-white/8 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:shadow-[0_24px_60px_rgba(0,0,0,0.48)] ${
-                              index >= 2 ? "hidden min-[411px]:flex md:flex" : ""
+                            className={`relative flex w-full shrink-0 snap-start flex-col overflow-hidden border border-white/8 transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:shadow-[0_24px_60px_rgba(0,0,0,0.48)] md:w-auto md:shrink md:snap-none ${
+                              isOnActiveDesktopPage ? "md:flex" : "md:hidden"
                             }`}
                           >
                             <button
@@ -402,6 +426,28 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
                         );
                       })}
                     </div>
+
+                    {filteredCars.length > 1 ? (
+                      <div
+                        className="mt-3 flex shrink-0 items-center justify-center gap-2 md:hidden"
+                        aria-label="Choose a vehicle slide"
+                      >
+                        {filteredCars.map((car, index) => (
+                          <button
+                            key={car.id}
+                            type="button"
+                            aria-label={`Show vehicle ${index + 1} of ${filteredCars.length}`}
+                            aria-current={activeMobileSlide === index ? "true" : undefined}
+                            onClick={() => scrollToMobileSlide(index)}
+                            className={`h-1 rounded-full transition-[width,background-color] duration-200 ${
+                              activeMobileSlide === index
+                                ? "w-7 bg-[var(--brand-red)]"
+                                : "w-3 bg-white/28"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
 
                   <button
