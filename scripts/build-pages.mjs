@@ -32,7 +32,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
   const { slug } = await params;
   const car = getPublicCars().find((entry) => entry.slug === slug);
   if (!car) notFound();
-  return <CarDetails car={car} returnHref="/fleet" returnLabel="Back to fleet" />;
+  return <CarDetails car={car} returnHref="/#fleet" returnLabel="Fleet" />;
 }
 `;
 
