@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type TouchEvent as ReactTouchEvent } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -75,10 +75,12 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [activeFleetIndex, setActiveFleetIndex] = useState(0);
   const fleetSectionRef = useRef<HTMLElement>(null);
+  const pageRef = useRef<HTMLElement>(null);
   const fleetIntroRef = useRef<HTMLDivElement>(null);
   const fleetStageRef = useRef<HTMLDivElement>(null);
   const activeFleetImageRef = useRef<HTMLDivElement>(null);
   const activeFleetInfoRef = useRef<HTMLDivElement>(null);
+  const fleetTouchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const activeFleet = showcaseFleet[activeFleetIndex % Math.max(showcaseFleet.length, 1)];
   const previousFleet = showcaseFleet[(activeFleetIndex - 1 + showcaseFleet.length) % Math.max(showcaseFleet.length, 1)];
@@ -95,6 +97,36 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
     return () => {
       window.removeEventListener("scroll", updateHeader);
       document.removeEventListener("scroll", updateHeader, { capture: true });
+    };
+  }, []);
+
+  useEffect(() => {
+    const page = pageRef.current;
+    if (!page) return;
+
+    const mobile = window.matchMedia("(max-width: 639px)");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!mobile.matches || reduceMotion.matches) return;
+
+    const revealItems = Array.from(page.querySelectorAll<HTMLElement>("[data-mobile-reveal]"));
+    page.classList.add("mobile-reveal-ready");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        (entry.target as HTMLElement).dataset.mobileVisible = "true";
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: "0px 0px -7% 0px" });
+
+    revealItems.forEach((item, index) => {
+      item.style.setProperty("--mobile-reveal-delay", `${(index % 4) * 55}ms`);
+      observer.observe(item);
+    });
+
+    return () => {
+      observer.disconnect();
+      page.classList.remove("mobile-reveal-ready");
     };
   }, []);
 
@@ -143,8 +175,28 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
     jumpTo(id);
   };
 
+  const handleFleetTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0];
+    fleetTouchStartRef.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+  };
+
+  const handleFleetTouchEnd = (event: ReactTouchEvent<HTMLDivElement>) => {
+    const start = fleetTouchStartRef.current;
+    const touch = event.changedTouches[0];
+    fleetTouchStartRef.current = null;
+    if (!start || !touch || !window.matchMedia("(max-width: 639px)").matches) return;
+
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    if (Math.abs(deltaX) < 45 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+    setActiveFleetIndex((index) => deltaX < 0
+      ? (index + 1) % showcaseFleet.length
+      : (index - 1 + showcaseFleet.length) % showcaseFleet.length);
+  };
+
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#070809] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
+    <main ref={pageRef} className="min-h-screen overflow-x-hidden bg-[#070809] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
       <header
         style={{ backgroundColor: headerScrolled ? "#090A0B" : "transparent" }}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${headerScrolled ? "shadow-[0_12px_35px_rgba(0,0,0,.22)] backdrop-blur-xl" : ""}`}
@@ -181,16 +233,16 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         ) : null}
       </header>
 
-      <section id="home" className="relative flex min-h-[100svh] scroll-mt-20 items-end overflow-hidden pt-20">
+      <section id="home" className="relative flex min-h-[100svh] scroll-mt-20 items-center overflow-hidden pt-20 sm:items-end">
         <Image src={assetPath("/images/home-hero-mobile-v2.png")} alt="Veltro luxury car rental in Beirut" fill priority sizes="100vw" quality={92} className="object-cover object-center sm:hidden" />
         <Image src={assetPath("/images/Home bg.png")} alt="Veltro luxury car rental banner" fill priority sizes="100vw" quality={92} className="hidden object-cover object-center sm:block" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,4,5,.96)_0%,rgba(3,4,5,.77)_30%,rgba(3,4,5,.08)_68%,rgba(3,4,5,.12)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.25)_0%,transparent_44%,rgba(2,3,4,.88)_100%)]" />
 
-        <div className="relative z-10 mx-auto w-full max-w-[92rem] px-5 pb-10 pt-24 sm:px-8 sm:pb-14 sm:pt-28 lg:px-12 lg:pb-16 lg:pt-32">
+        <div className="relative z-10 mx-auto w-full max-w-[92rem] -translate-y-16 px-5 sm:translate-y-0 sm:px-8 sm:pb-14 sm:pt-28 lg:px-12 lg:pb-16 lg:pt-32">
           <div className="mx-auto max-w-[47rem] text-center">
             <p className="mb-6 flex items-center justify-center gap-4 text-[0.62rem] font-semibold uppercase tracking-[0.38em] text-white/76 sm:text-[0.72rem]">
-              Luxury car rental <span className="h-4 w-0.5 -skew-x-12 bg-[#d7ff21]" /> Beirut
+              Luxury car rental
             </p>
             <h1 className="font-hero text-[clamp(1.65rem,calc(4.35vw-4px),3.65rem)] font-bold uppercase italic leading-[0.76] tracking-[-0.08em] text-[#f2eee7] drop-shadow-2xl">
               Drive the<br /><span className="text-[#d7ff21]">extraordinary.</span>
@@ -210,9 +262,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       </section>
 
       <section ref={fleetSectionRef} id="fleet" className="font-body relative h-[calc(100svh-4.25rem)] min-h-[35rem] scroll-mt-[4.25rem] overflow-hidden bg-[#070809] py-7 sm:h-[calc(100svh-4.75rem)] sm:min-h-[37rem] sm:scroll-mt-20 sm:py-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_48%,rgba(255,255,255,.105),transparent_43%),linear-gradient(180deg,#070809_0%,#101214_52%,#050607_100%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[36%] bg-[linear-gradient(180deg,rgba(255,255,255,.025),transparent_55%)]" />
-
+        <Image src={assetPath("/images/showroom bg mobile.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-center sm:hidden" />
         <div className="relative z-10 mx-auto flex h-full min-h-0 max-w-[100rem] flex-col px-5 sm:px-8 lg:px-12">
           <div ref={fleetIntroRef} className="text-center">
             <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Our fleet</p>
@@ -223,7 +273,12 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           </div>
 
           {activeFleet ? (
-            <div ref={fleetStageRef} className="relative mt-1 flex min-h-0 flex-1 flex-col">
+            <div
+              ref={fleetStageRef}
+              className="relative mt-1 flex min-h-0 translate-y-[calc(-5rem+1cm)] flex-1 touch-pan-y flex-col sm:translate-y-0"
+              onTouchStart={handleFleetTouchStart}
+              onTouchEnd={handleFleetTouchEnd}
+            >
               <div className="relative min-h-[12rem] flex-1 sm:min-h-[14rem]">
                 {previousFleet ? (
                   <div className="pointer-events-none absolute left-[0.2cm] bottom-[calc(4%+0.5cm)] hidden h-[34%] w-[22%] opacity-30 blur-[.2px] md:block">
@@ -236,19 +291,23 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
                   </div>
                 ) : null}
 
-                <div ref={activeFleetImageRef} key={activeFleet.id} className="absolute inset-x-[5%] bottom-[4%] top-[14%] sm:inset-x-[20%] lg:inset-x-[24%]">
+                <div ref={activeFleetImageRef} key={activeFleet.id} className="absolute inset-x-[5%] bottom-[calc(20%-1cm)] top-[2%] sm:inset-x-[20%] sm:bottom-[4%] sm:top-[14%] lg:inset-x-[24%]">
                   <Image src={activeFleet.showcaseImage} alt={`${activeFleet.brand} ${activeFleet.name}`} fill priority={activeFleetIndex === 0} sizes="(max-width: 767px) 96vw, 70vw" className="object-contain object-bottom drop-shadow-[0_30px_32px_rgba(0,0,0,.72)]" />
                 </div>
 
-                <button type="button" onClick={() => setActiveFleetIndex((index) => (index - 1 + showcaseFleet.length) % showcaseFleet.length)} aria-label="Previous vehicle" className="absolute left-0 top-[26%] z-20 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-[#d7ff21]/65 text-white transition hover:border-[#d7ff21] hover:bg-[#d7ff21] hover:text-black sm:left-[8%] sm:size-12">
+                <button type="button" onClick={() => setActiveFleetIndex((index) => (index - 1 + showcaseFleet.length) % showcaseFleet.length)} aria-label="Previous vehicle" className="absolute left-0 top-[26%] z-20 hidden size-10 -translate-y-1/2 place-items-center rounded-full border border-[#d7ff21]/65 text-white transition hover:border-[#d7ff21] hover:bg-[#d7ff21] hover:text-black sm:left-[8%] sm:grid sm:size-12">
                   <CaretLeft size={20} weight="bold" />
                 </button>
-                <button type="button" onClick={() => setActiveFleetIndex((index) => (index + 1) % showcaseFleet.length)} aria-label="Next vehicle" className="absolute right-0 top-[26%] z-20 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-[#d7ff21]/65 text-white transition hover:border-[#d7ff21] hover:bg-[#d7ff21] hover:text-black sm:right-[8%] sm:size-12">
+                <button type="button" onClick={() => setActiveFleetIndex((index) => (index + 1) % showcaseFleet.length)} aria-label="Next vehicle" className="absolute right-0 top-[26%] z-20 hidden size-10 -translate-y-1/2 place-items-center rounded-full border border-[#d7ff21]/65 text-white transition hover:border-[#d7ff21] hover:bg-[#d7ff21] hover:text-black sm:right-[8%] sm:grid sm:size-12">
                   <CaretRight size={20} weight="bold" />
                 </button>
+
+                <div className="pointer-events-none absolute inset-x-0 bottom-[3%] flex translate-y-[1cm] items-center justify-center gap-2 text-[0.5rem] font-bold uppercase tracking-[0.28em] text-white/55 sm:hidden">
+                  Swipe <ArrowRight size={13} className="text-[#d7ff21]" />
+                </div>
               </div>
 
-              <div ref={activeFleetInfoRef} className="relative z-10 -mt-1 shrink-0 text-center sm:-mt-2">
+              <div ref={activeFleetInfoRef} className="relative z-10 -mt-1 translate-y-[1cm] shrink-0 text-center sm:-mt-2 sm:translate-y-0">
                 <p className="text-[0.58rem] font-bold uppercase tracking-[0.38em] text-white/72 sm:text-[0.66rem]">{activeFleet.brand}</p>
                 <h3 className="font-body mt-2 text-[clamp(1.55rem,3.4vw,3.3rem)] font-extrabold uppercase italic leading-none tracking-[-0.045em] text-[#f2eee7]">
                   {activeFleet.name.replace(new RegExp(`^${activeFleet.brand}\\s*`, "i"), "")}
@@ -264,7 +323,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
 
       <section id="experience" className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#070809] py-10 scroll-mt-[4.25rem] sm:scroll-mt-20 sm:py-14 lg:py-10">
         <div className="relative z-10 mx-auto grid w-full max-w-[92rem] gap-6 px-4 sm:gap-12 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:px-12">
-          <div>
+          <div data-mobile-reveal>
             <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Discover</p>
             <h2 className="font-fleet-heading mt-3 max-w-[32rem] text-[clamp(2rem,5vw,4.8rem)] uppercase leading-[0.82] tracking-[-0.035em] text-[#f2eee7] sm:mt-4">
               The Veltro<br /><span className="text-[#d7ff21]">experience.</span>
@@ -280,7 +339,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               ].map(([Icon, title, copy], index) => {
                 const CardIcon = Icon as typeof CarFront;
                 return (
-                  <article key={title as string} className="flex min-h-[11.5rem] flex-col items-center justify-center rounded-[1.35rem] border border-white/90 bg-black px-2.5 py-4 text-center transition duration-500 hover:-translate-y-1 sm:min-h-[14rem] sm:rounded-[2rem] sm:border-2 sm:px-5 sm:py-6">
+                  <article data-mobile-reveal key={title as string} className="flex min-h-[11.5rem] flex-col items-center justify-center rounded-[1.35rem] border border-white/90 bg-black px-2.5 py-4 text-center transition duration-500 hover:-translate-y-1 sm:min-h-[14rem] sm:rounded-[2rem] sm:border-2 sm:px-5 sm:py-6">
                     {index === 0 ? (
                       <span
                         aria-hidden="true"
@@ -308,34 +367,22 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <section id="shop" aria-label="Veltro shop and accessories" className="grid h-[calc(100svh-4.25rem)] grid-cols-2 grid-rows-2 scroll-mt-[4.25rem] overflow-hidden border-t border-white/15 bg-black sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
-        <article data-image-slot="veltro-gifts" className="group relative flex min-h-0 items-end justify-center overflow-hidden border-b border-r border-white/15 bg-[radial-gradient(circle_at_25%_20%,rgba(215,255,33,.14),transparent_30%),linear-gradient(145deg,#111_0%,#050505_58%,#0a0b08_100%)] p-3 text-center sm:p-6 md:p-8">
+      <section id="shop" aria-label="Veltro shop and accessories" className="flex scroll-mt-[4.25rem] flex-col overflow-hidden border-t border-white/15 bg-black sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
+        <div data-mobile-reveal className="w-full shrink-0 px-5 py-9 text-left sm:hidden">
+          <p className="text-[0.58rem] font-bold uppercase tracking-[0.46em] text-white/55 sm:text-[0.65rem]">The shop</p>
+          <h2 className="font-fleet-heading mt-3 text-[clamp(2rem,5vw,4.4rem)] uppercase leading-[0.82] tracking-[-0.035em] text-white">
+            Veltro <span className="text-[#d7ff21]">essentials.</span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:min-h-0 sm:flex-1 sm:grid-cols-2 sm:grid-rows-2">
+        <article data-mobile-reveal data-image-slot="veltro-gifts" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_25%_20%,rgba(215,255,33,.14),transparent_30%),linear-gradient(145deg,#111_0%,#050505_58%,#0a0b08_100%)] p-5 text-center sm:h-auto sm:min-h-0 sm:border-r sm:p-6 md:p-8">
           <Image src={assetPath("/images/veltro gifts.png")} alt="Veltro branded gifts collection" fill sizes="(max-width: 767px) 100vw, 50vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025]" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(0,0,0,.82)_100%)]" />
-          <div className="relative z-10 -mb-1 sm:-mb-5">
-            <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white">Veltro gifts</h2>
+          <div className="relative z-10 mb-2 sm:-mb-5">
+            <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro gifts</h2>
             <a href="#contact" className="mt-2 inline-flex items-center gap-1.5 text-[0.62rem] font-medium text-white/78 transition hover:text-[#d7ff21] sm:mt-3 sm:gap-2 sm:text-xs">Shop now <ArrowRight size={13} /></a>
           </div>
-        </article>
-
-        <article data-image-slot="shop-collection" className="relative flex min-h-0 flex-col items-center justify-center overflow-hidden border-b border-white/15 bg-[#f2f3f3] px-2 py-3 text-center text-black sm:px-5 sm:py-4">
-          <button type="button" aria-label="Previous products" className="absolute left-0 top-[35%] grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
-          <button type="button" aria-label="Next products" className="absolute right-0 top-[35%] grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
-          <div className="flex w-[78%] items-stretch justify-center gap-1 sm:gap-2.5 lg:gap-4">
-            {[
-              ["cap.png", "Veltro cap"],
-              ["hoodie.png", "Veltro hoodie"],
-              ["sweatshirt.png", "Veltro sweatshirt"],
-              ["socks.png", "Veltro socks"],
-              ["bonne.png", "Veltro beanie"],
-            ].map(([file, alt], index) => (
-              <div key={file} className={`relative h-16 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index === 0 || index === 4 ? "hidden sm:block" : ""}`}>
-                <Image src={`${assetPath(`/images/clothes shop/${file}`)}?v=2`} alt={alt} fill sizes="(max-width: 767px) 25vw, 10vw" className="object-contain p-1" />
-              </div>
-            ))}
-          </div>
-          <h2 className="mt-2 font-body text-[clamp(0.82rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em]">Shop the collection</h2>
-          <a href="#contact" className="mt-1.5 inline-flex items-center gap-1.5 text-[0.62rem] font-medium transition hover:text-[#7d9400] sm:mt-2 sm:gap-2 sm:text-sm">Explore all <ArrowRight size={13} /></a>
         </article>
 
         {[
@@ -344,7 +391,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         ].map(([slot, Icon, title], index) => {
           const TileIcon = Icon as typeof Armchair;
           return (
-            <article key={slot as string} data-image-slot={slot as string} className={`group relative flex min-h-0 items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,.08),transparent_34%),linear-gradient(145deg,#111,#030303)] p-3 text-center sm:p-5 md:p-7 ${index % 2 === 0 ? "border-r" : ""}`}>
+            <article data-mobile-reveal key={slot as string} data-image-slot={slot as string} className={`group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,.08),transparent_34%),linear-gradient(145deg,#111,#030303)] p-5 text-center sm:h-auto sm:min-h-0 md:p-7 ${index === 1 ? "sm:border-r" : ""}`}>
               {index < 2 ? (
                 <>
                   <Image
@@ -360,22 +407,40 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               ) : (
                 <TileIcon size={170} strokeWidth={0.55} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[58%] text-white/[0.065] transition duration-700 group-hover:scale-105 group-hover:text-[#d7ff21]/10" />
               )}
-              <div className="relative z-10 -mb-1 sm:-mb-3">
-                <h3 className="font-body text-[clamp(0.78rem,2.3vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.035em] text-white">{title as string}</h3>
+              <div className="relative z-10 mb-2 sm:-mb-3">
+                <h3 className="font-body text-[clamp(0.78rem,2.3vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.035em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">{title as string}</h3>
                 <a href="#contact" className="mt-2 inline-flex items-center gap-1.5 text-[0.6rem] font-medium text-white/76 transition hover:text-[#d7ff21] sm:mt-3 sm:gap-2 sm:text-sm">Shop now <ArrowRight size={13} /></a>
               </div>
             </article>
           );
         })}
+
+        <article data-mobile-reveal data-image-slot="shop-collection" className="relative flex h-[55svh] min-h-[22rem] flex-col items-center justify-center overflow-hidden border-b border-white/15 bg-[#f2f3f3] px-2 py-5 text-center text-black sm:h-auto sm:min-h-0 sm:px-5 sm:py-4">
+          <button type="button" aria-label="Previous products" className="absolute left-0 top-[35%] grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
+          <button type="button" aria-label="Next products" className="absolute right-0 top-[35%] grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
+          <div className="flex w-[82%] items-stretch justify-center gap-2 sm:w-[78%] sm:gap-2.5 lg:gap-4">
+            {[
+              ["cap.png", "Veltro cap"],
+              ["hoodie.png", "Veltro hoodie"],
+              ["sweatshirt.png", "Veltro sweatshirt"],
+              ["socks.png", "Veltro socks"],
+              ["bonne.png", "Veltro beanie"],
+            ].map(([file, alt], index) => (
+              <div key={file} className={`relative h-24 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index === 0 || index === 4 ? "hidden sm:block" : ""}`}>
+                <Image src={`${assetPath(`/images/clothes shop/${file}`)}?v=2`} alt={alt} fill sizes="(max-width: 767px) 25vw, 10vw" className="object-contain p-1" />
+              </div>
+            ))}
+          </div>
+          <h2 className="mt-5 font-body text-[clamp(1.15rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] sm:mt-2 lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
+          <a href="#contact" className="mt-2 inline-flex items-center gap-1.5 text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:gap-2 sm:text-sm">Explore all <ArrowRight size={13} /></a>
+        </article>
+        </div>
       </section>
 
       <section id="faq" className="relative flex min-h-[100svh] scroll-mt-[4.25rem] items-center overflow-hidden bg-[#0b0c0d] py-10 sm:scroll-mt-[4.75rem] sm:py-20 lg:py-28">
-        <Image src={assetPath("/images/faq bg.png")} alt="Dark performance showroom with checkered flag" fill sizes="100vw" quality={94} className="object-cover object-center" />
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,.42)_0%,rgba(0,0,0,.2)_50%,rgba(0,0,0,.5)_100%)]" />
         <div className="relative z-10 mx-auto grid w-full max-w-[92rem] gap-6 px-5 sm:gap-12 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-12">
-          <div><p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Good to know</p><DisplayTitle className="mt-3 sm:mt-6">Questions,<br />answered.</DisplayTitle></div>
-          <div className="border-t border-white/14">
+          <div data-mobile-reveal><p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Good to know</p><DisplayTitle className="mt-3 sm:mt-6">Questions,<br />answered.</DisplayTitle></div>
+          <div data-mobile-reveal className="border-t border-white/14">
             {faqs.map(([question, answer], index) => {
               const open = activeFaq === index;
               return <article key={question} className="border-b border-white/14"><button type="button" onClick={() => setActiveFaq(open ? -1 : index)} className="flex w-full items-center gap-4 py-4 text-left sm:gap-5 sm:py-6"><span className="font-hero text-base font-bold italic text-[#d7ff21] sm:text-lg">0{index + 1}</span><span className="flex-1 text-xs font-bold uppercase tracking-[0.07em] sm:text-sm sm:tracking-[0.08em]">{question}</span><ChevronDown size={18} className={`transition ${open ? "rotate-180 text-[#d7ff21]" : "text-white/40"}`} /></button>{open ? <p className="max-w-2xl pb-4 pl-9 text-xs leading-5 text-white/52 sm:pb-6 sm:pl-12 sm:text-sm sm:leading-6">{answer}</p> : null}</article>;
@@ -385,7 +450,9 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       </section>
 
       <section id="contact" className="relative flex min-h-[calc(100svh-4.75rem)] scroll-mt-[4.75rem] items-center overflow-hidden border-t border-white/10 bg-black py-14 sm:py-16">
-        <div className="relative z-10 mx-auto w-full max-w-[92rem] px-5 text-center sm:px-8 lg:px-12">
+        <Image src={assetPath("/images/faq bg.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-center" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/55" />
+        <div data-mobile-reveal className="relative z-10 mx-auto w-full max-w-[92rem] px-5 text-center sm:px-8 lg:px-12">
           <p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Start your journey</p>
           <DisplayTitle className="mx-auto mt-5 max-w-4xl !text-[clamp(2.35rem,3.8vw,3.7rem)] !leading-[0.84] sm:mt-6">Your next drive<br /><span className="text-[#d7ff21]">starts here.</span></DisplayTitle>
           <p className="mx-auto mt-5 max-w-[32rem] text-[0.78rem] leading-6 text-white/55 sm:mt-6 sm:text-sm">Tell us where you want to go. Our concierge will match the right car to the moment.</p>
@@ -397,7 +464,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         <Image src={assetPath("/images/footer bg.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-bottom" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/30" />
         <div className="relative z-10 mx-auto w-full max-w-[92rem] px-5 pb-4 pt-8 sm:px-8 sm:pb-6 sm:pt-9 lg:px-12 lg:pt-10">
-          <div className="grid gap-7 border-b border-white/10 pb-7 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.7fr_1fr] lg:gap-12 lg:pb-9">
+          <div data-mobile-reveal className="grid gap-7 border-b border-white/10 pb-7 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.7fr_1fr] lg:gap-12 lg:pb-9">
             <div>
               <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} unoptimized className="h-8 w-auto sm:h-10" />
               <p className="mt-3 max-w-sm text-[0.68rem] leading-5 text-white/48 sm:text-[0.72rem]">Beirut&apos;s premium luxury car rental experience. Iconic machines, personal service, and every detail handled.</p>
