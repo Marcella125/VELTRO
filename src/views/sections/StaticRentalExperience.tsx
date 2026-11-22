@@ -368,7 +368,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <section id="shop" aria-label="Veltro shop and accessories" className="flex scroll-mt-[4.25rem] flex-col overflow-hidden border-t border-white/15 bg-[#090A0B] sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
+      <section id="shop" aria-label="Veltro shop and accessories" className="flex scroll-mt-[4.25rem] flex-col overflow-hidden bg-[#090A0B] sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
         <div data-mobile-reveal className="w-full shrink-0 px-5 py-9 text-left sm:hidden">
           <p className="text-[0.58rem] font-bold uppercase tracking-[0.46em] text-white/55 sm:text-[0.65rem]">The shop</p>
           <h2 className="font-fleet-heading mt-3 text-[clamp(2rem,5vw,4.4rem)] uppercase leading-[0.82] tracking-[-0.035em] text-white">
@@ -444,7 +444,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <section id="contact" className="relative flex min-h-[calc(100svh-4.75rem)] scroll-mt-[4.75rem] items-center overflow-hidden border-t border-white/10 bg-black py-14 sm:py-16">
+      <section id="contact" className="relative flex min-h-[calc(100svh-4.75rem)] scroll-mt-[4.75rem] items-center overflow-hidden bg-black py-14 sm:py-16">
         <Image src={assetPath("/images/faq bg.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-center" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/55" />
         <div data-mobile-reveal className="relative z-10 mx-auto w-full max-w-[92rem] px-5 text-center sm:px-8 lg:px-12">
@@ -455,7 +455,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <footer className="relative overflow-hidden border-t border-white/10 bg-[#050506]">
+      <footer className="relative overflow-hidden bg-[#050506]">
         <Image src={assetPath("/images/footer bg.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-bottom" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/30" />
         <div className="relative z-10 mx-auto w-full max-w-[92rem] px-5 pb-4 pt-8 sm:px-8 sm:pb-6 sm:pt-9 lg:px-12 lg:pt-10">
