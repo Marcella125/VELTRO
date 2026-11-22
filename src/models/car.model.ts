@@ -13,5 +13,12 @@ export type Car = {
   pricePerDay: number;
   image: string;
   featured: boolean;
+  status?: "Available" | "Reserved" | "Unavailable" | "Maintenance" | "Coming Soon";
+  transmission?: string;
+  engine?: string;
+  horsepower?: number;
+  description?: string;
+  exteriorColor?: string;
+  interiorColor?: string;
   specs: CarSpec[];
 };

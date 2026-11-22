@@ -72,11 +72,11 @@ export function MissionView({ embedded = false }: { embedded?: boolean }) {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
-        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Mission<span className="text-[var(--brand-red)]">.</span></h2> : null}
+        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.5rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2rem]">Mission<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 flex flex-1 flex-col justify-between pt-12 sm:pt-14 lg:pb-20 lg:pt-14">
           <div className="max-w-[18rem] sm:max-w-[21rem] lg:max-w-[22rem]">
-            <h1 className="font-display text-[2rem] font-semibold uppercase leading-[0.98] tracking-[-0.03em] text-white sm:text-[2.8rem] lg:text-[3.1rem]">
+            <h1 className="font-display text-[1.75rem] font-semibold uppercase leading-[1] tracking-[-0.03em] text-white sm:text-[2.4rem] lg:text-[2.7rem]">
               Driven by passion<span className="text-[var(--brand-red)]">.</span>
               <br />
               Defined by excellence<span className="text-[var(--brand-red)]">.</span>

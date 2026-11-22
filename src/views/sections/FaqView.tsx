@@ -100,12 +100,12 @@ export function FaqView({ embedded = false }: { embedded?: boolean }) {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
-        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">FAQ&apos;S<span className="text-[var(--brand-red)]">.</span></h2> : null}
+        {embedded ? <h2 className="relative z-30 flex h-16 shrink-0 items-end pb-2 font-display text-[1.5rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2rem]">FAQ&apos;S<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 flex flex-1 items-start justify-start pt-2 sm:pt-5 lg:pt-6">
           <div className="w-full max-w-[46rem]">
             <div className="max-w-[18rem] sm:max-w-[21rem] lg:max-w-[22rem]">
-              <h1 className="font-display text-[1.5rem] font-semibold leading-[0.98] tracking-[-0.03em] text-white sm:text-[2rem] lg:text-[2.2rem]">
+              <h1 className="font-display text-[1.35rem] font-semibold leading-[1] tracking-[-0.03em] text-white sm:text-[1.75rem] lg:text-[1.9rem]">
                 EVERYTHING YOU NEED TO KNOW<span className="text-[var(--brand-red)]">.</span>
               </h1>
 

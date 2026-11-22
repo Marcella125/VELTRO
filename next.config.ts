@@ -4,7 +4,6 @@ const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
 const repoName = "VELTRO";
 
 const nextConfig: NextConfig = {
-  output: "export",
   trailingSlash: true,
   basePath: isGitHubPages ? `/${repoName}` : "",
   assetPrefix: isGitHubPages ? `/${repoName}/` : undefined,

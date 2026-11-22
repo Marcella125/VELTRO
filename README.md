@@ -36,3 +36,24 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 "# Platinum" 
 "# Platinum" 
+
+## Veltro Admin CMS
+
+The protected CMS is available at `/admin`. It uses a signed HTTP-only session,
+server-side authorization on every write endpoint, and a relational SQLite
+database stored at `.data/veltro.db` by default.
+
+Copy `.env.example` to `.env.local` and set strong production values for:
+
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+- `VELTRO_DB_PATH` (use a persistent writable volume in production)
+
+Development-only fallback credentials are `veltroadmin@gmail.com` / `Veltro123`.
+They are disabled automatically when `NODE_ENV=production`.
+
+Because the CMS needs server routes and persistent storage, the project is no
+longer configured as a static export. Deploy it to a Node.js host with a
+persistent volume, or replace the database adapter with the production database
+used by your hosting platform.

@@ -1,18 +1,12 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Montserrat, Rajdhani } from "next/font/google";
+import { Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const rajdhani = Rajdhani({
-  variable: "--font-rajdhani",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -42,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} ${rajdhani.variable} ${geistMono.variable} antialiased bg-black text-zinc-100`}
+        className={`${montserrat.variable} ${geistMono.variable} antialiased bg-black text-zinc-100`}
       >
         {children}
       </body>

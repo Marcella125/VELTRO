@@ -97,7 +97,7 @@ export function SiteHeader({
           <Link
             href={homeHref}
             aria-label="Veltro home"
-            className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center"
+            className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center lg:left-[-1cm]"
             onClick={(event) => {
               if (!onLogoClick) return;
               event.preventDefault();

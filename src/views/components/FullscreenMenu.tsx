@@ -79,7 +79,7 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
               <Link
                 href="/"
                 aria-label="Veltro home"
-                className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center"
+                className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center lg:left-[-1cm]"
                 onClick={(event) => {
                   event.preventDefault();
                   onSelect("home");
@@ -159,7 +159,7 @@ export function FullscreenMenu({ onClose, onSelect }: FullscreenMenuProps) {
             <Link
               href="/"
               aria-label="Veltro home"
-              className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center"
+              className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center lg:left-[-1cm]"
               onClick={(event) => {
                 event.preventDefault();
                 onSelect("home");

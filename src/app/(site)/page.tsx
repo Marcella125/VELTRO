@@ -1,5 +1,8 @@
 import { HomeExperience } from "@/views/sections/HomeExperience";
+import { getPublicCars } from "@/controllers/car.controller";
+
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
-  return <HomeExperience />;
+  return <HomeExperience cars={getPublicCars()} />;
 }

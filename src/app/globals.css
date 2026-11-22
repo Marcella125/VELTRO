@@ -18,6 +18,7 @@
   --transition-normal: 220ms;
   --transition-slow: 500ms;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --veltro-lime: #d7ff21;
 }
 
 @theme inline {
@@ -30,9 +31,20 @@
 body {
   background: #000;
   color: var(--foreground);
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 400;
   line-height: 1.7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif !important;
+  font-style: italic !important;
+  font-weight: 800 !important;
 }
 
 .font-display {
@@ -44,31 +56,72 @@ body {
 }
 
 .font-hero {
-  font-family: var(--font-rajdhani);
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+.font-fleet-heading {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.site-typography {
+  font-family: var(--font-body);
+}
+
+.site-typography :where(h1, h2, h3, h4, h5, h6),
+.site-typography :where(.font-display, .font-hero, .type-hero-title, .type-section-title, .type-card-title, .type-price, .type-spec-value) {
+  font-family: var(--font-display);
+}
+
+.scroll-text-reveal {
+  opacity: 0;
+  translate: 0 1.15rem;
+  filter: blur(5px);
+  transition:
+    opacity 680ms var(--ease-premium) var(--scroll-text-delay, 0ms),
+    translate 680ms var(--ease-premium) var(--scroll-text-delay, 0ms),
+    filter 680ms var(--ease-premium) var(--scroll-text-delay, 0ms);
+  will-change: opacity, translate, filter;
+}
+
+.scroll-text-reveal.is-scroll-visible {
+  opacity: 1;
+  translate: 0 0;
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-text-reveal {
+    opacity: 1;
+    translate: none;
+    filter: none;
+    transition: none;
+  }
 }
 
 button,
 select,
 input,
 textarea {
-  font-family: inherit;
+  font-family: var(--font-body);
 }
 
-.type-nav,
 .type-hero-title,
 .type-section-title,
 .type-card-title,
-.type-button,
 .type-price,
 .type-spec-value {
-  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+  font-family: var(--font-display);
 }
 
+.type-nav,
+.type-button,
 .type-body,
 .type-label,
 .type-footer,
 .type-eyebrow {
-  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
 }
 
 .type-eyebrow {
@@ -87,28 +140,28 @@ textarea {
 }
 
 .type-hero-title {
-  font-size: clamp(56px, 5vw, 72px);
+  font-size: clamp(48px, 4.4vw, 62px);
   font-weight: 700;
   letter-spacing: 0;
   line-height: 0.98;
 }
 
 .type-section-title {
-  font-size: clamp(36px, 3vw, 44px);
+  font-size: clamp(31px, 2.6vw, 38px);
   font-weight: 600;
   letter-spacing: 0;
   line-height: 1.05;
 }
 
 .type-card-title {
-  font-size: clamp(22px, 2vw, 26px);
+  font-size: clamp(19px, 1.7vw, 23px);
   font-weight: 600;
   letter-spacing: 0;
   line-height: 1.15;
 }
 
 .type-price {
-  font-size: clamp(30px, 2.8vw, 40px);
+  font-size: clamp(27px, 2.4vw, 35px);
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
@@ -428,4 +481,163 @@ nextjs-portal {
 
 .platinum-red-scroll::-webkit-scrollbar-thumb:hover {
   background: #d11421;
+}
+
+/* Veltro Admin light theme. Scoped so the public automotive site stays dark. */
+.admin-cms-light {
+  background: #f3f3f0 !important;
+  color: #161616 !important;
+  color-scheme: light;
+}
+
+.admin-cms-light [class*="bg-[#050505]"],
+.admin-cms-light [class*="bg-[#08090a]"],
+.admin-cms-light [class*="bg-[#0b0b0c]"],
+.admin-cms-light [class*="bg-[#0c0d0e]"],
+.admin-cms-light [class*="bg-[#0e1011]"],
+.admin-cms-light [class*="bg-[#101214]"],
+.admin-cms-light [class*="bg-[#111315]"],
+.admin-cms-light [class*="bg-[#17191b]"] {
+  background-color: #ffffff !important;
+}
+
+.admin-cms-light [class~="text-white"] {
+  color: #171717 !important;
+}
+
+.admin-cms-light [class*="text-white/"] {
+  color: rgba(24, 24, 27, 0.52) !important;
+}
+
+.admin-cms-light [class*="border-white"] {
+  border-color: rgba(24, 24, 27, 0.12) !important;
+}
+
+.admin-cms-light [class*="divide-white"] > :not(:last-child) {
+  border-color: rgba(24, 24, 27, 0.1) !important;
+}
+
+.admin-cms-light [class*="bg-white/"] {
+  background-color: rgba(24, 24, 27, 0.045) !important;
+}
+
+.admin-cms-light [class*="hover:bg-white"]:hover {
+  background-color: rgba(24, 24, 27, 0.065) !important;
+}
+
+.admin-cms-light [class*="bg-[var(--brand-red)]"],
+.admin-cms-light [class*="bg-red-700"] {
+  color: #ffffff !important;
+}
+
+.admin-cms-light [class*="bg-black/"] {
+  color: #ffffff !important;
+}
+
+.admin-cms-light input,
+.admin-cms-light select,
+.admin-cms-light textarea {
+  color: #171717;
+}
+
+.admin-cms-light input::placeholder,
+.admin-cms-light textarea::placeholder {
+  color: rgba(24, 24, 27, 0.32) !important;
+}
+
+.admin-cms-light .brightness-0.invert {
+  filter: brightness(0);
+}
+
+.admin-cms-light aside,
+.admin-cms-light header,
+.admin-cms-light section[class*="bg-[#0e1011]"],
+.admin-cms-light article[class*="bg-[#0e1011]"] {
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.025);
+}
+
+.admin-login-light > div.absolute.inset-0:first-of-type {
+  background: radial-gradient(circle at 15% 15%, rgba(177, 18, 38, 0.11), transparent 34%),
+    radial-gradient(circle at 80% 80%, rgba(24, 24, 27, 0.055), transparent 30%) !important;
+}
+
+.admin-login-light > section {
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 30px 90px rgba(24, 24, 27, 0.13) !important;
+}
+
+/* Dashboard-specific exceptions for the dark automotive navigation and hero. */
+.admin-cms-light {
+  line-height: 1.4;
+}
+
+.admin-cms-light .admin-sidebar {
+  background: #0b0d10 !important;
+  color: #fff !important;
+  box-shadow: 8px 0 30px rgba(11, 13, 16, 0.08) !important;
+}
+
+.admin-cms-light .admin-sidebar [class*="text-white"] {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.admin-cms-light .admin-sidebar [class~="text-white"],
+.admin-cms-light .admin-sidebar strong[class*="text-white"] {
+  color: #fff !important;
+}
+
+.admin-cms-light .admin-sidebar [class*="bg-white/"] {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.admin-cms-light .admin-sidebar-art {
+  background: #0b0d10 !important;
+}
+
+.admin-cms-light .admin-sidebar-nav .admin-nav-item {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.admin-cms-light .admin-sidebar-nav .admin-nav-item:hover {
+  background: transparent !important;
+}
+
+.admin-cms-light .admin-sidebar-nav .admin-nav-item-active,
+.admin-cms-light .admin-sidebar-nav .admin-nav-item-active:hover {
+  background: linear-gradient(90deg, #b70d22 0%, rgba(118, 8, 24, 0.78) 64%, rgba(90, 7, 20, 0.3) 100%) !important;
+  box-shadow: none !important;
+}
+
+.admin-cms-light .admin-dashboard [class~="text-white"] {
+  color: #fff !important;
+}
+
+.admin-cms-light .admin-dashboard [class*="text-white/"] {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.admin-cms-light .admin-topbar {
+  background: #fbfcfd !important;
+}
+
+.admin-cms-light .admin-dashboard-card {
+  background: #fff !important;
+}
+
+.admin-cms-light .admin-topbar-search {
+  background: #eef1f4 !important;
+  border-color: #e2e6ea !important;
+}
+
+.admin-cms-light .admin-avatar {
+  background: #17191c !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 3px rgba(177, 18, 38, 0.08);
+}
+
+@media (min-width: 1280px) and (min-height: 850px) {
+  .admin-dashboard-card table {
+    line-height: 1.25;
+  }
 }

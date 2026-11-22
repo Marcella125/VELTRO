@@ -281,7 +281,7 @@ export function FleetSpecsOverlay({
                   <span className="px-2 text-white/34">/</span>
                   <span>{displayBrand}</span>
                 </div>
-                <h2 className="mt-2 ml-[0.5cm] font-display text-[1.72rem] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white max-[430px]:ml-[0.35cm] max-[430px]:text-[1.58rem] max-[390px]:ml-[0.28cm] max-[390px]:text-[1.5rem]">
+                <h2 className="mt-2 ml-[0.5cm] font-display text-[1.5rem] font-black uppercase leading-[0.92] tracking-[-0.05em] text-white max-[430px]:ml-[0.35cm] max-[430px]:text-[1.4rem] max-[390px]:ml-[0.28cm] max-[390px]:text-[1.32rem]">
                   {displayName}
                 </h2>
               </div>
@@ -321,7 +321,7 @@ export function FleetSpecsOverlay({
 
               <div className="px-5 pt-4 max-[430px]:px-4.5 max-[430px]:pt-3.75 max-[390px]:px-4 max-[390px]:pt-3.5">
                 <div className="mx-auto w-full max-w-[25rem] rounded-[22px] border border-white/7 bg-[radial-gradient(120%_100%_at_0%_0%,rgba(255,255,255,0.02),rgba(255,255,255,0)_48%),linear-gradient(180deg,#0b0b0c_0%,#070708_100%)] px-5 pb-5 pt-5 shadow-[0_24px_60px_rgba(0,0,0,0.42)] max-[430px]:max-w-[23.5rem] max-[430px]:rounded-[20px] max-[430px]:px-4.5 max-[430px]:pb-4.5 max-[430px]:pt-4.5 max-[390px]:max-w-[22.5rem] max-[390px]:rounded-[18px] max-[390px]:px-4 max-[390px]:pb-4 max-[390px]:pt-4">
-                  <h3 className="font-display text-[1.6rem] font-medium uppercase tracking-[0.08em] text-white max-[430px]:text-[1.45rem] max-[390px]:text-[1.35rem]">
+                  <h3 className="font-display text-[1.4rem] font-medium uppercase tracking-[0.08em] text-white max-[430px]:text-[1.3rem] max-[390px]:text-[1.2rem]">
                     {activeContent.title}
                   </h3>
                   <div className="mt-2 h-px w-10 bg-[var(--brand-red)]" />
@@ -358,7 +358,7 @@ export function FleetSpecsOverlay({
                   </div>
 
                   <PrimaryButton
-                    href="/fleet/all"
+                    href="/contact"
                     className="mt-3 w-full"
                   >
                     Check Availability
@@ -431,7 +431,7 @@ export function FleetSpecsOverlay({
 
               <div className="mt-auto max-w-[20rem]">
                 <p className="type-eyebrow text-white/62">{displayBrand}</p>
-                <h2 className="mt-2 font-display text-[2.1rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white sm:text-[2.85rem]">
+                <h2 className="mt-2 font-display text-[1.8rem] font-black uppercase leading-[0.92] tracking-[-0.055em] text-white sm:text-[2.4rem]">
                   {displayName}
                 </h2>
                 <p className="mt-2.5 font-display text-[0.76rem] uppercase tracking-[0.16em] text-white/74">
@@ -442,7 +442,7 @@ export function FleetSpecsOverlay({
                   <span>{drivetrain}</span>
                 </p>
                 <PrimaryButton
-                  href="/fleet/all"
+                  href="/contact"
                   className="mt-4 w-full max-w-[15rem]"
                 >
                   <span>Check Availability</span>
@@ -482,7 +482,7 @@ export function FleetSpecsOverlay({
               <div className="flex min-h-0 flex-col p-4.5 sm:p-5.5">
                 <div className="pb-2.5">
                   <div className="flex items-start justify-between gap-4">
-                    <h3 className="font-display text-[1.5rem] font-medium uppercase tracking-[0.08em] text-white sm:text-[1.7rem]">
+                    <h3 className="font-display text-[1.3rem] font-medium uppercase tracking-[0.08em] text-white sm:text-[1.5rem]">
                       {activeContent.title}
                     </h3>
                     <span className="translate-y-[0.32cm] font-display text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-white/88">

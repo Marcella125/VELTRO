@@ -3,7 +3,6 @@ import { assetPath } from "@/lib/asset-path";
 export const primarySiteRoutes = [
   "/",
   "/fleet",
-  "/fleet/all",
   "/blogs",
   "/mission",
   "/contact",
@@ -22,12 +21,6 @@ const routeWarmupAssets: Record<string, string[]> = {
     assetPath("/back3.jpg"),
   ],
   "/fleet": [
-    assetPath("/images/bgcar.png"),
-    assetPath("/lambo fleet.png"),
-    assetPath("/porshe fleet.png"),
-    assetPath("/ferrari fleet.png"),
-  ],
-  "/fleet/all": [
     assetPath("/images/bgcar.png"),
     assetPath("/lambo fleet.png"),
     assetPath("/porshe fleet.png"),

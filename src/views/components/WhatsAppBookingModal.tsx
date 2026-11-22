@@ -113,7 +113,7 @@ export function WhatsAppBookingModal({
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-[#080808]/95 px-5 py-4 backdrop-blur-xl sm:px-7">
           <div>
             <p className="text-[0.52rem] uppercase tracking-[0.24em] text-[var(--brand-red)]">Rental request</p>
-            <h2 id="booking-modal-title" className="mt-1 font-display text-xl font-bold uppercase tracking-[-0.03em] text-white sm:text-2xl">Request This Vehicle</h2>
+            <h2 id="booking-modal-title" className="mt-1 font-display text-lg font-bold uppercase tracking-[-0.03em] text-white sm:text-xl">Request This Vehicle</h2>
           </div>
           <button type="button" onClick={onClose} aria-label="Close booking request" className="grid size-10 place-items-center border border-white/10 text-white/60 transition hover:border-white/25 hover:text-white"><X size={18} /></button>
         </div>
@@ -124,7 +124,7 @@ export function WhatsAppBookingModal({
               <div className="relative h-40 bg-black"><Image src={vehicle.imageSrc} alt={`${vehicle.brand} ${vehicle.name}`} fill sizes="(max-width: 639px) 100vw, 320px" className="object-cover" /></div>
               <div className="p-4">
                 <p className="text-[0.5rem] uppercase tracking-[0.2em] text-white/45">{vehicle.brand} · {vehicle.category}</p>
-                <h3 className="mt-1 font-display text-xl font-bold uppercase text-white">{vehicle.name}</h3>
+                <h3 className="mt-1 font-display text-lg font-bold uppercase text-white">{vehicle.name}</h3>
                 <dl className="mt-4 space-y-2 border-t border-white/10 pt-3 text-xs">
                   <div className="flex justify-between gap-4"><dt className="text-white/42">Pickup</dt><dd className="text-right text-white/80">{formatRentalDate(pickupDate)}</dd></div>
                   <div className="flex justify-between gap-4"><dt className="text-white/42">Return</dt><dd className="text-right text-white/80">{formatRentalDate(returnDate)}</dd></div>

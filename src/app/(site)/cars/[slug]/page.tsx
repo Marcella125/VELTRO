@@ -1,18 +1,24 @@
 import { notFound } from "next/navigation";
-import { cars } from "@/controllers/car.controller";
+import { getPublicCars } from "@/controllers/car.controller";
 import { CarDetails } from "@/views/sections/CarDetails";
 
-export const dynamicParams = false;
+export const dynamic = "force-dynamic";
+type CarDetailsPageProps = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ from?: string }>;
+};
 
-export function generateStaticParams() {
-  return cars.map((car) => ({ slug: car.slug }));
-}
-
-type CarDetailsPageProps = { params: Promise<{ slug: string }> };
-
-export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
+export default async function CarDetailsPage({ params, searchParams }: CarDetailsPageProps) {
   const { slug } = await params;
-  const car = cars.find((entry) => entry.slug === slug);
+  const { from } = await searchParams;
+  const car = getPublicCars().find((entry) => entry.slug === slug);
   if (!car) notFound();
-  return <CarDetails car={car} />;
+  const fromHome = from === "home";
+  return (
+    <CarDetails
+      car={car}
+      returnHref={fromHome ? "/#fleet" : "/fleet"}
+      returnLabel={fromHome ? "Back to home" : "Back to fleet"}
+    />
+  );
 }

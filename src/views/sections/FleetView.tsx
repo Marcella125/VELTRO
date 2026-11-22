@@ -268,7 +268,7 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
           <header className={`relative z-40 shrink-0 ${embedded ? "hidden" : ""}`}>
             <InternalPageHeader title="Fleet" isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleDockSelect} surfaceClassName="bg-black sm:bg-transparent" onLogoClick={() => navigateTo("/")} />
           </header>
-          {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Fleet<span className="text-[var(--brand-red)]">.</span></h2> : null}
+          {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.5rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2rem]">Fleet<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
           <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto md:overflow-hidden">
             <section className="relative z-30 mt-3 shrink-0 pb-3 sm:mt-4">
@@ -277,7 +277,7 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
                   <button
                     type="button"
                     aria-label="All cars"
-                    onClick={() => navigateTo("/fleet/all")}
+                    onClick={() => handleBrandFilterChange("all")}
                     className="group relative flex min-h-11 items-center justify-center px-1 py-2 md:min-w-[4.8rem] md:flex-none md:px-3"
                   >
                     <span className="type-eyebrow px-1 py-1.5 text-center text-[10px] leading-[1.15] tracking-[0.16em] text-white/72 transition-[color] duration-[var(--transition-normal)] group-hover:text-white md:px-3">
@@ -400,7 +400,7 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
                                       </span>
                                       <span>{` / ${displayBrand}`}</span>
                                     </p>
-                                    <h2 className="-translate-x-[0.1cm] mt-2 font-display text-[1.95rem] font-black uppercase leading-[0.9] tracking-[-0.06em] text-white max-[430px]:mt-0.75 max-[430px]:text-[1.18rem] max-[390px]:text-[1rem] md:text-[2.25rem] lg:text-[2.45rem]">
+                                    <h2 className="-translate-x-[0.1cm] mt-2 font-display text-[1.7rem] font-black uppercase leading-[0.92] tracking-[-0.055em] text-white max-[430px]:mt-0.75 max-[430px]:text-[1.05rem] max-[390px]:text-[0.95rem] md:text-[1.95rem] lg:text-[2.1rem]">
                                       {displayName}
                                     </h2>
                                   </div>
@@ -493,7 +493,6 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
             driveLabel={activeSpecPresentation?.displayDrive}
             onClose={() => {
               setActiveSpecCar(null);
-              navigateTo("/fleet/all");
             }}
             onLogoClick={() => navigateTo("/")}
           />

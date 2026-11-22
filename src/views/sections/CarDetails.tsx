@@ -1,204 +1,208 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowRight, CalendarDays, CarFront, Gauge, Palette, Settings2, Timer, Zap } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CarProfile,
+  Engine,
+  Gauge,
+  GearSix,
+  Lightning,
+  Seat,
+  Timer,
+} from "@phosphor-icons/react";
 import { assetPath } from "@/lib/asset-path";
-import { PrimaryButton } from "@/components/ui/primary-button";
-import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import type { Car } from "@/models/car.model";
 
-type CarDetailsProps = { car: Car };
+type CarDetailsProps = { car: Car; returnHref?: string; returnLabel?: string };
+type GalleryIcon = ComponentType<{ className?: string }>;
+type GalleryView = { label: string; src: string; icon: GalleryIcon; iconClassName?: string };
 
-type VehiclePresentation = {
-  brand: string;
-  name: string;
-  description: string;
-  images: { src: string; label: string; position?: string }[];
-  year: number;
-  body: string;
-  rate?: number;
-  color: string;
-  engine: string;
-  power: string;
-  transmission: string;
-  topSpeed: string;
-  acceleration: string;
-};
-
-const presentations: Record<string, VehiclePresentation> = {
-  "obsidian-gt": {
-    brand: "Lamborghini",
-    name: "EVO Spyder",
-    description: "Open-air Italian performance, shaped around a naturally aspirated V10 and razor-sharp all-wheel-drive control.",
-    images: [
-      { src: assetPath("/images/lambo specs.png"), label: "Exterior" },
-      { src: assetPath("/lambo fleet.png"), label: "Front profile" },
-      { src: assetPath("/images/lambo eng.png"), label: "V10 engine" },
-    ],
-    year: 2023, body: "Spyder", rate: 3300, color: "Black matte", engine: "5.2L V10", power: "640 hp", transmission: "7-speed DCT", topSpeed: "325 km/h", acceleration: "3.1 sec",
-  },
-  "crimson-eclipse": {
-    brand: "Porsche", name: "911 Carrera 4S",
-    description: "An everyday supercar with timeless lines, all-wheel-drive confidence and a responsive twin-turbo flat-six.",
-    images: [
-      { src: assetPath("/images/porshe specs.png"), label: "Exterior" },
-      { src: assetPath("/porshe fleet.png"), label: "Front profile" },
-      { src: assetPath("/images/porshe eng.png"), label: "Flat-six engine" },
-    ],
-    year: 2023, body: "Coupe", color: "Jet black", engine: "3.0L flat-six", power: "450 hp", transmission: "8-speed PDK", topSpeed: "306 km/h", acceleration: "3.4 sec",
-  },
-  "onyx-sabre": {
-    brand: "Ferrari", name: "296 GTB",
-    description: "A compact mid-engine berlinetta pairing instant hybrid response with the emotion of a Ferrari V6.",
-    images: [
-      { src: assetPath("/images/ferrari specs.png"), label: "Exterior" },
-      { src: assetPath("/ferrari fleet.png"), label: "Front profile" },
-      { src: assetPath("/images/ferrari eng.png"), label: "Hybrid V6" },
-    ],
-    year: 2024, body: "Coupe", color: "Rosso Corsa", engine: "3.0L V6 hybrid", power: "830 hp", transmission: "8-speed DCT", topSpeed: "330 km/h", acceleration: "2.9 sec",
-  },
-  "velour-phantom": {
-    brand: "Lamborghini", name: "Huracan STO",
-    description: "Road-legal race engineering, dramatic aerodynamics and rear-wheel-drive V10 performance in its purest form.",
-    images: [
-      { src: assetPath("/images/lambo specs.png"), label: "Exterior" },
-      { src: assetPath("/lambo fleet.png"), label: "Front profile" },
-      { src: assetPath("/images/lambo eng.png"), label: "V10 engine" },
-    ],
-    year: 2022, body: "Coupe", color: "Nero Noctis", engine: "5.2L V10", power: "640 hp", transmission: "7-speed DCT", topSpeed: "310 km/h", acceleration: "3.0 sec",
-  },
-  "ember-revenant": {
-    brand: "Mercedes-AMG", name: "GT R",
-    description: "A front-mid-engine grand tourer with motorsport-bred dynamics and a thunderous handcrafted V8 biturbo.",
-    images: [
-      { src: assetPath("/images/porshe specs.png"), label: "Exterior" },
-      { src: assetPath("/porshe fleet.png"), label: "Front profile" },
-      { src: assetPath("/images/porshe eng.png"), label: "V8 biturbo" },
-    ],
-    year: 2024, body: "Coupe", color: "Obsidian black", engine: "4.0L V8 biturbo", power: "585 hp", transmission: "7-speed DCT", topSpeed: "318 km/h", acceleration: "3.6 sec",
-  },
-  "midnight-regal": {
-    brand: "BMW", name: "M8 Competition",
-    description: "Luxury grand touring meets M division performance, with immense V8 power and sure-footed xDrive traction.",
-    images: [
-      { src: assetPath("/images/ferrari specs.png"), label: "Exterior" },
-      { src: assetPath("/ferrari fleet.png"), label: "Front profile" },
-      { src: assetPath("/images/ferrari eng.png"), label: "V8 engine" },
-    ],
-    year: 2023, body: "Coupe", color: "Black sapphire", engine: "4.4L V8 biturbo", power: "625 hp", transmission: "8-speed auto", topSpeed: "305 km/h", acceleration: "3.2 sec",
-  },
-};
-
-export function CarDetails({ car }: CarDetailsProps) {
-  const router = useRouter();
-  const [isDockOpen, setIsDockOpen] = useState(false);
-  const presentation = presentations[car.slug] ?? presentations["obsidian-gt"];
-
-  const navigateTo = (href: string) => router.push(href);
-  const specs = [
-    { label: "Year", value: String(presentation.year), icon: CalendarDays },
-    { label: "Color", value: presentation.color, icon: Palette },
-    { label: "Engine", value: presentation.engine, icon: Settings2 },
-    { label: "Power", value: presentation.power, icon: Zap },
-    { label: "Transmission", value: presentation.transmission, icon: Settings2 },
-    { label: "Body", value: presentation.body, icon: CarFront },
-    { label: "Top speed", value: presentation.topSpeed, icon: Gauge },
-    { label: "0–100 km/h", value: presentation.acceleration, icon: Timer },
-  ];
-
-  const handleMenuSelect = (id: string) => {
-    const routes: Record<string, string> = { home: "/#home", fleet: "/fleet/all", blogs: "/#blogs", mission: "/#mission", contact: "/#contact", faq: "/#faq" };
-    if (routes[id]) navigateTo(routes[id]);
-  };
+function FleetCarIcon({ className }: { className?: string }) {
+  const iconUrl = assetPath("/icons/fleet.svg");
 
   return (
-    <main className="relative min-h-dvh overflow-x-hidden bg-black text-white lg:h-dvh lg:overflow-hidden">
-      <div className="pointer-events-none fixed inset-0">
-        <Image src={assetPath("/images/bgcar.png")} alt="" fill priority className="object-cover object-center opacity-35" />
-        <div className="absolute inset-0 bg-[radial-gradient(85%_75%_at_42%_42%,rgba(88,88,88,0.2),transparent_65%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(177,18,38,0.12),transparent_28%,transparent_72%,rgba(177,18,38,0.06))]" />
-        <div className="absolute inset-0 bg-black/58 shadow-[inset_0_0_150px_rgba(0,0,0,0.82)]" />
-      </div>
+    <span
+      aria-hidden="true"
+      className={`inline-block bg-current ${className ?? ""}`}
+      style={{
+        WebkitMaskImage: `url("${iconUrl}")`,
+        maskImage: `url("${iconUrl}")`,
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+      }}
+    />
+  );
+}
 
-      <header className="relative z-50 hidden h-[84px] border-b border-white/8 bg-black/92 backdrop-blur-md lg:block">
-        <div className="relative mx-auto flex h-full w-full max-w-350 items-center px-10">
-          <Link href="/" aria-label="Veltro home" className="flex shrink-0 items-center">
-            <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-11 w-auto object-contain" />
+const lamboGallery: GalleryView[] = [
+  { label: "Front", src: assetPath("/images/lambo/lambo front.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Rear", src: assetPath("/images/lambo/lambo rear.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Interior", src: assetPath("/images/lambo/lambo interior.png"), icon: Seat, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+  { label: "Engine", src: assetPath("/images/lambo/lambo eng.png"), icon: Engine, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+];
+
+const porscheGallery: GalleryView[] = [
+  { label: "Front", src: assetPath("/images/porshe/porshe front.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Rear", src: assetPath("/images/porshe/porshe rear.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Interior", src: assetPath("/images/porshe/interior.png"), icon: Seat, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+  { label: "Engine", src: assetPath("/images/porshe/porshe eng.png"), icon: Engine, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+];
+
+const bmwGallery: GalleryView[] = [
+  { label: "Front", src: assetPath("/images/BMW/bmw front.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Rear", src: assetPath("/images/BMW/bmw rear.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Interior", src: assetPath("/images/BMW/bmw interior.png"), icon: Seat, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+  { label: "Engine", src: assetPath("/images/BMW/bmw eng.png"), icon: Engine, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+];
+
+const ferrariGallery: GalleryView[] = [
+  { label: "Front", src: assetPath("/images/ferrari/ferrari front.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Rear", src: assetPath("/images/ferrari/ferrari rear.png"), icon: FleetCarIcon, iconClassName: "h-3.5 w-8" },
+  { label: "Interior", src: assetPath("/images/ferrari/interior.png"), icon: Seat, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+  { label: "Engine", src: assetPath("/images/ferrari/ferrari eng.png"), icon: Engine, iconClassName: "size-[1.55rem] stroke-[1.2]" },
+];
+
+const detailOverrides: Record<string, { name: string; description: string; acceleration: string; topSpeed: string; torque: string; rate?: number }> = {
+  "lamborghini-evo-spyder": {
+    name: "Huracán EVO Spyder",
+    description: "Open-air V10 performance, unmistakable presence, and precise Lamborghini dynamics.",
+    acceleration: "3.1 s",
+    topSpeed: "325 km/h",
+    torque: "600 Nm",
+    rate: 3300,
+  },
+};
+
+export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" }: CarDetailsProps) {
+  const override = detailOverrides[car.slug];
+  const isLamborghini = car.slug.startsWith("lamborghini");
+  const isPorsche = car.slug.startsWith("porsche");
+  const isBmw = car.slug.startsWith("bmw");
+  const isFerrari = car.slug.startsWith("ferrari");
+  const gallery: GalleryView[] = isLamborghini
+    ? lamboGallery
+    : isPorsche
+      ? porscheGallery
+      : isBmw
+        ? bmwGallery
+        : isFerrari
+          ? ferrariGallery
+          : [{ label: "Exterior", src: assetPath(car.image), icon: CarProfile }];
+  const [activeView, setActiveView] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  const name = override?.name ?? car.name.replace(new RegExp(`^${car.brand}\\s*`, "i"), "");
+  const description = override?.description ?? car.description ?? `${car.year} ${car.brand} ${name}, prepared for an exceptional drive.`;
+  const rate = override?.rate ?? car.pricePerDay;
+  const bookingHref = `https://wa.me/96170335467?text=${encodeURIComponent(`I would like to book the ${car.brand} ${name}.`)}`;
+
+  const performance = [
+    { icon: Lightning, value: `${car.horsepower || 0} HP`, label: "Power output" },
+    { icon: Timer, value: override?.acceleration ?? "On request", label: "Acceleration 0–100 km/h" },
+    { icon: Gauge, value: override?.topSpeed ?? "On request", label: "Maximum speed" },
+    { icon: GearSix, value: car.transmission || "Automatic", label: override?.torque ? `${override.torque} torque` : "Transmission" },
+  ];
+
+  const moveGallery = (direction: number) => {
+    if (gallery.length < 2) return;
+    setActiveView((current) => (current + direction + gallery.length) % gallery.length);
+  };
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") moveGallery(-1);
+      if (event.key === "ArrowRight") moveGallery(1);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+
+  return (
+    <main className="relative min-h-[100svh] overflow-x-hidden bg-[#090A0B] text-white lg:h-[100svh] lg:overflow-hidden">
+      <header className="absolute inset-x-0 top-0 z-50 bg-transparent">
+        <div className="mx-auto flex h-[4.25rem] max-w-[92rem] items-center px-4 sm:h-[4.75rem] sm:px-8 lg:px-12">
+          <Link href="/" aria-label="Go to Veltro home" className="relative shrink-0 lg:left-[-1cm]">
+            <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-10 w-auto sm:h-14" />
           </Link>
-
-          <nav className="absolute left-1/2 flex -translate-x-1/2 items-center gap-10 xl:gap-12" aria-label="Primary navigation">
-            {[
-              ["Fleet", "/fleet/all"],
-              ["Experience", "/#experience"],
-              ["About", "/#mission"],
-              ["Journal", "/#blogs"],
-              ["FAQ", "/#faq"],
-              ["Contact", "/#contact"],
-            ].map(([label, href]) => (
-              <Link key={label} href={href} className={`text-[0.58rem] font-medium uppercase tracking-[0.2em] transition-colors hover:text-white ${label === "Fleet" ? "text-white" : "text-white/58"}`}>
-                {label}
-              </Link>
+          <nav className="ml-auto hidden items-center gap-9 lg:flex lg:translate-x-[1cm]">
+            {[[returnHref, "Fleet"], ["/#experience", "Experience"], ["/#contact", "Contact"]].map(([href, label]) => (
+              <Link key={label} href={href} className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/66 transition hover:text-[#d7ff21]">{label}</Link>
             ))}
           </nav>
-
-          <Link href="/fleet/all" className="ml-auto inline-flex h-11 min-w-[162px] items-center justify-center gap-4 bg-[var(--brand-red)] px-6 text-[0.57rem] font-semibold uppercase tracking-[0.19em] text-white transition-colors hover:bg-[var(--brand-red-dark)]">
-            Book a Car
-            <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.7} aria-hidden="true" />
+          <a href={bookingHref} target="_blank" rel="noreferrer" className="ml-10 hidden h-10 items-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.65rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white lg:flex lg:translate-x-[1cm]">
+            Inquire <ArrowRight size={15} />
+          </a>
+          <Link href={returnHref} aria-label={returnLabel} className="ml-auto grid size-10 place-items-center rounded-full border border-white/20 text-white/70 lg:hidden">
+            <ArrowLeft size={17} />
           </Link>
         </div>
       </header>
 
-      <div className="relative z-10 mx-auto flex min-h-dvh w-full max-w-350 flex-col px-5 pb-6 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6 lg:h-[calc(100dvh-84px)] lg:min-h-0 lg:pb-7 lg:pt-4">
-        <div className="relative z-50 shrink-0 lg:hidden">
-          <InternalPageHeader title="Vehicle Specifications" isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleMenuSelect} surfaceClassName="bg-black sm:bg-transparent" onLogoClick={() => navigateTo("/")} />
-        </div>
+      <div className="absolute inset-0">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={gallery[activeView].src}
+            initial={reduceMotion ? false : { opacity: 0, scale: 1.025 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
+            <Image src={gallery[activeView].src} alt={`${car.brand} ${name} ${gallery[activeView].label}`} fill priority sizes="100vw" className="object-contain object-center" />
+          </motion.div>
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,7,8,.97)_0%,rgba(5,7,8,.78)_24%,rgba(5,7,8,.13)_51%,rgba(5,7,8,.08)_72%,rgba(5,7,8,.72)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.22)_0%,transparent_24%,transparent_68%,rgba(0,0,0,.74)_100%)]" />
+      </div>
 
-        <div className="mt-5 grid min-h-0 flex-1 gap-6 lg:mt-0 lg:grid-cols-[minmax(0,1.75fr)_minmax(310px,0.75fr)] lg:gap-7 xl:gap-9">
-          <section className="flex min-h-0 flex-col">
-            <div className="mb-4 flex shrink-0 flex-col justify-between gap-3 sm:flex-row sm:items-end lg:mb-3">
-              <div>
-                <p className="font-display text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-[var(--brand-red)]">{presentation.brand} · {presentation.body}</p>
-                <h1 className="mt-1 font-display text-[2rem] font-bold uppercase leading-[0.92] tracking-[-0.055em] text-white sm:text-[2.7rem] xl:text-[3.15rem]">{presentation.name}<span className="text-[var(--brand-red)]">.</span></h1>
-              </div>
-              <p className="max-w-md text-[0.7rem] leading-5 text-white/58 sm:text-right xl:text-[0.76rem]">{presentation.description}</p>
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[100rem] flex-col px-5 pb-24 pt-24 sm:px-8 sm:pt-28 lg:h-full lg:min-h-0 lg:px-12 lg:pb-8 lg:pt-28">
+        <section className="max-w-[27rem]">
+          <Link href={returnHref} className="mb-5 inline-flex items-center gap-2 text-[0.55rem] font-bold uppercase tracking-[0.16em] text-white/55 transition hover:text-[#d7ff21]">
+            <ArrowLeft size={14} /> Back to fleet
+          </Link>
+          <motion.div initial={reduceMotion ? false : { opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
+            <div className="flex items-center gap-4 text-[0.52rem] font-bold uppercase tracking-[0.42em] text-white/65">
+              {car.brand}<span className="h-px w-10 bg-[#d7ff21]" />
             </div>
+            <h1 className="mt-3 text-[clamp(1.55rem,2.8vw,2.75rem)] font-extrabold uppercase italic leading-[0.9] tracking-[-0.04em]">{name}</h1>
+            <p className="mt-3 max-w-[22rem] text-[0.62rem] leading-[1.65] text-white/58 sm:text-[0.68rem]">{description}</p>
+          </motion.div>
 
-            <div className="grid min-h-[520px] flex-1 grid-cols-1 gap-2.5 sm:grid-cols-[minmax(0,1.9fr)_minmax(190px,0.85fr)] sm:grid-rows-2 lg:min-h-0">
-              {presentation.images.map((image, index) => (
-                <figure key={image.src} className={`group relative min-h-56 overflow-hidden border border-white/10 bg-[#090909] ${index === 0 ? "sm:row-span-2" : ""}`}>
-                  <Image src={image.src} alt={`${presentation.brand} ${presentation.name} ${image.label}`} fill priority={index === 0} sizes={index === 0 ? "(max-width: 1023px) 100vw, 58vw" : "(max-width: 1023px) 100vw, 24vw"} className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025] ${image.position ?? "object-center"}`} />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(0,0,0,0.72)_100%)]" />
-                  <figcaption className="absolute bottom-3 left-3 flex items-center gap-2 text-[0.55rem] font-medium uppercase tracking-[0.2em] text-white/75"><span className="text-[var(--brand-red)]">0{index + 1}</span><span className="h-px w-5 bg-white/35" />{image.label}</figcaption>
-                </figure>
-              ))}
-            </div>
-          </section>
+          <div className="mt-7 grid gap-2 sm:mt-9">
+            {performance.map(({ icon: Icon, value, label }, index) => (
+              <motion.div key={label} initial={reduceMotion ? false : { opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12 + index * 0.07, duration: 0.5 }} className="relative grid grid-cols-[3rem_1fr] items-center gap-3 py-2.5 after:absolute after:bottom-0 after:left-0 after:h-px after:w-[17rem] after:bg-white/10 last:after:hidden">
+                <span className="grid size-9 place-items-center rounded-lg border border-white/18 bg-black/20 text-[#d7ff21] backdrop-blur-sm"><Icon size={18} weight="light" /></span>
+                <div><strong className="block text-[1.35rem] font-semibold leading-none tracking-[-0.04em]">{value}</strong><span className="mt-1 block text-[0.48rem] uppercase tracking-[0.1em] text-white/43">{label}</span></div>
+              </motion.div>
+            ))}
+          </div>
 
-          <aside className="flex min-h-0 flex-col border border-white/10 bg-black/45 p-4 backdrop-blur-md sm:p-5 lg:overflow-hidden xl:p-6">
-            <div className="flex shrink-0 items-start justify-between border-b border-white/10 pb-4">
-              <div>
-                <p className="text-[0.56rem] font-medium uppercase tracking-[0.22em] text-white/42">Rent per day</p>
-                <div className="mt-1 flex items-baseline gap-2"><span className="font-display text-[1.75rem] font-semibold leading-none text-white xl:text-[2rem]">${(presentation.rate ?? car.pricePerDay).toLocaleString("en-US")}</span></div>
-              </div>
-              <div className="flex items-center gap-2 pt-1 text-[0.55rem] font-semibold uppercase tracking-[0.17em] text-emerald-300/90"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(74,222,128,0.75)]" />Available</div>
-            </div>
+          <div className="mt-6 flex items-center gap-4">
+            <a href={bookingHref} target="_blank" rel="noreferrer" className="flex h-11 min-w-44 items-center justify-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-black transition hover:bg-white">Reserve now <ArrowRight size={15} /></a>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white/78 drop-shadow-[0_1px_8px_rgba(0,0,0,.8)]">${rate.toLocaleString("en-US")} / day</span>
+          </div>
+        </section>
 
-            <div className="my-4 grid flex-1 grid-cols-2 content-stretch gap-px border border-white/10 bg-white/10">
-              {specs.map((spec) => {
-                const Icon = spec.icon;
-                return <div key={spec.label} className="flex min-h-19 flex-col justify-between bg-[#0b0b0b]/95 p-3 xl:min-h-20 xl:p-3.5"><Icon className="h-4 w-4 text-[var(--brand-red)]" strokeWidth={1.6} aria-hidden="true" /><div className="mt-2.5"><p className="text-[0.76rem] font-semibold leading-tight text-white/92 xl:text-[0.84rem]">{spec.value}</p><p className="mt-1 text-[0.46rem] font-medium uppercase tracking-[0.17em] text-white/38">{spec.label}</p></div></div>;
-              })}
-            </div>
+        <aside className="fixed bottom-4 left-1/2 z-30 flex -translate-x-1/2 gap-1 rounded-2xl border border-white/10 bg-[#090A0B]/72 p-1.5 backdrop-blur-xl lg:absolute lg:bottom-auto lg:left-auto lg:right-7 lg:top-1/2 lg:-translate-x-0 lg:-translate-y-1/2 lg:flex-col lg:gap-0 lg:rounded-[1.4rem] lg:px-2 lg:py-3">
+          {gallery.map(({ label, icon: Icon, iconClassName }, index) => (
+            <button key={label} type="button" onClick={() => setActiveView(index)} aria-label={`Show ${label} view`} aria-pressed={activeView === index} className={`group flex h-14 w-16 flex-col items-center justify-center gap-1 rounded-xl border text-[0.45rem] font-semibold transition sm:w-20 lg:h-[4.65rem] lg:w-[4.65rem] ${activeView === index ? "border-[#d7ff21] bg-[#d7ff21]/8 text-white shadow-[0_0_25px_rgba(215,255,33,.12)]" : "border-transparent text-white/55 hover:bg-white/5 hover:text-white"}`}>
+              <span className={`grid size-8 place-items-center transition-colors duration-300 ${activeView === index ? "text-[#d7ff21]" : "text-white/55 group-hover:text-white"}`}>
+                <Icon className={iconClassName ?? "size-[1.35rem] stroke-[1.45]"} />
+              </span>
+              {label}
+            </button>
+          ))}
+        </aside>
 
-            <div className="shrink-0 space-y-2.5">
-              <PrimaryButton href="/fleet/all" className="w-full"><Image src={assetPath("/icons/whatsapp.svg")} alt="" width={16} height={16} className="h-4 w-4" />Check Availability</PrimaryButton>
-              <button type="button" onClick={() => navigateTo("/fleet/all")} className="h-10 w-full border border-white/12 text-[0.58rem] font-medium uppercase tracking-[0.18em] text-white/62 transition hover:border-white/30 hover:text-white">Back to fleet</button>
-            </div>
-          </aside>
-        </div>
       </div>
     </main>
   );

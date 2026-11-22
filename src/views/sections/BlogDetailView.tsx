@@ -36,7 +36,7 @@ export function BlogDetailView() {
   );
 
   const handleViewCar = () => {
-    navigateTo("/fleet/all");
+    navigateTo("/fleet");
   };
 
   return (

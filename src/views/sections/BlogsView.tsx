@@ -107,7 +107,7 @@ export function BlogsView({ embedded = false }: { embedded?: boolean }) {
             onLogoClick={() => navigateTo(homeHref)}
           />
         </div>
-        {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.75rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2.4rem]">Blogs<span className="text-[var(--brand-red)]">.</span></h2> : null}
+        {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.5rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2rem]">Blogs<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
         <section className="relative z-10 mt-7 flex min-h-0 flex-1 flex-col">
           <div className="text-[0.64rem] uppercase tracking-[0.14em] text-white/58">
@@ -344,7 +344,7 @@ export function BlogsView({ embedded = false }: { embedded?: boolean }) {
                       </p>
                       <h2
                         id={`blog-modal-title-${activeBlog.id}`}
-                        className="mt-3 type-section-title max-w-2xl text-[1.72rem] leading-[1.04] text-white sm:text-[1.8rem] sm:leading-[1.08] lg:text-[2.2rem]"
+                        className="mt-3 type-section-title max-w-2xl text-[1.5rem] leading-[1.06] text-white sm:text-[1.6rem] sm:leading-[1.1] lg:text-[1.9rem]"
                       >
                         {activeBlog.title}
                       </h2>
