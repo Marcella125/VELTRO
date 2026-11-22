@@ -262,7 +262,6 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       </section>
 
       <section ref={fleetSectionRef} id="fleet" className="font-body relative h-[calc(100svh-4.25rem)] min-h-[35rem] scroll-mt-[4.25rem] overflow-hidden bg-[#070809] py-7 sm:h-[calc(100svh-4.75rem)] sm:min-h-[37rem] sm:scroll-mt-20 sm:py-8">
-        <Image src={assetPath("/images/showroom bg mobile.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-center sm:hidden" />
         <div className="relative z-10 mx-auto flex h-full min-h-0 max-w-[100rem] flex-col px-5 sm:px-8 lg:px-12">
           <div ref={fleetIntroRef} className="text-center">
             <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Our fleet</p>
@@ -291,7 +290,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
                   </div>
                 ) : null}
 
-                <div ref={activeFleetImageRef} key={activeFleet.id} className="absolute inset-x-[5%] bottom-[calc(20%-1cm)] top-[2%] sm:inset-x-[20%] sm:bottom-[4%] sm:top-[14%] lg:inset-x-[24%]">
+                <div ref={activeFleetImageRef} key={activeFleet.id} className="absolute inset-x-[5%] bottom-[20%] top-[2%] sm:inset-x-[20%] sm:bottom-[4%] sm:top-[14%] lg:inset-x-[24%]">
                   <Image src={activeFleet.showcaseImage} alt={`${activeFleet.brand} ${activeFleet.name}`} fill priority={activeFleetIndex === 0} sizes="(max-width: 767px) 96vw, 70vw" className="object-contain object-bottom drop-shadow-[0_30px_32px_rgba(0,0,0,.72)]" />
                 </div>
 
