@@ -31,9 +31,9 @@ const whatsappNumber = "96170335113";
 const deliveryFee = 4;
 
 const products: readonly StoreProduct[] = [
-  { id: "cap", name: "Veltro Cap", category: "Apparel", image: "/images/clothes shop/cap.png", imageSize: "62%", price: 10, sizes: ["One size"] },
   { id: "hoodie", name: "Veltro Hoodie", category: "Apparel", image: "/images/clothes shop/hoodie.png", imageSize: "68%", price: 30, sizes: ["S", "M", "L", "XL"] },
   { id: "sweatshirt", name: "Veltro Sweatshirt", category: "Apparel", image: "/images/clothes shop/sweatshirt.png", imageSize: "68%", price: 30, sizes: ["S", "M", "L", "XL"] },
+  { id: "cap", name: "Veltro Cap", category: "Apparel", image: "/images/clothes shop/cap.png", imageSize: "62%", price: 10, sizes: ["One size"] },
   { id: "socks", name: "Veltro Socks", category: "Apparel", image: "/images/clothes shop/socks.png", imageSize: "62%", price: 10, sizes: ["S/M", "L/XL"] },
   { id: "beanie", name: "Veltro Beanie", category: "Apparel", image: "/images/clothes shop/bonne.png", imageSize: "62%", price: 10, sizes: ["One size"] },
 ];
