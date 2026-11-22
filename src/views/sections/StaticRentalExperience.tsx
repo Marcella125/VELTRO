@@ -42,17 +42,16 @@ const fleetShowcaseOrder = [
   { slug: "bmw-m8-competition", image: "/images/bmw side.png" },
 ] as const;
 
+const shopProducts = [
+  ["cap.png", "Veltro cap"],
+  ["hoodie.png", "Veltro hoodie"],
+  ["sweatshirt.png", "Veltro sweatshirt"],
+  ["socks.png", "Veltro socks"],
+  ["bonne.png", "Veltro beanie"],
+] as const;
+
 function jumpTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-}
-
-function Kicker({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
-  return (
-    <p data-scroll-text className={`flex items-center gap-3 text-[0.62rem] font-semibold uppercase tracking-[0.34em] ${dark ? "text-black/58" : "text-white/65"}`}>
-      <span className="h-3.5 w-0.5 -skew-x-12 bg-[#d7ff21]" />
-      {children}
-    </p>
-  );
 }
 
 function DisplayTitle({ children, className = "" }: { children: ReactNode; className?: string }) {
@@ -74,6 +73,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const [activeFaq, setActiveFaq] = useState(0);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [activeFleetIndex, setActiveFleetIndex] = useState(0);
+  const [activeShopIndex, setActiveShopIndex] = useState(0);
   const fleetSectionRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLElement>(null);
   const fleetIntroRef = useRef<HTMLDivElement>(null);
@@ -85,6 +85,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const activeFleet = showcaseFleet[activeFleetIndex % Math.max(showcaseFleet.length, 1)];
   const previousFleet = showcaseFleet[(activeFleetIndex - 1 + showcaseFleet.length) % Math.max(showcaseFleet.length, 1)];
   const nextFleet = showcaseFleet[(activeFleetIndex + 1) % Math.max(showcaseFleet.length, 1)];
+  const visibleShopProducts = shopProducts.map((_, offset) => shopProducts[(activeShopIndex + offset) % shopProducts.length]);
 
   useEffect(() => {
     const updateHeader = () => {
@@ -139,9 +140,10 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
 
     gsap.registerPlugin(ScrollTrigger);
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mobile = window.matchMedia("(max-width: 639px)");
 
     const context = gsap.context(() => {
-      if (reduceMotion.matches) return;
+      if (reduceMotion.matches || mobile.matches) return;
       gsap.timeline({
         defaults: { ease: "power4.out" },
         scrollTrigger: {
@@ -240,7 +242,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.25)_0%,transparent_44%,rgba(2,3,4,.88)_100%)]" />
 
         <div className="relative z-10 mx-auto w-full max-w-[92rem] -translate-y-16 px-5 sm:translate-y-0 sm:px-8 sm:pb-14 sm:pt-28 lg:px-12 lg:pb-16 lg:pt-32">
-          <div className="mx-auto max-w-[47rem] text-center">
+          <div data-mobile-reveal className="mx-auto max-w-[47rem] text-center">
             <p className="mb-6 flex items-center justify-center gap-4 text-[0.62rem] font-semibold uppercase tracking-[0.38em] text-white/76 sm:text-[0.72rem]">
               Luxury car rental
             </p>
@@ -415,17 +417,11 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         })}
 
         <article data-mobile-reveal data-image-slot="shop-collection" className="relative flex h-[55svh] min-h-[22rem] flex-col items-center justify-center overflow-hidden border-b border-white/15 bg-[#f2f3f3] px-2 py-5 text-center text-black sm:h-auto sm:min-h-0 sm:px-5 sm:py-4">
-          <button type="button" aria-label="Previous products" className="absolute left-0 top-[35%] grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
-          <button type="button" aria-label="Next products" className="absolute right-0 top-[35%] grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
+          <button type="button" onClick={() => setActiveShopIndex((index) => (index - 1 + shopProducts.length) % shopProducts.length)} aria-label="Previous products" className="absolute left-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
+          <button type="button" onClick={() => setActiveShopIndex((index) => (index + 1) % shopProducts.length)} aria-label="Next products" className="absolute right-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
           <div className="flex w-[82%] items-stretch justify-center gap-2 sm:w-[78%] sm:gap-2.5 lg:gap-4">
-            {[
-              ["cap.png", "Veltro cap"],
-              ["hoodie.png", "Veltro hoodie"],
-              ["sweatshirt.png", "Veltro sweatshirt"],
-              ["socks.png", "Veltro socks"],
-              ["bonne.png", "Veltro beanie"],
-            ].map(([file, alt], index) => (
-              <div key={file} className={`relative h-24 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index === 0 || index === 4 ? "hidden sm:block" : ""}`}>
+            {visibleShopProducts.map(([file, alt], index) => (
+              <div key={`${file}-${index}`} className={`relative h-24 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index >= 3 ? "hidden sm:block" : ""}`}>
                 <Image src={`${assetPath(`/images/clothes shop/${file}`)}?v=2`} alt={alt} fill sizes="(max-width: 767px) 25vw, 10vw" className="object-contain p-1" />
               </div>
             ))}
