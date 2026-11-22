@@ -103,7 +103,7 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
   const name = override?.name ?? car.name.replace(new RegExp(`^${car.brand}\\s*`, "i"), "");
   const description = override?.description ?? car.description ?? `${car.year} ${car.brand} ${name}, prepared for an exceptional drive.`;
   const rate = override?.rate ?? car.pricePerDay;
-  const bookingHref = `https://wa.me/96170335467?text=${encodeURIComponent(`I would like to book the ${car.brand} ${name}.`)}`;
+  const bookingHref = `https://wa.me/96170335113?text=${encodeURIComponent(`I would like to book the ${car.brand} ${name}.`)}`;
 
   const performance = [
     { icon: Lightning, value: `${car.horsepower || 0} HP`, label: "Power output", mobileLabel: "Power" },

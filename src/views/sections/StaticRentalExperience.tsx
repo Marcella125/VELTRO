@@ -198,7 +198,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   };
 
   return (
-    <main ref={pageRef} className="min-h-screen overflow-x-hidden bg-[#070809] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
+    <main ref={pageRef} className="min-h-screen overflow-x-hidden bg-[#090A0B] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
       <header
         style={{ backgroundColor: headerScrolled ? "#090A0B" : "transparent" }}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${headerScrolled ? "shadow-[0_12px_35px_rgba(0,0,0,.22)] backdrop-blur-xl" : ""}`}
@@ -263,7 +263,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
 
       </section>
 
-      <section ref={fleetSectionRef} id="fleet" className="font-body relative h-[calc(100svh-4.25rem)] min-h-[35rem] scroll-mt-[4.25rem] overflow-hidden bg-[#070809] py-7 sm:h-[calc(100svh-4.75rem)] sm:min-h-[37rem] sm:scroll-mt-20 sm:py-8">
+      <section ref={fleetSectionRef} id="fleet" className="font-body relative h-[calc(100svh-4.25rem)] min-h-[35rem] scroll-mt-[4.25rem] overflow-hidden bg-[#090A0B] py-7 sm:h-[calc(100svh-4.75rem)] sm:min-h-[37rem] sm:scroll-mt-20 sm:py-8">
         <div className="relative z-10 mx-auto flex h-full min-h-0 max-w-[100rem] flex-col px-5 sm:px-8 lg:px-12">
           <div ref={fleetIntroRef} className="text-center">
             <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Our fleet</p>
@@ -322,7 +322,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <section id="experience" className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#070809] py-10 scroll-mt-[4.25rem] sm:scroll-mt-20 sm:py-14 lg:py-10">
+      <section id="experience" className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#090A0B] py-10 scroll-mt-[4.25rem] sm:scroll-mt-20 sm:py-14 lg:py-10">
         <div className="relative z-10 mx-auto grid w-full max-w-[92rem] gap-6 px-4 sm:gap-12 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center lg:px-12">
           <div data-mobile-reveal>
             <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Discover</p>
@@ -368,7 +368,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <section id="shop" aria-label="Veltro shop and accessories" className="flex scroll-mt-[4.25rem] flex-col overflow-hidden border-t border-white/15 bg-black sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
+      <section id="shop" aria-label="Veltro shop and accessories" className="flex scroll-mt-[4.25rem] flex-col overflow-hidden border-t border-white/15 bg-[#090A0B] sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
         <div data-mobile-reveal className="w-full shrink-0 px-5 py-9 text-left sm:hidden">
           <p className="text-[0.58rem] font-bold uppercase tracking-[0.46em] text-white/55 sm:text-[0.65rem]">The shop</p>
           <h2 className="font-fleet-heading mt-3 text-[clamp(2rem,5vw,4.4rem)] uppercase leading-[0.82] tracking-[-0.035em] text-white">
@@ -432,7 +432,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
       </section>
 
-      <section id="faq" className="relative flex min-h-[100svh] scroll-mt-[4.25rem] items-center overflow-hidden bg-[#0b0c0d] py-10 sm:scroll-mt-[4.75rem] sm:py-20 lg:py-28">
+      <section id="faq" className="relative flex min-h-[100svh] scroll-mt-[4.25rem] items-center overflow-hidden bg-[#090A0B] py-10 sm:scroll-mt-[4.75rem] sm:py-20 lg:py-28">
         <div className="relative z-10 mx-auto grid w-full max-w-[92rem] gap-6 px-5 sm:gap-12 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-12">
           <div data-mobile-reveal><p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Good to know</p><DisplayTitle className="mt-3 sm:mt-6">Questions,<br />answered.</DisplayTitle></div>
           <div data-mobile-reveal className="border-t border-white/14">
@@ -451,7 +451,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           <p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Start your journey</p>
           <DisplayTitle className="mx-auto mt-5 max-w-4xl !text-[clamp(2.35rem,3.8vw,3.7rem)] !leading-[0.84] sm:mt-6">Your next drive<br /><span className="text-[#d7ff21]">starts here.</span></DisplayTitle>
           <p className="mx-auto mt-5 max-w-[32rem] text-[0.78rem] leading-6 text-white/55 sm:mt-6 sm:text-sm">Tell us where you want to go. Our concierge will match the right car to the moment.</p>
-          <a href="https://wa.me/96170335467" className="mx-auto mt-7 flex h-13 w-fit min-w-60 items-center justify-center gap-4 rounded-lg bg-[#d7ff21] px-8 text-[0.66rem] font-extrabold uppercase tracking-[0.15em] text-black shadow-[0_12px_40px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white sm:min-w-64">Talk to concierge <ArrowRight size={16} /></a>
+          <a href="https://wa.me/96170335113" className="mx-auto mt-7 flex h-13 w-fit min-w-60 items-center justify-center gap-4 rounded-lg bg-[#d7ff21] px-8 text-[0.66rem] font-extrabold uppercase tracking-[0.15em] text-black shadow-[0_12px_40px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white sm:min-w-64">Talk to concierge <ArrowRight size={16} /></a>
         </div>
       </section>
 
@@ -478,7 +478,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               <p className="text-[0.58rem] font-bold uppercase tracking-[0.28em] text-white/38">Contact</p>
               <div className="mt-4 space-y-3 text-[0.7rem] text-white/62">
                 <p className="flex items-center gap-3"><MapPin size={16} strokeWidth={1.5} className="shrink-0 text-[#d7ff21]" /> Beirut, Lebanon</p>
-                <a href="tel:+96170335467" className="flex items-center gap-3 transition hover:text-white"><Phone size={16} strokeWidth={1.5} className="shrink-0 text-[#d7ff21]" /> +961 70 335 467</a>
+                <a href="tel:+96170335113" className="flex items-center gap-3 transition hover:text-white"><Phone size={16} strokeWidth={1.5} className="shrink-0 text-[#d7ff21]" /> +961 70 335 113</a>
                 <a href="mailto:info@veltro.com" className="flex items-center gap-3 transition hover:text-white"><Mail size={16} strokeWidth={1.5} className="shrink-0 text-[#d7ff21]" /> info@veltro.com</a>
               </div>
             </div>
