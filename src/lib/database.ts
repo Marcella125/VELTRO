@@ -6,7 +6,7 @@ import { DatabaseSync } from "node:sqlite";
 import type { AdminCar, AdminSnapshot, HistoryItem, Owner, Reservation } from "@/lib/admin-types";
 
 const globalDatabase = globalThis as typeof globalThis & { __veltroDb?: DatabaseSync; __veltroDbSchemaVersion?: number };
-const schemaVersion = 3;
+const schemaVersion = 4;
 
 function databasePath() {
   return process.env.VELTRO_DB_PATH ?? path.join(process.cwd(), ".data", "veltro.db");
@@ -83,6 +83,31 @@ function initialize(db: DatabaseSync) {
   db.prepare("UPDATE cars SET status = 'Unavailable', published = 0 WHERE status = 'Sold'").run();
   db.prepare("UPDATE cars SET listed_price = ROUND(listed_price / 300) WHERE listed_price > 10000").run();
   db.prepare("UPDATE cars SET minimum_price = ROUND(minimum_price / 300) WHERE minimum_price > 10000").run();
+
+  const marketPricingVersion = "lebanon-market-pricing-v1";
+  const pricingApplied = db.prepare("SELECT value FROM settings WHERE key = ?").get(marketPricingVersion);
+  if (!pricingApplied) {
+    const updateDailyRate = db.prepare("UPDATE cars SET listed_price = ?, currency = 'USD', updated_at = CURRENT_TIMESTAMP WHERE slug = ?");
+    const marketRates: Array<[string, number]> = [
+      ["lamborghini-evo-spyder", 1400],
+      ["porsche-911-carrera-4s", 450],
+      ["ferrari-296-gtb", 2800],
+      ["lamborghini-huracan-sto", 1400],
+      ["mercedes-amg-gtr", 700],
+      ["bmw-m8-competition", 600],
+    ];
+
+    db.exec("BEGIN");
+    try {
+      marketRates.forEach(([slug, rate]) => updateDailyRate.run(rate, slug));
+      db.prepare("UPDATE settings SET value = 'USD', updated_at = CURRENT_TIMESTAMP WHERE key = 'currency'").run();
+      settingInsert.run(marketPricingVersion, new Date().toISOString());
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+  }
 }
 
 function seed(db: DatabaseSync) {
@@ -97,12 +122,12 @@ function seed(db: DatabaseSync) {
   owners.forEach((owner) => ownerInsert.run(...owner, adminId));
 
   const cars = [
-    ["car-1", "lamborghini-evo-spyder", "Lamborghini Evo Spyder", "Lamborghini", "Huracan", "EVO Spyder", 2024, "ZHWUT5ZF1RLA10001", "D 87941", 8400, "Convertible", "Automatic", "Petrol", "V10", 640, "Arancio Borealis", "Nero Ade", "Open-air V10 theatre, curated for unforgettable drives.", "owner-1", "Consignment", "2026-08-18", 910000, 1095000, 995000, 4.5, 49275, 7200, "Available", 1, 1, 1, 1, "/lambo fleet.png"],
-    ["car-2", "porsche-911-carrera-4s", "Porsche 911 Carrera 4S", "Porsche", "911", "Carrera 4S", 2023, "WP0AB2A91PS220002", "P 11472", 17200, "Coupe", "PDK", "Petrol", "Flat-6", 450, "GT Silver", "Black leather", "An everyday supercar with precise all-wheel-drive performance.", "owner-2", "Customer Vehicle", "2026-08-26", 485000, 565000, 530000, 5, 28250, 3900, "Reserved", 1, 1, 0, 2, "/porshe fleet.png"],
-    ["car-3", "ferrari-296-gtb", "Ferrari 296 GTB", "Ferrari", "296", "GTB", 2024, "ZFF99SLA8R0300003", "F 29603", 3200, "Coupe", "DCT", "Hybrid", "V6 Hybrid", 830, "Rosso Corsa", "Nero", "A compact hybrid berlinetta with extraordinary response and balance.", "owner-3", "Veltro Owned", "2026-09-03", 1120000, 1290000, 1210000, 0, 0, 12800, "Available", 1, 1, 1, 3, "/ferrari fleet.png"],
-    ["car-4", "lamborghini-huracan-sto", "Lamborghini Huracan STO", "Lamborghini", "Huracan", "STO", 2022, "ZHWUA6ZF9NLA40004", "D 52014", 12600, "Coupe", "Automatic", "Petrol", "V10", 640, "Blu Laufey", "Nero Cosmus", "Track-focused Huracan with road-going usability.", "owner-1", "Consignment", "2026-07-12", 1020000, 1180000, 1100000, 4, 47200, 11400, "Maintenance", 0, 0, 0, 4, "/lambo fleet.png"],
-    ["car-5", "mercedes-amg-gtr", "Mercedes-AMG GT R", "Mercedes-Benz", "AMG GT", "R", 2021, "WDDYJ7KA7MA050005", "G 81821", 23800, "Coupe", "DCT", "Petrol", "V8 Biturbo", 585, "AMG Green Hell", "Black Alcantara", "A dramatic front-engine performance coupe with immense presence.", "owner-2", "Consignment", "2026-06-28", 365000, 435000, 405000, 5, 21750, 6400, "Sold", 0, 0, 0, 5, "/porshe fleet.png"],
-    ["car-6", "bmw-m8-competition", "BMW M8 Competition", "BMW", "M8", "Competition", 2023, "WBSGV0C04PCH60006", "B 94031", 9100, "Gran Coupe", "Automatic", "Petrol", "V8", 625, "Frozen Black", "Sakhir Orange", "Four-door grand touring with supercar pace.", "owner-3", "Veltro Owned", "2026-09-21", 510000, 595000, 555000, 0, 0, 2800, "Coming Soon", 1, 0, 1, 6, "/ferrari fleet.png"],
+    ["car-1", "lamborghini-evo-spyder", "Lamborghini Evo Spyder", "Lamborghini", "Huracan", "EVO Spyder", 2024, "ZHWUT5ZF1RLA10001", "D 87941", 8400, "Convertible", "Automatic", "Petrol", "V10", 640, "Arancio Borealis", "Nero Ade", "Open-air V10 theatre, curated for unforgettable drives.", "owner-1", "Consignment", "2026-08-18", 910000, 1400, 995000, 4.5, 49275, 7200, "Available", 1, 1, 1, 1, "/lambo fleet.png"],
+    ["car-2", "porsche-911-carrera-4s", "Porsche 911 Carrera 4S", "Porsche", "911", "Carrera 4S", 2023, "WP0AB2A91PS220002", "P 11472", 17200, "Coupe", "PDK", "Petrol", "Flat-6", 450, "GT Silver", "Black leather", "An everyday supercar with precise all-wheel-drive performance.", "owner-2", "Customer Vehicle", "2026-08-26", 485000, 450, 530000, 5, 28250, 3900, "Reserved", 1, 1, 0, 2, "/porshe fleet.png"],
+    ["car-3", "ferrari-296-gtb", "Ferrari 296 GTB", "Ferrari", "296", "GTB", 2024, "ZFF99SLA8R0300003", "F 29603", 3200, "Coupe", "DCT", "Hybrid", "V6 Hybrid", 830, "Rosso Corsa", "Nero", "A compact hybrid berlinetta with extraordinary response and balance.", "owner-3", "Veltro Owned", "2026-09-03", 1120000, 2800, 1210000, 0, 0, 12800, "Available", 1, 1, 1, 3, "/ferrari fleet.png"],
+    ["car-4", "lamborghini-huracan-sto", "Lamborghini Huracan STO", "Lamborghini", "Huracan", "STO", 2022, "ZHWUA6ZF9NLA40004", "D 52014", 12600, "Coupe", "Automatic", "Petrol", "V10", 640, "Blu Laufey", "Nero Cosmus", "Track-focused Huracan with road-going usability.", "owner-1", "Consignment", "2026-07-12", 1020000, 1400, 1100000, 4, 47200, 11400, "Maintenance", 0, 0, 0, 4, "/lambo fleet.png"],
+    ["car-5", "mercedes-amg-gtr", "Mercedes-AMG GT R", "Mercedes-Benz", "AMG GT", "R", 2021, "WDDYJ7KA7MA050005", "G 81821", 23800, "Coupe", "DCT", "Petrol", "V8 Biturbo", 585, "AMG Green Hell", "Black Alcantara", "A dramatic front-engine performance coupe with immense presence.", "owner-2", "Consignment", "2026-06-28", 365000, 700, 405000, 5, 21750, 6400, "Sold", 0, 0, 0, 5, "/porshe fleet.png"],
+    ["car-6", "bmw-m8-competition", "BMW M8 Competition", "BMW", "M8", "Competition", 2023, "WBSGV0C04PCH60006", "B 94031", 9100, "Gran Coupe", "Automatic", "Petrol", "V8", 625, "Frozen Black", "Sakhir Orange", "Four-door grand touring with supercar pace.", "owner-3", "Veltro Owned", "2026-09-21", 510000, 600, 555000, 0, 0, 2800, "Coming Soon", 1, 0, 1, 6, "/ferrari fleet.png"],
   ];
   const insert = db.prepare(`INSERT INTO cars (id, slug, display_name, brand, model, trim, year, vin, plate_number, mileage, body_type, transmission, fuel_type, engine, horsepower, exterior_color, interior_color, description, owner_id, ownership_type, date_received, owner_price, listed_price, minimum_price, commission_percentage, commission_amount, internal_expenses, status, published, featured, new_arrival, display_order, cover_image, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
   cars.forEach((car) => insert.run(...car, adminId));

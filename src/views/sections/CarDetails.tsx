@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowLeft,
   ArrowRight,
   CarProfile,
   Engine,
@@ -14,9 +13,11 @@ import {
   Lightning,
   Seat,
   Timer,
+  X,
 } from "@phosphor-icons/react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
+import { CarBookingModal } from "@/views/components/CarBookingModal";
 
 type CarDetailsProps = { car: Car; returnHref?: string; returnLabel?: string };
 type GalleryIcon = ComponentType<{ className?: string }>;
@@ -78,7 +79,6 @@ const detailOverrides: Record<string, { name: string; description: string; accel
     acceleration: "3.1 s",
     topSpeed: "325 km/h",
     torque: "600 Nm",
-    rate: 3300,
   },
 };
 
@@ -98,12 +98,12 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
           ? ferrariGallery
           : [{ label: "Exterior", src: assetPath(car.image), icon: CarProfile }];
   const [activeView, setActiveView] = useState(0);
+  const [bookingOpen, setBookingOpen] = useState(false);
   const reduceMotion = useReducedMotion();
 
   const name = override?.name ?? car.name.replace(new RegExp(`^${car.brand}\\s*`, "i"), "");
   const description = override?.description ?? car.description ?? `${car.year} ${car.brand} ${name}, prepared for an exceptional drive.`;
   const rate = override?.rate ?? car.pricePerDay;
-  const bookingHref = `https://wa.me/96170335113?text=${encodeURIComponent(`I would like to book the ${car.brand} ${name}.`)}`;
 
   const performance = [
     { icon: Lightning, value: `${car.horsepower || 0} HP`, label: "Power output", mobileLabel: "Power" },
@@ -128,22 +128,23 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
 
   return (
     <main className="relative min-h-[100svh] overflow-x-hidden bg-[#090A0B] text-white lg:h-[100svh] lg:overflow-hidden">
-      <header className="absolute inset-x-0 top-0 z-50 bg-transparent">
+      <header className="fixed inset-x-0 top-0 z-50 bg-[#090A0B] shadow-[0_12px_35px_rgba(0,0,0,.22)]">
         <div className="mx-auto flex h-[4.25rem] max-w-[92rem] items-center px-4 sm:h-[4.75rem] sm:px-8 lg:px-12">
           <Link href="/" aria-label="Go to Veltro home" className="relative shrink-0 lg:left-[-1cm]">
             <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-10 w-auto sm:h-14" />
           </Link>
-          <nav className="ml-auto hidden items-center gap-9 lg:flex lg:translate-x-[1cm]">
-            {[[returnHref, "Fleet"], ["/#experience", "Experience"], ["/#contact", "Contact"]].map(([href, label]) => (
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 lg:flex">
+            {[[returnHref, "Fleet"], ["/#experience", "Experience"], ["/#shop", "Shop"], ["/#faq", "FAQs"], ["/#contact", "Contact"]].map(([href, label]) => (
               <Link key={label} href={href} className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/66 transition hover:text-[#d7ff21]">{label}</Link>
             ))}
           </nav>
-          <a href={bookingHref} target="_blank" rel="noreferrer" className="ml-10 hidden h-10 items-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.65rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white lg:flex lg:translate-x-[1cm]">
-            Inquire <ArrowRight size={15} />
-          </a>
-          <Link href={returnHref} aria-label={returnLabel} className="ml-auto flex h-9 items-center justify-center px-1 text-[0.52rem] font-bold uppercase tracking-[0.12em] text-white/70 transition hover:text-[#d7ff21] lg:hidden">
-            Back to fleet
-          </Link>
+          {bookingOpen ? (
+            <button type="button" onClick={() => setBookingOpen(false)} aria-label="Close booking form" className="ml-auto grid size-11 place-items-center text-white/75 transition hover:text-[#d7ff21] lg:translate-x-[1cm]"><X size={22} /></button>
+          ) : (
+            <Link href={returnHref} aria-label={`Back to ${returnLabel}`} className="ml-auto grid size-11 place-items-center text-white/75 transition hover:text-[#d7ff21] lg:translate-x-[1cm]">
+              <X size={22} />
+            </Link>
+          )}
         </div>
       </header>
 
@@ -166,9 +167,6 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[100rem] flex-col px-5 pb-20 pt-20 sm:px-8 sm:pb-24 sm:pt-24 lg:h-full lg:min-h-0 lg:px-12 lg:pb-8 lg:pt-28">
         <section className="max-w-[27rem]">
-          <Link href={returnHref} className="mb-5 hidden items-center gap-2 text-[0.55rem] font-bold uppercase tracking-[0.16em] text-white/55 transition hover:text-[#d7ff21] lg:inline-flex">
-            <ArrowLeft size={14} /> Back to fleet
-          </Link>
           <motion.div initial={reduceMotion ? false : { opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
             <div className="flex items-center gap-4 text-[0.52rem] font-bold uppercase tracking-[0.42em] text-white/65">
               {car.brand}<span className="h-px w-10 bg-[#d7ff21]" />
@@ -217,7 +215,7 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
           </div>
 
           <div className="mt-4 flex items-center gap-4 sm:mt-6">
-            <a href={bookingHref} target="_blank" rel="noreferrer" className="flex h-11 min-w-44 items-center justify-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-black transition hover:bg-white">Reserve now <ArrowRight size={15} /></a>
+            <button type="button" onClick={() => setBookingOpen(true)} className="flex h-11 min-w-44 items-center justify-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-black transition hover:bg-white">Reserve now <ArrowRight size={15} /></button>
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white/78 drop-shadow-[0_1px_8px_rgba(0,0,0,.8)]">${rate.toLocaleString("en-US")} / day</span>
           </div>
         </section>
@@ -234,6 +232,7 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
         </aside>
 
       </div>
+      {bookingOpen ? <CarBookingModal car={{ brand: car.brand, name, year: car.year, dailyRate: rate }} onClose={() => setBookingOpen(false)} /> : null}
     </main>
   );
 }

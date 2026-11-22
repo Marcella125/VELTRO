@@ -18,6 +18,7 @@ import {
 import { Armchair, CarFront, ChevronLeft, ChevronRight, Gem, Headset, Mail, MapPin, MapPinned, Phone, ShieldCheck } from "lucide-react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
+import { StoreModal, type StoreCategory } from "@/views/components/StoreModal";
 
 const navItems = [
   ["fleet", "Fleet"],
@@ -75,6 +76,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [activeFleetIndex, setActiveFleetIndex] = useState(0);
   const [activeShopIndex, setActiveShopIndex] = useState(0);
+  const [storeCategory, setStoreCategory] = useState<StoreCategory | null>(null);
   const fleetSectionRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLElement>(null);
   const fleetIntroRef = useRef<HTMLDivElement>(null);
@@ -175,6 +177,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
 
   const navigate = (id: string) => {
     setMenuOpen(false);
+    setStoreCategory(null);
     jumpTo(id);
   };
 
@@ -201,15 +204,15 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   return (
     <main ref={pageRef} className="min-h-screen overflow-x-hidden bg-[#090A0B] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
       <header
-        style={{ backgroundColor: headerScrolled ? "#090A0B" : "transparent" }}
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${headerScrolled ? "shadow-[0_12px_35px_rgba(0,0,0,.22)] backdrop-blur-xl" : ""}`}
+        style={{ backgroundColor: headerScrolled || storeCategory ? "#090A0B" : "transparent" }}
+        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${headerScrolled || storeCategory ? "shadow-[0_12px_35px_rgba(0,0,0,.22)] backdrop-blur-xl" : ""}`}
       >
         <div className="mx-auto flex h-[4.25rem] max-w-[92rem] items-center px-4 sm:h-[4.75rem] sm:px-8 lg:px-12">
           <button type="button" onClick={() => navigate("home")} aria-label="Go to Veltro home" className="relative shrink-0 lg:left-[-1cm]">
             <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-10 w-auto sm:h-14" />
           </button>
 
-          <nav className="ml-auto hidden items-center gap-9 lg:flex lg:translate-x-[1cm]">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 lg:flex">
             {navItems.map(([id, label]) => (
               <button key={id} type="button" onClick={() => navigate(id)} className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/66 transition hover:text-[#d7ff21]">
                 {label}
@@ -217,11 +220,18 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
             ))}
           </nav>
 
-          <button type="button" onClick={() => navigate("contact")} className="ml-10 hidden h-10 items-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.65rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white lg:flex lg:translate-x-[1cm]">
-            Inquire <ArrowRight size={15} />
-          </button>
-          <button type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle navigation" className="ml-auto grid size-11 place-items-center lg:hidden">
-            {menuOpen ? <X /> : <Menu />}
+          {!storeCategory ? (
+            <button type="button" onClick={() => navigate("contact")} className="ml-auto hidden h-10 items-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.65rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white lg:flex lg:translate-x-[1cm]">
+              Inquire <ArrowRight size={15} />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => storeCategory ? setStoreCategory(null) : setMenuOpen((open) => !open)}
+            aria-label={storeCategory ? "Close store" : "Toggle navigation"}
+            className={`ml-auto size-11 place-items-center ${storeCategory ? "grid" : "grid lg:hidden"}`}
+          >
+            {storeCategory || menuOpen ? <X /> : <Menu />}
           </button>
         </div>
 
@@ -383,7 +393,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(0,0,0,.82)_100%)]" />
           <div className="relative z-10 mb-2 sm:-mb-5">
             <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro gifts</h2>
-            <a href="#contact" className="mt-2 inline-flex items-center gap-1.5 text-[0.62rem] font-medium text-white/78 transition hover:text-[#d7ff21] sm:mt-3 sm:gap-2 sm:text-xs">Shop now <ArrowRight size={13} /></a>
+            <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/42 sm:mt-3 sm:text-xs">Coming soon</span>
           </div>
         </article>
 
@@ -411,7 +421,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               )}
               <div className="relative z-10 mb-2 sm:-mb-3">
                 <h3 className="font-body text-[clamp(0.78rem,2.3vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.035em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">{title as string}</h3>
-                <a href="#contact" className="mt-2 inline-flex items-center gap-1.5 text-[0.6rem] font-medium text-white/76 transition hover:text-[#d7ff21] sm:mt-3 sm:gap-2 sm:text-sm">Shop now <ArrowRight size={13} /></a>
+                <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/42 sm:mt-3 sm:text-xs">Coming soon</span>
               </div>
             </article>
           );
@@ -428,7 +438,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
             ))}
           </div>
           <h2 className="mt-5 font-body text-[clamp(1.15rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] sm:mt-2 lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
-          <a href="#contact" className="mt-2 inline-flex items-center gap-1.5 text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:gap-2 sm:text-sm">Explore all <ArrowRight size={13} /></a>
+          <button type="button" onClick={() => setStoreCategory("All")} className="mt-2 inline-flex items-center text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:text-sm">Explore all</button>
         </article>
         </div>
       </section>
@@ -501,6 +511,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           </div>
         </div>
       </footer>
+      {storeCategory ? <StoreModal initialCategory={storeCategory} onClose={() => setStoreCategory(null)} /> : null}
     </main>
   );
 }

@@ -74,6 +74,16 @@ h6 {
   font-family: var(--font-display);
 }
 
+.store-ui {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+.store-ui :where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+}
+
 .scroll-text-reveal {
   opacity: 0;
   translate: 0 1.15rem;

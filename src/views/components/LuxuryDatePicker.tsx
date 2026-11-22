@@ -74,12 +74,12 @@ export function LuxuryDatePicker({ label, value, min, onChange }: LuxuryDatePick
           if (!open && value) setViewMonth(startOfMonth(parseDate(value)));
           setOpen((current) => !current);
         }}
-        className={`flex min-h-14 w-full items-center gap-3 rounded-lg px-4 text-left transition ${open ? "bg-[#d7ff21]/[0.075] ring-1 ring-[#d7ff21]/35" : "bg-white/[0.035] hover:bg-white/[0.055]"}`}
+        className={`flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 text-left transition ${open ? "border-[#d7ff21]/50 bg-[#d7ff21]/[0.075] shadow-[0_0_24px_rgba(215,255,33,.06)]" : "border-white/12 bg-white/[0.045] hover:border-white/22 hover:bg-white/[0.065]"}`}
       >
         <span className={`grid size-8 shrink-0 place-items-center rounded-full transition ${open ? "bg-[#d7ff21] text-black" : "bg-white/[0.045] text-[#d7ff21]"}`}><CalendarDays size={15} /></span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[0.43rem] font-semibold uppercase tracking-[0.16em] text-white/30">{label}</span>
-          <span className={`mt-0.5 block text-[0.68rem] font-medium ${value ? "text-white/82" : "text-white/35"}`}>{formattedValue}</span>
+          <span className="block text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-white/40">{label}</span>
+          <span className={`mt-0.5 block text-sm font-medium ${value ? "text-white/90" : "text-white/35"}`}>{formattedValue}</span>
         </span>
       </button>
 
@@ -87,12 +87,12 @@ export function LuxuryDatePicker({ label, value, min, onChange }: LuxuryDatePick
         <div
           role="dialog"
           aria-label={`Choose ${label.toLowerCase()}`}
-          className="absolute left-0 top-[calc(100%+.55rem)] z-[80] w-[19rem] rounded-2xl border border-white/10 bg-[#0b0d0c]/98 p-3 shadow-[0_28px_80px_rgba(0,0,0,.72),0_0_30px_rgba(215,255,33,.04)] backdrop-blur-2xl max-md:w-[min(19rem,calc(100vw-3rem))]"
+          className="absolute left-0 top-[calc(100%+.55rem)] z-[80] w-[20rem] rounded-2xl border border-white/15 bg-[#080a09]/98 p-4 shadow-[0_32px_90px_rgba(0,0,0,.82),0_0_34px_rgba(215,255,33,.06),inset_0_1px_0_rgba(255,255,255,.06)] backdrop-blur-2xl max-md:w-[min(20rem,calc(100vw-3rem))]"
         >
           <div className="flex items-center justify-between px-1 pb-3">
             <div>
-              <p className="text-[0.43rem] font-semibold uppercase tracking-[0.18em] text-[#d7ff21]">{label}</p>
-              <strong className="mt-1 block font-hero text-lg font-semibold uppercase text-white">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#d7ff21]">{label}</p>
+              <strong className="mt-1 block text-base font-bold uppercase text-white">
                 {viewMonth.toLocaleDateString("en", { month: "long", year: "numeric" })}
               </strong>
             </div>
@@ -103,7 +103,7 @@ export function LuxuryDatePicker({ label, value, min, onChange }: LuxuryDatePick
           </div>
 
           <div className="grid grid-cols-7 border-y border-white/[0.06] py-2">
-            {weekDays.map((day) => <span key={day} className="text-center text-[0.45rem] font-semibold uppercase tracking-[0.08em] text-white/28">{day}</span>)}
+            {weekDays.map((day) => <span key={day} className="text-center text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-white/35">{day}</span>)}
           </div>
           <div className="mt-2 grid grid-cols-7 gap-1">
             {calendarDays.map((date) => {
@@ -123,7 +123,7 @@ export function LuxuryDatePicker({ label, value, min, onChange }: LuxuryDatePick
                     onChange(dateValue);
                     setOpen(false);
                   }}
-                  className={`relative grid aspect-square place-items-center rounded-lg text-[0.6rem] font-medium transition ${selected ? "bg-[#d7ff21] font-bold text-black shadow-[0_0_18px_rgba(215,255,33,.18)]" : disabled ? "cursor-not-allowed text-white/10" : outsideMonth ? "text-white/18 hover:bg-white/[0.04]" : "text-white/62 hover:bg-white/[0.07] hover:text-white"}`}
+                  className={`relative grid aspect-square place-items-center rounded-lg text-xs font-medium transition ${selected ? "bg-[#d7ff21] font-bold text-black shadow-[0_0_18px_rgba(215,255,33,.18)]" : disabled ? "cursor-not-allowed text-white/10" : outsideMonth ? "text-white/18 hover:bg-white/[0.04]" : "text-white/68 hover:bg-white/[0.08] hover:text-white"}`}
                 >
                   {date.getDate()}
                   {today && !selected ? <span className="absolute bottom-1 size-0.5 rounded-full bg-[#d7ff21]" /> : null}
@@ -132,8 +132,8 @@ export function LuxuryDatePicker({ label, value, min, onChange }: LuxuryDatePick
             })}
           </div>
           <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] px-1 pt-3">
-            <button type="button" onClick={() => { onChange(""); setOpen(false); }} className="text-[0.48rem] font-semibold uppercase tracking-[0.1em] text-white/30 transition hover:text-white">Clear</button>
-            <button type="button" onClick={() => { const next = minimumDate > new Date() ? minimumDate : new Date(); onChange(toDateValue(next)); setOpen(false); }} className="text-[0.48rem] font-semibold uppercase tracking-[0.1em] text-[#d7ff21] transition hover:text-white">Earliest available</button>
+            <button type="button" onClick={() => { onChange(""); setOpen(false); }} className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-white/35 transition hover:text-white">Clear</button>
+            <button type="button" onClick={() => { const next = minimumDate > new Date() ? minimumDate : new Date(); onChange(toDateValue(next)); setOpen(false); }} className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-[#d7ff21] transition hover:text-white">Earliest available</button>
           </div>
         </div>
       ) : null}
