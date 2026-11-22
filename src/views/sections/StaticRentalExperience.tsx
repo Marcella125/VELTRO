@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowDown,
   ArrowRight,
+  ArrowUp,
   CaretDown as ChevronDown,
   CaretLeft,
   CaretRight,
@@ -340,7 +341,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               ].map(([Icon, title, copy], index) => {
                 const CardIcon = Icon as typeof CarFront;
                 return (
-                  <article data-mobile-reveal key={title as string} className="flex min-h-[11.5rem] flex-col items-center justify-center rounded-[1.35rem] border border-white/90 bg-black px-2.5 py-4 text-center transition duration-500 hover:-translate-y-1 sm:min-h-[14rem] sm:rounded-[2rem] sm:border-2 sm:px-5 sm:py-6">
+                  <article data-mobile-reveal key={title as string} className="flex min-h-[11.5rem] flex-col items-center justify-center rounded-[1.35rem] border border-white/90 bg-[#090A0B] px-2.5 py-4 text-center transition duration-500 hover:-translate-y-1 sm:min-h-[14rem] sm:rounded-[2rem] sm:border-2 sm:px-5 sm:py-6">
                     {index === 0 ? (
                       <span
                         aria-hidden="true"
@@ -484,9 +485,19 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 pt-4 text-[0.54rem] uppercase tracking-[0.14em] text-white/30 sm:flex-row sm:items-center sm:justify-between">
-            <p>© 2026 Veltro. All rights reserved.</p>
+          <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 pt-4 text-[0.54rem] uppercase tracking-[0.14em] text-white/30 sm:grid-cols-[auto_1fr_auto]">
+            <p className="col-span-2 sm:col-span-1">© 2026 Veltro. All rights reserved.</p>
             <p>Luxury car rental · Beirut, Lebanon</p>
+            <button
+              type="button"
+              onClick={() => jumpTo("home")}
+              aria-label="Back to top"
+              className="group ml-auto flex w-fit items-center text-[#d7ff21] transition hover:text-white"
+            >
+              <span className="grid size-8 place-items-center rounded-full border border-[#d7ff21] transition group-hover:border-white">
+                <ArrowUp size={14} weight="bold" />
+              </span>
+            </button>
           </div>
         </div>
       </footer>
