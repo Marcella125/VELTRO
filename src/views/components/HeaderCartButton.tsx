@@ -32,11 +32,11 @@ export function HeaderCartButton({ onClick, className = "" }: HeaderCartButtonPr
       type="button"
       onClick={onClick}
       aria-label={`Open shopping cart${count ? `, ${count} ${count === 1 ? "item" : "items"}` : ""}`}
-      className={`relative grid size-10 shrink-0 place-items-center text-white transition hover:text-[#d7ff21] ${className}`}
+      className={`relative grid size-8 shrink-0 place-items-center text-white transition hover:text-[#d7ff21] sm:size-10 ${className}`}
     >
-      <ShoppingBag size={20} strokeWidth={1.8} />
+      <ShoppingBag className="size-[0.95rem] sm:size-5" strokeWidth={1.8} />
       {count > 0 ? (
-        <span className="absolute right-0 top-0 grid min-h-4 min-w-4 place-items-center rounded-full bg-[#d7ff21] px-1 text-[0.58rem] font-extrabold leading-none text-black">
+        <span className="absolute right-0 top-0 grid min-h-3 min-w-3 place-items-center rounded-full bg-[#d7ff21] px-0.5 text-[0.48rem] font-extrabold leading-none text-black sm:min-h-4 sm:min-w-4 sm:px-1 sm:text-[0.58rem]">
           {count > 99 ? "99+" : count}
         </span>
       ) : null}

@@ -18,7 +18,7 @@ import {
 import { Armchair, CarFront, ChevronLeft, ChevronRight, Gem, Headset, Mail, MapPin, MapPinned, Phone, ShieldCheck, Shirt } from "lucide-react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
-import { StoreModal, type StoreCategory } from "@/views/components/StoreModal";
+import { StoreModal, type StoreCategory, type StoreStep } from "@/views/components/StoreModal";
 import { HeaderCartButton } from "@/views/components/HeaderCartButton";
 
 const navItems = [
@@ -29,6 +29,10 @@ const navItems = [
   ["concept", "Concept"],
   ["contact", "Contact"],
 ] as const;
+
+const sectionIds = ["home", "fleet", "experience", "shop", "faq", "concept", "contact"] as const;
+const storeCategories: readonly StoreCategory[] = ["All", "Accessories", "Interior", "Exterior", "Apparel"];
+const storeSteps: readonly StoreStep[] = ["shop", "cart", "checkout"];
 
 const faqs = [
   ["What do I need to book?", "A valid driving licence and identity document. Our concierge confirms any vehicle-specific requirements before payment."],
@@ -82,7 +86,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const [activeFleetIndex, setActiveFleetIndex] = useState(0);
   const [activeShopIndex, setActiveShopIndex] = useState(0);
   const [storeCategory, setStoreCategory] = useState<StoreCategory | null>(null);
-  const [openStoreAtCart, setOpenStoreAtCart] = useState(false);
+  const [storeInitialStep, setStoreInitialStep] = useState<StoreStep>("shop");
   const fleetSectionRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLElement>(null);
   const fleetIntroRef = useRef<HTMLDivElement>(null);
@@ -98,6 +102,53 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
     { length: Math.min(5, shopProducts.length) },
     (_, offset) => shopProducts[(activeShopIndex + offset) % shopProducts.length],
   );
+
+  useLayoutEffect(() => {
+    const requestedSection = window.location.hash.slice(1);
+    const searchParams = new URLSearchParams(window.location.search);
+    const requestedCategory = searchParams.get("store");
+    const requestedStoreStep = searchParams.get("storeStep");
+    const root = document.documentElement;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+
+    if (sectionIds.includes(requestedSection as (typeof sectionIds)[number])) {
+      document.getElementById(requestedSection)?.scrollIntoView({ behavior: "auto" });
+    }
+
+    const revealPage = () => {
+      pageRef.current?.classList.remove("invisible");
+      root.style.scrollBehavior = previousScrollBehavior;
+    };
+
+    if (storeCategories.includes(requestedCategory as StoreCategory)) {
+      window.requestAnimationFrame(() => {
+        setStoreCategory(requestedCategory as StoreCategory);
+        setStoreInitialStep(storeSteps.includes(requestedStoreStep as StoreStep) ? requestedStoreStep as StoreStep : "shop");
+        window.requestAnimationFrame(revealPage);
+      });
+      return;
+    }
+
+    window.requestAnimationFrame(revealPage);
+  }, []);
+
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+
+    const observer = new IntersectionObserver((entries) => {
+      const activeEntry = entries.find((entry) => entry.isIntersecting);
+      if (!activeEntry) return;
+      const id = activeEntry.target.id;
+      const nextUrl = `${window.location.pathname}${window.location.search}#${id}`;
+      if (window.location.hash !== `#${id}`) window.history.replaceState(null, "", nextUrl);
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const updateHeader = () => {
@@ -187,19 +238,44 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const navigate = (id: string) => {
     setMenuOpen(false);
     setStoreCategory(null);
-    setOpenStoreAtCart(false);
+    setStoreInitialStep("shop");
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete("store");
+    searchParams.delete("storeStep");
+    const search = searchParams.toString();
+    window.history.pushState(null, "", `${window.location.pathname}${search ? `?${search}` : ""}#${id}`);
     jumpTo(id);
   };
 
   const closeStore = () => {
     setStoreCategory(null);
-    setOpenStoreAtCart(false);
+    setStoreInitialStep("shop");
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete("store");
+    searchParams.delete("storeStep");
+    const search = searchParams.toString();
+    window.history.pushState(null, "", `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`);
+  };
+
+  const openStore = (category: StoreCategory, step: StoreStep = "shop") => {
+    setMenuOpen(false);
+    setStoreInitialStep(step);
+    setStoreCategory(category);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("store", category);
+    searchParams.set("storeStep", step);
+    window.history.pushState(null, "", `${window.location.pathname}?${searchParams.toString()}${window.location.hash}`);
   };
 
   const openCart = () => {
-    setMenuOpen(false);
-    setOpenStoreAtCart(true);
-    setStoreCategory("All");
+    openStore("All", "cart");
+  };
+
+  const updateStoreStep = (step: StoreStep) => {
+    setStoreInitialStep(step);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("storeStep", step);
+    window.history.replaceState(null, "", `${window.location.pathname}?${searchParams.toString()}${window.location.hash}`);
   };
 
   const handleFleetTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
@@ -223,7 +299,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   };
 
   return (
-    <main ref={pageRef} className="min-h-screen overflow-x-hidden bg-[#090A0B] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
+    <main ref={pageRef} className="invisible min-h-screen overflow-x-hidden bg-[#090A0B] text-[#f2eee7] selection:bg-[#d7ff21] selection:text-black">
       <header
         style={{ backgroundColor: headerScrolled || storeCategory ? "#090A0B" : "transparent" }}
         className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${headerScrolled || storeCategory ? "shadow-[0_12px_35px_rgba(0,0,0,.22)] backdrop-blur-xl" : ""}`}
@@ -421,14 +497,14 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
             ))}
           </div>
           <h2 className="mt-5 font-body text-[clamp(1.15rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] sm:mt-2 lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
-          <button type="button" onClick={() => setStoreCategory("Apparel")} className="mt-2 inline-flex items-center text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:text-sm">Explore collection</button>
+          <button type="button" onClick={() => openStore("Apparel")} className="mt-2 inline-flex items-center text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:text-sm">Explore collection</button>
         </article>
 
         <article data-mobile-reveal data-image-slot="veltro-accessories" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-black p-5 text-center sm:h-auto sm:min-h-0 sm:p-6 md:p-8">
           <Image src={assetPath("/images/accessories mobile.png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="100vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden" />
           <Image src={assetPath("/images/veltro accessories .png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="50vw" quality={92} className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block" />
           <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgba(0,0,0,.9)_100%)]" />
-          <button type="button" onClick={() => setStoreCategory("Accessories")} className="absolute inset-0 z-20" aria-label="Explore Veltro's accessories" />
+          <button type="button" onClick={() => openStore("Accessories")} className="absolute inset-0 z-20" aria-label="Explore Veltro's accessories" />
           <div className="pointer-events-none relative z-30 mb-2 sm:-mb-5">
             <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro&apos;s accessories</h2>
             <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/65 transition group-hover:text-[#d7ff21] sm:mt-3 sm:text-xs">Explore collection</span>
@@ -594,7 +670,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           </div>
         </div>
       </footer>
-      {storeCategory ? <StoreModal initialCategory={storeCategory} initialStep={openStoreAtCart ? "cart" : "shop"} onClose={closeStore} /> : null}
+      {storeCategory ? <StoreModal initialCategory={storeCategory} initialStep={storeInitialStep} onStepChange={updateStoreStep} onClose={closeStore} /> : null}
     </main>
   );
 }

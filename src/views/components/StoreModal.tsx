@@ -26,7 +26,7 @@ type CartItem = {
   size: string;
 };
 
-type StoreStep = "shop" | "cart" | "checkout";
+export type StoreStep = "shop" | "cart" | "checkout";
 type FormErrors = Partial<Record<"fullName" | "phone" | "deliveryArea", string>>;
 type ExpandedImage = { product: StoreProduct; showAlternate: boolean } | null;
 
@@ -52,6 +52,7 @@ type StoreModalProps = {
   initialCategory: StoreCategory;
   initialStep?: StoreStep;
   onClose: () => void;
+  onStepChange?: (step: StoreStep) => void;
 };
 
 function ProductArtwork({ product, compact = false, image = product.image }: { product: StoreProduct; compact?: boolean; image?: string }) {
@@ -68,7 +69,7 @@ function ProductArtwork({ product, compact = false, image = product.image }: { p
   );
 }
 
-export function StoreModal({ initialCategory, initialStep = "shop", onClose }: StoreModalProps) {
+export function StoreModal({ initialCategory, initialStep = "shop", onClose, onStepChange }: StoreModalProps) {
   const visibleProducts = initialCategory === "All"
     ? products
     : products.filter((product) => product.category === initialCategory);
@@ -115,6 +116,7 @@ export function StoreModal({ initialCategory, initialStep = "shop", onClose }: S
 
   const goToStep = (nextStep: StoreStep) => {
     setStep(nextStep);
+    onStepChange?.(nextStep);
     window.requestAnimationFrame(() => panelRef.current?.scrollTo({ top: 0, behavior: "smooth" }));
   };
 
