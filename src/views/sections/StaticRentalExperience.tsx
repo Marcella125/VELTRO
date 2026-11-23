@@ -15,7 +15,7 @@ import {
   List as Menu,
   X,
 } from "@phosphor-icons/react";
-import { Armchair, CarFront, ChevronLeft, ChevronRight, Gem, Headset, Mail, MapPin, MapPinned, Phone, ShieldCheck } from "lucide-react";
+import { Armchair, CarFront, ChevronLeft, ChevronRight, Gem, Headset, Mail, MapPin, MapPinned, Phone, ShieldCheck, Shirt } from "lucide-react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
 import { StoreModal, type StoreCategory } from "@/views/components/StoreModal";
@@ -409,7 +409,8 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </article>
 
         <article data-mobile-reveal data-image-slot="veltro-accessories" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-black p-5 text-center sm:h-auto sm:min-h-0 sm:p-6 md:p-8">
-          <Image src={assetPath("/images/veltro accessories .png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="(max-width: 767px) 100vw, 50vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025]" />
+          <Image src={assetPath("/images/accessories mobile.png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="100vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden" />
+          <Image src={assetPath("/images/veltro accessories .png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="50vw" quality={92} className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block" />
           <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgba(0,0,0,.9)_100%)]" />
           <button type="button" onClick={() => setStoreCategory("Accessories")} className="absolute inset-0 z-20" aria-label="Explore Veltro's accessories" />
           <div className="pointer-events-none relative z-30 mb-2 sm:-mb-5">
@@ -428,12 +429,20 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               {index < 2 ? (
                 <>
                   <Image
-                    src={assetPath(index === 0 ? "/images/veltro interior.png" : "/images/veltro exterior.png")}
+                    src={assetPath(index === 0 ? "/images/interior mobile.png" : "/images/exterior mobile.png")}
                     alt={index === 0 ? "Veltro premium interior accessories" : "Veltro premium exterior accessories"}
                     fill
-                    sizes="(max-width: 767px) 100vw, 50vw"
+                    sizes="100vw"
                     quality={92}
-                    className="object-cover object-center transition duration-700 group-hover:scale-[1.025]"
+                    className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden"
+                  />
+                  <Image
+                    src={assetPath(index === 0 ? "/images/veltro-interior.png" : "/images/veltro-exterior.png")}
+                    alt={index === 0 ? "Veltro premium interior accessories" : "Veltro premium exterior accessories"}
+                    fill
+                    sizes="50vw"
+                    quality={92}
+                    className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block"
                   />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(0,0,0,.82)_100%)]" />
                 </>
@@ -459,6 +468,56 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               const open = activeFaq === index;
               return <article key={question} className="border-b border-white/14"><button type="button" onClick={() => setActiveFaq(open ? -1 : index)} className="flex w-full items-center gap-4 py-4 text-left sm:gap-5 sm:py-6"><span className="font-hero text-base font-bold italic text-[#d7ff21] sm:text-lg">0{index + 1}</span><span className="flex-1 text-xs font-bold uppercase tracking-[0.07em] sm:text-sm sm:tracking-[0.08em]">{question}</span><ChevronDown size={18} className={`transition ${open ? "rotate-180 text-[#d7ff21]" : "text-white/40"}`} /></button>{open ? <p className="max-w-2xl pb-4 pl-9 text-xs leading-5 text-white/52 sm:pb-6 sm:pl-12 sm:text-sm sm:leading-6">{answer}</p> : null}</article>;
             })}
+          </div>
+        </div>
+      </section>
+
+      <section id="concept" aria-label="Veltro headquarters concept" className="grid overflow-hidden bg-black sm:min-h-[calc(100svh-4.75rem)] sm:grid-cols-[2fr_1fr]">
+        <div data-mobile-reveal className="bg-[#050506] px-5 py-8 sm:hidden">
+          <h2 id="concept-title-mobile" className="font-body text-[clamp(1.8rem,9vw,2.8rem)] font-extrabold uppercase italic leading-[0.88] tracking-[-0.045em] text-white">Veltro<br />headquarters</h2>
+          <p className="mt-4 text-[0.68rem] font-bold uppercase tracking-[0.3em] text-[#d7ff21]">Concept</p>
+        </div>
+
+        <div data-mobile-reveal className="relative min-h-[22rem] sm:min-h-0">
+          <Image src={assetPath("/images/store mobile.png")} alt="Veltro headquarters storefront concept" fill sizes="100vw" quality={100} className="object-cover object-center sm:hidden" />
+          <Image src={assetPath("/images/store.png")} alt="Veltro headquarters storefront concept" fill sizes="67vw" quality={100} className="hidden object-cover object-center sm:block" />
+        </div>
+
+        <div className="flex min-h-0 flex-col bg-[#050506]">
+          <div data-mobile-reveal className="flex flex-1 flex-col justify-center px-6 py-10 sm:px-8 sm:py-10 lg:px-10 xl:px-12">
+            <div className="hidden sm:block">
+              <h2 id="concept-title" className="font-body text-[clamp(1.55rem,2.5vw,2.8rem)] font-extrabold uppercase italic leading-[0.9] tracking-[-0.045em] text-white">Veltro<br />headquarters</h2>
+              <p className="mt-4 text-[0.68rem] font-bold uppercase tracking-[0.3em] text-[#d7ff21]">Concept</p>
+            </div>
+            <div className="max-w-md space-y-4 text-[0.74rem] leading-5 text-white/62 sm:mt-6 sm:text-[0.72rem] lg:text-[0.8rem] lg:leading-6">
+              <p>A future flagship envisioned to bring the complete Veltro world together under one roof: luxury car rental, personal service, apparel, and automotive accessories.</p>
+              <p>The ground floor becomes an immersive showroom where clients can discover the fleet, meet the concierge team, and begin their rental journey. Above it, a dedicated retail space presents Veltro apparel and accessories in a premium environment.</p>
+              <p>Bold architecture, dark materials, warm lighting, and Veltro&apos;s signature accents connect automotive performance with fashion and hospitality, creating a destination rather than a traditional showroom.</p>
+            </div>
+
+            <div className="mt-7 grid grid-cols-2 gap-4 border-t border-white/12 pt-5">
+              <div className="flex items-start gap-3">
+                <span
+                  aria-hidden="true"
+                  className="mt-0.5 h-[23px] w-[29px] shrink-0 bg-[#d7ff21]"
+                  style={{
+                    WebkitMaskImage: `url("${assetPath("/icons/fleet.svg")}")`,
+                    maskImage: `url("${assetPath("/icons/fleet.svg")}")`,
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                  }}
+                />
+                <div><strong className="block text-[0.58rem] uppercase tracking-[0.1em] text-white">Ground floor</strong><span className="mt-1 block text-[0.6rem] leading-4 text-white/46">Car rental showroom</span></div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Shirt size={23} strokeWidth={1.35} className="mt-0.5 shrink-0 text-[#d7ff21]" />
+                <div><strong className="block text-[0.58rem] uppercase tracking-[0.1em] text-white">First floor</strong><span className="mt-1 block text-[0.6rem] leading-4 text-white/46">Apparel &amp; accessories</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
