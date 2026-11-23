@@ -26,6 +26,7 @@ export function BlogDetailView() {
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
     if (id === "mission") return navigateTo("/mission");
+    if (id === "concept") return navigateTo("/#concept");
     if (id === "contact") return navigateTo("/contact");
     if (id === "faq") return navigateTo("/faq");
   };

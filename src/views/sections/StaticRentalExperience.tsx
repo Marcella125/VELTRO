@@ -19,12 +19,14 @@ import { Armchair, CarFront, ChevronLeft, ChevronRight, Gem, Headset, Mail, MapP
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
 import { StoreModal, type StoreCategory } from "@/views/components/StoreModal";
+import { HeaderCartButton } from "@/views/components/HeaderCartButton";
 
 const navItems = [
   ["fleet", "Fleet"],
   ["experience", "Experience"],
   ["shop", "Shop"],
   ["faq", "FAQs"],
+  ["concept", "Concept"],
   ["contact", "Contact"],
 ] as const;
 
@@ -80,6 +82,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const [activeFleetIndex, setActiveFleetIndex] = useState(0);
   const [activeShopIndex, setActiveShopIndex] = useState(0);
   const [storeCategory, setStoreCategory] = useState<StoreCategory | null>(null);
+  const [openStoreAtCart, setOpenStoreAtCart] = useState(false);
   const fleetSectionRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLElement>(null);
   const fleetIntroRef = useRef<HTMLDivElement>(null);
@@ -184,7 +187,19 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const navigate = (id: string) => {
     setMenuOpen(false);
     setStoreCategory(null);
+    setOpenStoreAtCart(false);
     jumpTo(id);
+  };
+
+  const closeStore = () => {
+    setStoreCategory(null);
+    setOpenStoreAtCart(false);
+  };
+
+  const openCart = () => {
+    setMenuOpen(false);
+    setOpenStoreAtCart(true);
+    setStoreCategory("All");
   };
 
   const handleFleetTouchStart = (event: ReactTouchEvent<HTMLDivElement>) => {
@@ -233,12 +248,13 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           ) : null}
           <button
             type="button"
-            onClick={() => storeCategory ? setStoreCategory(null) : setMenuOpen((open) => !open)}
+            onClick={() => storeCategory ? closeStore() : setMenuOpen((open) => !open)}
             aria-label={storeCategory ? "Close store" : "Toggle navigation"}
-            className={`ml-auto size-11 place-items-center ${storeCategory ? "grid" : "grid lg:hidden"}`}
+            className={`size-11 place-items-center ${storeCategory ? "ml-auto grid" : "ml-auto grid lg:hidden"}`}
           >
             {storeCategory || menuOpen ? <X /> : <Menu />}
           </button>
+          {!storeCategory ? <HeaderCartButton onClick={openCart} className="lg:ml-5 lg:translate-x-[1cm]" /> : null}
         </div>
 
         {menuOpen ? (
@@ -578,7 +594,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           </div>
         </div>
       </footer>
-      {storeCategory ? <StoreModal initialCategory={storeCategory} onClose={() => setStoreCategory(null)} /> : null}
+      {storeCategory ? <StoreModal initialCategory={storeCategory} initialStep={openStoreAtCart ? "cart" : "shop"} onClose={closeStore} /> : null}
     </main>
   );
 }

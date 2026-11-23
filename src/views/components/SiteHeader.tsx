@@ -8,6 +8,8 @@ import { assetPath } from "@/lib/asset-path";
 import { primarySiteRoutes, warmupRouteAssets } from "@/lib/site-navigation";
 import { FullscreenMenu } from "@/views/components/FullscreenMenu";
 import { HamburgerToggle } from "@/views/components/HamburgerToggle";
+import { HeaderCartButton } from "@/views/components/HeaderCartButton";
+import { StoreModal } from "@/views/components/StoreModal";
 
 type SiteHeaderProps = {
   title: string;
@@ -35,6 +37,7 @@ export function SiteHeader({
   const pathname = usePathname();
   const router = useRouter();
   const [internalMenuOpen, setInternalMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const isMenuControlled = menuOpen !== undefined;
   const isMenuOpen = isMenuControlled ? menuOpen : internalMenuOpen;
   const homeHref = "/";
@@ -51,6 +54,7 @@ export function SiteHeader({
     { id: "blogs", href: "/blogs", label: "Blogs", active: pathname?.startsWith("/blogs") },
     { id: "mission", href: "/mission", label: "Mission", active: pathname?.startsWith("/mission") },
     { id: "faq", href: "/faq", label: "FAQ'S", active: pathname?.startsWith("/faq") },
+    { id: "concept", href: "/#concept", label: "Concept", active: false },
     {
       id: "contact",
       href: "/contact",
@@ -179,7 +183,7 @@ export function SiteHeader({
               {title}
             </span>
           ) : null}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          <div className="absolute right-0 top-1/2 flex -translate-y-1/2 items-center gap-1">
             <HamburgerToggle
               open={isMenuOpen}
               onToggle={handleMenuOpenChange}
@@ -187,6 +191,7 @@ export function SiteHeader({
               strokeWidth={1.8}
               className={compact ? "h-10 w-10 rounded-none" : "h-11 w-11 rounded-none"}
             />
+            <HeaderCartButton onClick={() => { handleMenuOpenChange(false); setCartOpen(true); }} />
           </div>
         </div>
       </header>
@@ -201,6 +206,7 @@ export function SiteHeader({
           </div>
         ) : null}
       </AnimatePresence>
+      {cartOpen ? <StoreModal initialCategory="All" initialStep="cart" onClose={() => setCartOpen(false)} /> : null}
     </>
   );
 }

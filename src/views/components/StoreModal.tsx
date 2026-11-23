@@ -1,9 +1,10 @@
 "use client";
 
 import { Check, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { useMemo, useRef, useState, type FormEvent, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { assetPath } from "@/lib/asset-path";
+import { readStoredCart, writeStoredCart } from "@/lib/store-cart";
 
 export type StoreCategory = "All" | "Accessories" | "Interior" | "Exterior" | "Apparel";
 
@@ -48,6 +49,7 @@ const products: readonly StoreProduct[] = [
 
 type StoreModalProps = {
   initialCategory: StoreCategory;
+  initialStep?: StoreStep;
   onClose: () => void;
 };
 
@@ -65,12 +67,20 @@ function ProductArtwork({ product, compact = false, image = product.image }: { p
   );
 }
 
-export function StoreModal({ initialCategory, onClose }: StoreModalProps) {
+export function StoreModal({ initialCategory, initialStep = "shop", onClose }: StoreModalProps) {
   const visibleProducts = initialCategory === "All"
     ? products
     : products.filter((product) => product.category === initialCategory);
-  const [step, setStep] = useState<StoreStep>("shop");
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [step, setStep] = useState<StoreStep>(initialStep);
+  const [cart, setCart] = useState<CartItem[]>(() => readStoredCart().flatMap((line) => {
+    const product = products.find((candidate) => candidate.id === line.productId);
+    if (!product) return [];
+    return [{
+      product,
+      size: line.size,
+      quantity: Math.max(1, Math.min(10, Math.round(line.quantity))),
+    }];
+  }));
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
   const [alternateViews, setAlternateViews] = useState<Record<string, boolean>>({});
   const [fullName, setFullName] = useState("");
@@ -81,6 +91,14 @@ export function StoreModal({ initialCategory, onClose }: StoreModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   useOverlayBehavior(true, onClose);
+
+  useEffect(() => {
+    writeStoredCart(cart.map((item) => ({
+      productId: item.product.id,
+      quantity: item.quantity,
+      size: item.size,
+    })));
+  }, [cart]);
 
   const cartCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
   const cartSubtotal = useMemo(() => cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0), [cart]);

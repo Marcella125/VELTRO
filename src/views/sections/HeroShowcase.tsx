@@ -398,6 +398,10 @@ export function HeroShowcase({ embedded = false }: { embedded?: boolean }) {
       navigateTo("/mission");
       return;
     }
+    if (id === "concept") {
+      navigateTo("/#concept");
+      return;
+    }
     if (id === "contact") {
       navigateTo("/contact");
       return;

@@ -43,6 +43,7 @@ export function MissionView({ embedded = false }: { embedded?: boolean }) {
     if (id === "fleet") return navigateTo("/fleet");
     if (id === "blogs") return navigateTo("/blogs");
     if (id === "mission") return;
+    if (id === "concept") return navigateTo("/#concept");
     if (id === "contact") return navigateTo("/contact");
     if (id === "faq") return navigateTo("/faq");
   };

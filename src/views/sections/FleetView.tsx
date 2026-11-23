@@ -205,6 +205,7 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
     if (id === "home") return navigateTo("/");
     if (id === "blogs") return navigateTo("/blogs");
     if (id === "mission") return navigateTo("/mission");
+    if (id === "concept") return navigateTo("/#concept");
     if (id === "contact") return navigateTo("/contact");
     if (id === "faq") return navigateTo("/faq");
   };
