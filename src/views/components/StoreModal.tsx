@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Minus, Plus, ShoppingBag, Trash2, X, ZoomIn } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from "react";
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { assetPath } from "@/lib/asset-path";
@@ -28,6 +28,7 @@ type CartItem = {
 
 type StoreStep = "shop" | "cart" | "checkout";
 type FormErrors = Partial<Record<"fullName" | "phone" | "deliveryArea", string>>;
+type ExpandedImage = { product: StoreProduct; showAlternate: boolean } | null;
 
 const whatsappNumber = "96170335113";
 const deliveryFee = 4;
@@ -83,14 +84,22 @@ export function StoreModal({ initialCategory, initialStep = "shop", onClose }: S
   }));
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
   const [alternateViews, setAlternateViews] = useState<Record<string, boolean>>({});
+  const [expandedImage, setExpandedImage] = useState<ExpandedImage>(null);
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [deliveryArea, setDeliveryArea] = useState("");
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const panelRef = useRef<HTMLDivElement>(null);
+  const imageSwipeStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  useOverlayBehavior(true, onClose);
+  useOverlayBehavior(true, () => {
+    if (expandedImage) {
+      setExpandedImage(null);
+      return;
+    }
+    onClose();
+  });
 
   useEffect(() => {
     writeStoredCart(cart.map((item) => ({
@@ -181,7 +190,7 @@ export function StoreModal({ initialCategory, initialStep = "shop", onClose }: S
   const errorClassName = "mt-1.5 block text-xs normal-case tracking-normal text-red-300";
 
   return (
-    <div onMouseDown={handleBackdropClick} className="fixed inset-x-0 bottom-0 top-[4.25rem] z-40 flex items-stretch justify-center bg-black sm:top-[4.75rem]" role="dialog" aria-modal="true" aria-label="Veltro store">
+    <div onMouseDown={handleBackdropClick} className={`fixed inset-x-0 bottom-0 flex items-stretch justify-center bg-black ${expandedImage ? "top-0 z-[60]" : "top-[4.25rem] z-40 sm:top-[4.75rem]"}`} role="dialog" aria-modal="true" aria-label="Veltro store">
       <div ref={panelRef} className="store-ui no-scrollbar relative max-h-full w-full overflow-y-auto bg-black">
         {step === "shop" ? (
           <section aria-label="Store items" className="mx-auto w-full max-w-[92rem] p-5 sm:p-7 lg:p-9">
@@ -195,10 +204,14 @@ export function StoreModal({ initialCategory, initialStep = "shop", onClose }: S
               {visibleProducts.map((product) => {
                 const size = selectedSizes[product.id] ?? product.sizes?.[0] ?? "";
                 const inCart = cart.filter((item) => item.product.id === product.id).reduce((sum, item) => sum + item.quantity, 0);
+                const displayedImage = alternateViews[product.id] && product.alternateImage ? product.alternateImage : product.image;
                 return (
                   <article key={product.id} className="group overflow-hidden bg-transparent text-white transition duration-300 hover:-translate-y-1">
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#FEFDFE]">
-                      <ProductArtwork product={product} image={alternateViews[product.id] && product.alternateImage ? product.alternateImage : product.image} />
+                      <button type="button" onClick={() => setExpandedImage({ product, showAlternate: Boolean(alternateViews[product.id]) })} aria-label={`Open a larger image of ${product.name}`} className="absolute inset-0 cursor-zoom-in text-black focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-[#d7ff21]">
+                        <ProductArtwork product={product} image={displayedImage} />
+                        <span className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-full bg-black/70 text-white opacity-0 shadow-lg backdrop-blur-md transition group-hover:opacity-100 group-focus-visible:opacity-100" aria-hidden="true"><ZoomIn size={17} /></span>
+                      </button>
                       {inCart ? <span className="absolute right-3 top-3 grid min-w-7 place-items-center rounded-full bg-[#d7ff21] px-2 py-1 text-xs font-extrabold text-black">{inCart}</span> : null}
                       {product.alternateImage ? (
                         <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 rounded-full border border-black/10 bg-black/75 p-1 shadow-lg backdrop-blur-md" aria-label={`${product.name} image view`}>
@@ -298,6 +311,47 @@ export function StoreModal({ initialCategory, initialStep = "shop", onClose }: S
           </section>
         ) : null}
       </div>
+
+      {expandedImage ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-3 backdrop-blur-sm sm:p-6" role="dialog" aria-modal="true" aria-label={`${expandedImage.product.name} enlarged image`} onKeyDown={(event) => {
+          if (!expandedImage.product.alternateImage || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+          event.preventDefault();
+          setExpandedImage((current) => current ? { ...current, showAlternate: !current.showAlternate } : current);
+        }} onMouseDown={(event) => {
+          if (event.target === event.currentTarget) setExpandedImage(null);
+        }}>
+          <div className="grid h-[min(86dvh,50rem)] w-[min(94vw,56rem)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden rounded-2xl bg-[#0b0c0d] shadow-[0_30px_90px_rgba(0,0,0,.75)]">
+            <header className="flex min-h-14 items-center justify-between gap-4 border-b border-white/10 px-4 sm:px-5">
+              <div className="min-w-0"><p className="truncate text-sm font-extrabold uppercase tracking-[0.08em] text-white">{expandedImage.product.name}</p>{expandedImage.product.alternateImage ? <p className="mt-0.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white/45">{expandedImage.showAlternate ? "Back view" : "Front view"}</p> : null}</div>
+              <button type="button" autoFocus onClick={() => setExpandedImage(null)} aria-label="Close enlarged image" className="grid size-10 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-white transition hover:border-[#d7ff21] hover:bg-[#d7ff21] hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d7ff21]"><X size={20} /></button>
+            </header>
+
+            <div className="relative min-h-0 touch-pan-y overflow-hidden bg-[#FEFDFE]" onTouchStart={(event) => {
+              const touch = event.touches[0];
+              imageSwipeStartRef.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+            }} onTouchEnd={(event) => {
+              const start = imageSwipeStartRef.current;
+              const touch = event.changedTouches[0];
+              imageSwipeStartRef.current = null;
+              if (!start || !touch || !expandedImage.product.alternateImage) return;
+              const distanceX = touch.clientX - start.x;
+              const distanceY = touch.clientY - start.y;
+              if (Math.abs(distanceX) < 45 || Math.abs(distanceX) <= Math.abs(distanceY)) return;
+              setExpandedImage((current) => current ? { ...current, showAlternate: !current.showAlternate } : current);
+            }}>
+              <ProductArtwork product={expandedImage.product} image={expandedImage.showAlternate && expandedImage.product.alternateImage ? expandedImage.product.alternateImage : expandedImage.product.image} compact />
+              {expandedImage.product.alternateImage ? <>
+                <button type="button" onClick={() => setExpandedImage((current) => current ? { ...current, showAlternate: !current.showAlternate } : current)} aria-label={expandedImage.showAlternate ? "Show front view" : "Show back view"} className="absolute left-5 top-1/2 hidden size-12 -translate-y-1/2 place-items-center rounded-full bg-black/75 text-white shadow-lg backdrop-blur-md transition hover:bg-[#d7ff21] hover:text-black sm:grid"><ChevronLeft size={24} /></button>
+                <button type="button" onClick={() => setExpandedImage((current) => current ? { ...current, showAlternate: !current.showAlternate } : current)} aria-label={expandedImage.showAlternate ? "Show front view" : "Show back view"} className="absolute right-5 top-1/2 hidden size-12 -translate-y-1/2 place-items-center rounded-full bg-black/75 text-white shadow-lg backdrop-blur-md transition hover:bg-[#d7ff21] hover:text-black sm:grid"><ChevronRight size={24} /></button>
+              </> : null}
+            </div>
+
+            <footer className="flex min-h-14 items-center justify-center gap-2 border-t border-white/10 px-4">
+              {expandedImage.product.alternateImage ? ([false, true] as const).map((showAlternate) => <button key={showAlternate ? "back" : "front"} type="button" aria-pressed={expandedImage.showAlternate === showAlternate} onClick={() => setExpandedImage((current) => current ? { ...current, showAlternate } : current)} className={`rounded-full px-5 py-2 text-[0.65rem] font-extrabold uppercase tracking-[0.14em] transition ${expandedImage.showAlternate === showAlternate ? "bg-[#d7ff21] text-black" : "bg-white/5 text-white/55 hover:bg-white/10 hover:text-white"}`}>{showAlternate ? "Back" : "Front"}</button>) : <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/45">Product view</p>}
+            </footer>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

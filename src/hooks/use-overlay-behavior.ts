@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/body-scroll-lock";
 
 export function useOverlayBehavior(isOpen: boolean, onClose: () => void) {
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const handleClose = useEffectEvent(onClose);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -16,7 +17,7 @@ export function useOverlayBehavior(isOpen: boolean, onClose: () => void) {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        handleClose();
       }
     };
 
@@ -32,5 +33,5 @@ export function useOverlayBehavior(isOpen: boolean, onClose: () => void) {
         window.requestAnimationFrame(() => focusTarget.focus());
       }
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 }
