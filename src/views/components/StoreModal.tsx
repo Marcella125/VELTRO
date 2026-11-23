@@ -5,13 +5,14 @@ import { useMemo, useRef, useState, type FormEvent, type MouseEvent } from "reac
 import { useOverlayBehavior } from "@/hooks/use-overlay-behavior";
 import { assetPath } from "@/lib/asset-path";
 
-export type StoreCategory = "All" | "Gifts" | "Interior" | "Exterior" | "Apparel";
+export type StoreCategory = "All" | "Accessories" | "Interior" | "Exterior" | "Apparel";
 
 type StoreProduct = {
   id: string;
   name: string;
   category: Exclude<StoreCategory, "All">;
   image: string;
+  alternateImage?: string;
   price: number;
   imageSize?: string;
   imagePosition?: string;
@@ -31,11 +32,18 @@ const whatsappNumber = "96170335113";
 const deliveryFee = 4;
 
 const products: readonly StoreProduct[] = [
-  { id: "hoodie", name: "Veltro Hoodie", category: "Apparel", image: "/images/clothes shop/hoodie.png", imageSize: "68%", price: 30, sizes: ["S", "M", "L", "XL"] },
-  { id: "sweatshirt", name: "Veltro Sweatshirt", category: "Apparel", image: "/images/clothes shop/sweatshirt.png", imageSize: "68%", price: 30, sizes: ["S", "M", "L", "XL"] },
-  { id: "cap", name: "Veltro Cap", category: "Apparel", image: "/images/clothes shop/cap.png", imageSize: "62%", price: 10, sizes: ["One size"] },
+  { id: "leather-jacket", name: "Veltro Leather Jacket", category: "Apparel", image: "/images/clothes shop/leather jacket.png", alternateImage: "/images/clothes shop/leather back.png", imageSize: "contain", price: 80, sizes: ["S", "M", "L", "XL"] },
+  { id: "racing-jacket", name: "Veltro Racing Jacket", category: "Apparel", image: "/images/clothes shop/racing jacket.png", alternateImage: "/images/clothes shop/racing back.png", imageSize: "contain", price: 85, sizes: ["S", "M", "L", "XL"] },
+  { id: "cotton-jacket", name: "Veltro Cotton Jacket", category: "Apparel", image: "/images/clothes shop/cotton front.png", alternateImage: "/images/clothes shop/cotton back.png", imageSize: "contain", price: 60, sizes: ["S", "M", "L", "XL"] },
+  { id: "hoodie", name: "Veltro Hoodie", category: "Apparel", image: "/images/clothes shop/hoodie.png", imageSize: "contain", price: 50, sizes: ["S", "M", "L", "XL"] },
+  { id: "apex-hoodie", name: "Veltro V2 Hoodie", category: "Apparel", image: "/images/clothes shop/APEX hoodie front.png", alternateImage: "/images/clothes shop/APEX hoodie back.png", imageSize: "contain", price: 55, sizes: ["S", "M", "L", "XL"] },
+  { id: "sweatshirt", name: "Veltro Sweatshirt", category: "Apparel", image: "/images/clothes shop/sweatshirt.png", imageSize: "contain", price: 50, sizes: ["S", "M", "L", "XL"] },
+  { id: "t-shirt", name: "Veltro T-Shirt", category: "Apparel", image: "/images/clothes shop/T-Shirt.png", alternateImage: "/images/clothes shop/T-Shirt Back.png", imageSize: "contain", price: 40, sizes: ["S", "M", "L", "XL"] },
+  { id: "helmet", name: "Veltro Racing Helmet", category: "Accessories", image: "/images/clothes shop/helmet.png", imageSize: "contain", price: 150, sizes: ["One size"] },
+  { id: "gloves", name: "Veltro Racing Gloves", category: "Accessories", image: "/images/clothes shop/gloves.png", imageSize: "contain", price: 70, sizes: ["One size"] },
+  { id: "cap", name: "Veltro Cap", category: "Accessories", image: "/images/clothes shop/cap.png", imageSize: "62%", price: 10, sizes: ["One size"] },
   { id: "socks", name: "Veltro Socks", category: "Apparel", image: "/images/clothes shop/socks.png", imageSize: "62%", price: 10, sizes: ["S/M", "L/XL"] },
-  { id: "beanie", name: "Veltro Beanie", category: "Apparel", image: "/images/clothes shop/bonne.png", imageSize: "62%", price: 10, sizes: ["One size"] },
+  { id: "beanie", name: "Veltro Beanie", category: "Accessories", image: "/images/clothes shop/bonne.png", imageSize: "62%", price: 10, sizes: ["One size"] },
 ];
 
 type StoreModalProps = {
@@ -43,13 +51,13 @@ type StoreModalProps = {
   onClose: () => void;
 };
 
-function ProductArtwork({ product, compact = false }: { product: StoreProduct; compact?: boolean }) {
+function ProductArtwork({ product, compact = false, image = product.image }: { product: StoreProduct; compact?: boolean; image?: string }) {
   return (
     <span
       aria-hidden="true"
       className={`absolute inset-0 bg-no-repeat transition duration-500 ${compact ? "" : "group-hover:scale-[1.04]"}`}
       style={{
-        backgroundImage: `url("${assetPath(product.image)}")`,
+        backgroundImage: `url("${assetPath(image)}")`,
         backgroundPosition: product.imagePosition ?? "center",
         backgroundSize: product.imageSize ?? "contain",
       }}
@@ -64,6 +72,7 @@ export function StoreModal({ initialCategory, onClose }: StoreModalProps) {
   const [step, setStep] = useState<StoreStep>("shop");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
+  const [alternateViews, setAlternateViews] = useState<Record<string, boolean>>({});
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [deliveryArea, setDeliveryArea] = useState("");
@@ -171,8 +180,16 @@ export function StoreModal({ initialCategory, onClose }: StoreModalProps) {
                 return (
                   <article key={product.id} className="group overflow-hidden bg-transparent text-white transition duration-300 hover:-translate-y-1">
                     <div className="relative aspect-[4/3] overflow-hidden bg-[#FEFDFE]">
-                      <ProductArtwork product={product} />
+                      <ProductArtwork product={product} image={alternateViews[product.id] && product.alternateImage ? product.alternateImage : product.image} />
                       {inCart ? <span className="absolute right-3 top-3 grid min-w-7 place-items-center rounded-full bg-[#d7ff21] px-2 py-1 text-xs font-extrabold text-black">{inCart}</span> : null}
+                      {product.alternateImage ? (
+                        <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 rounded-full border border-black/10 bg-black/75 p-1 shadow-lg backdrop-blur-md" aria-label={`${product.name} image view`}>
+                          {[false, true].map((showBack) => {
+                            const selected = Boolean(alternateViews[product.id]) === showBack;
+                            return <button key={showBack ? "back" : "front"} type="button" onClick={() => setAlternateViews((current) => ({ ...current, [product.id]: showBack }))} aria-pressed={selected} className={`rounded-full px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.12em] transition ${selected ? "bg-[#d7ff21] text-black" : "text-white/65 hover:text-white"}`}>{showBack ? "Back" : "Front"}</button>;
+                          })}
+                        </div>
+                      ) : null}
                     </div>
                     <div className="py-4 sm:py-5">
                       <div className="flex items-start justify-between gap-3">

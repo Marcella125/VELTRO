@@ -45,11 +45,14 @@ const fleetShowcaseOrder = [
 ] as const;
 
 const shopProducts = [
-  ["cap.png", "Veltro cap"],
+  ["leather jacket.png", "Veltro leather jacket"],
+  ["racing jacket.png", "Veltro racing jacket"],
+  ["cotton front.png", "Veltro cotton jacket"],
   ["hoodie.png", "Veltro hoodie"],
+  ["APEX hoodie front.png", "Veltro V2 hoodie"],
   ["sweatshirt.png", "Veltro sweatshirt"],
+  ["T-Shirt.png", "Veltro T-shirt"],
   ["socks.png", "Veltro socks"],
-  ["bonne.png", "Veltro beanie"],
 ] as const;
 
 function jumpTo(id: string) {
@@ -88,7 +91,10 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const activeFleet = showcaseFleet[activeFleetIndex % Math.max(showcaseFleet.length, 1)];
   const previousFleet = showcaseFleet[(activeFleetIndex - 1 + showcaseFleet.length) % Math.max(showcaseFleet.length, 1)];
   const nextFleet = showcaseFleet[(activeFleetIndex + 1) % Math.max(showcaseFleet.length, 1)];
-  const visibleShopProducts = shopProducts.map((_, offset) => shopProducts[(activeShopIndex + offset) % shopProducts.length]);
+  const visibleShopProducts = Array.from(
+    { length: Math.min(5, shopProducts.length) },
+    (_, offset) => shopProducts[(activeShopIndex + offset) % shopProducts.length],
+  );
 
   useEffect(() => {
     const updateHeader = () => {
@@ -388,12 +394,27 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         </div>
 
         <div className="grid grid-cols-1 sm:min-h-0 sm:flex-1 sm:grid-cols-2 sm:grid-rows-2">
-        <article data-mobile-reveal data-image-slot="veltro-gifts" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_25%_20%,rgba(215,255,33,.14),transparent_30%),linear-gradient(145deg,#111_0%,#050505_58%,#0a0b08_100%)] p-5 text-center sm:h-auto sm:min-h-0 sm:border-r sm:p-6 md:p-8">
-          <Image src={assetPath("/images/veltro gifts.png")} alt="Veltro branded gifts collection" fill sizes="(max-width: 767px) 100vw, 50vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(0,0,0,.82)_100%)]" />
-          <div className="relative z-10 mb-2 sm:-mb-5">
-            <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro gifts</h2>
-            <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/42 sm:mt-3 sm:text-xs">Coming soon</span>
+        <article data-mobile-reveal data-image-slot="shop-collection" className="relative flex h-[55svh] min-h-[22rem] flex-col items-center justify-center overflow-hidden border-b border-white/15 bg-[#f2f3f3] px-2 py-5 text-center text-black sm:h-auto sm:min-h-0 sm:border-r sm:px-5 sm:py-4">
+          <button type="button" onClick={() => setActiveShopIndex((index) => (index - 1 + shopProducts.length) % shopProducts.length)} aria-label="Previous products" className="absolute left-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
+          <button type="button" onClick={() => setActiveShopIndex((index) => (index + 1) % shopProducts.length)} aria-label="Next products" className="absolute right-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
+          <div className="flex w-[82%] items-stretch justify-center gap-2 sm:w-[78%] sm:gap-2.5 lg:gap-4">
+            {visibleShopProducts.map(([file, alt], index) => (
+              <div key={`${file}-${index}`} className={`relative h-24 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index >= 3 ? "hidden sm:block" : ""}`}>
+                <Image src={`${assetPath(`/images/clothes shop/${file}`)}?v=2`} alt={alt} fill sizes="(max-width: 767px) 25vw, 10vw" className="object-contain p-1" />
+              </div>
+            ))}
+          </div>
+          <h2 className="mt-5 font-body text-[clamp(1.15rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] sm:mt-2 lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
+          <button type="button" onClick={() => setStoreCategory("Apparel")} className="mt-2 inline-flex items-center text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:text-sm">Explore collection</button>
+        </article>
+
+        <article data-mobile-reveal data-image-slot="veltro-accessories" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-black p-5 text-center sm:h-auto sm:min-h-0 sm:p-6 md:p-8">
+          <Image src={assetPath("/images/veltro accessories .png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="(max-width: 767px) 100vw, 50vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025]" />
+          <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgba(0,0,0,.9)_100%)]" />
+          <button type="button" onClick={() => setStoreCategory("Accessories")} className="absolute inset-0 z-20" aria-label="Explore Veltro's accessories" />
+          <div className="pointer-events-none relative z-30 mb-2 sm:-mb-5">
+            <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro&apos;s accessories</h2>
+            <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/65 transition group-hover:text-[#d7ff21] sm:mt-3 sm:text-xs">Explore collection</span>
           </div>
         </article>
 
@@ -403,7 +424,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         ].map(([slot, Icon, title], index) => {
           const TileIcon = Icon as typeof Armchair;
           return (
-            <article data-mobile-reveal key={slot as string} data-image-slot={slot as string} className={`group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,.08),transparent_34%),linear-gradient(145deg,#111,#030303)] p-5 text-center sm:h-auto sm:min-h-0 md:p-7 ${index === 1 ? "sm:border-r" : ""}`}>
+            <article data-mobile-reveal key={slot as string} data-image-slot={slot as string} className={`group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,.08),transparent_34%),linear-gradient(145deg,#111,#030303)] p-5 text-center sm:h-auto sm:min-h-0 md:p-7 ${index === 0 ? "sm:border-r" : ""}`}>
               {index < 2 ? (
                 <>
                   <Image
@@ -419,7 +440,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               ) : (
                 <TileIcon size={170} strokeWidth={0.55} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[58%] text-white/[0.065] transition duration-700 group-hover:scale-105 group-hover:text-[#d7ff21]/10" />
               )}
-              <div className="relative z-10 mb-2 sm:-mb-3">
+              <div className="relative z-10 mb-2 sm:-mb-5">
                 <h3 className="font-body text-[clamp(0.78rem,2.3vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.035em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">{title as string}</h3>
                 <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/42 sm:mt-3 sm:text-xs">Coming soon</span>
               </div>
@@ -427,19 +448,6 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           );
         })}
 
-        <article data-mobile-reveal data-image-slot="shop-collection" className="relative flex h-[55svh] min-h-[22rem] flex-col items-center justify-center overflow-hidden border-b border-white/15 bg-[#f2f3f3] px-2 py-5 text-center text-black sm:h-auto sm:min-h-0 sm:px-5 sm:py-4">
-          <button type="button" onClick={() => setActiveShopIndex((index) => (index - 1 + shopProducts.length) % shopProducts.length)} aria-label="Previous products" className="absolute left-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
-          <button type="button" onClick={() => setActiveShopIndex((index) => (index + 1) % shopProducts.length)} aria-label="Next products" className="absolute right-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
-          <div className="flex w-[82%] items-stretch justify-center gap-2 sm:w-[78%] sm:gap-2.5 lg:gap-4">
-            {visibleShopProducts.map(([file, alt], index) => (
-              <div key={`${file}-${index}`} className={`relative h-24 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index >= 3 ? "hidden sm:block" : ""}`}>
-                <Image src={`${assetPath(`/images/clothes shop/${file}`)}?v=2`} alt={alt} fill sizes="(max-width: 767px) 25vw, 10vw" className="object-contain p-1" />
-              </div>
-            ))}
-          </div>
-          <h2 className="mt-5 font-body text-[clamp(1.15rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] sm:mt-2 lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
-          <button type="button" onClick={() => setStoreCategory("All")} className="mt-2 inline-flex items-center text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:text-sm">Explore all</button>
-        </article>
         </div>
       </section>
 
