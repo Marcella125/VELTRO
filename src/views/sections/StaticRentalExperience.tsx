@@ -13,9 +13,8 @@ import {
   CaretLeft,
   CaretRight,
   List as Menu,
-  X,
 } from "@phosphor-icons/react";
-import { Armchair, CarFront, ChevronLeft, ChevronRight, Gem, Headset, Mail, MapPin, MapPinned, Phone, ShieldCheck, Shirt } from "lucide-react";
+import { CarFront, Gem, Headset, Mail, MapPin, MapPinned, Phone, Shirt } from "lucide-react";
 import { assetPath } from "@/lib/asset-path";
 import type { Car } from "@/models/car.model";
 import { StoreModal, type StoreCategory, type StoreStep } from "@/views/components/StoreModal";
@@ -50,17 +49,6 @@ const fleetShowcaseOrder = [
   { slug: "bmw-m8-competition", image: "/images/bmw side.png" },
 ] as const;
 
-const shopProducts = [
-  ["leather jacket.png", "Veltro leather jacket"],
-  ["racing jacket.png", "Veltro racing jacket"],
-  ["cotton front.png", "Veltro cotton jacket"],
-  ["hoodie.png", "Veltro hoodie"],
-  ["APEX hoodie front.png", "Veltro V2 hoodie"],
-  ["sweatshirt.png", "Veltro sweatshirt"],
-  ["T-Shirt.png", "Veltro T-shirt"],
-  ["socks.png", "Veltro socks"],
-] as const;
-
 function jumpTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
@@ -84,7 +72,6 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const [activeFaq, setActiveFaq] = useState(0);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [activeFleetIndex, setActiveFleetIndex] = useState(0);
-  const [activeShopIndex, setActiveShopIndex] = useState(0);
   const [storeCategory, setStoreCategory] = useState<StoreCategory | null>(null);
   const [storeInitialStep, setStoreInitialStep] = useState<StoreStep>("shop");
   const fleetSectionRef = useRef<HTMLElement>(null);
@@ -98,11 +85,6 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
   const activeFleet = showcaseFleet[activeFleetIndex % Math.max(showcaseFleet.length, 1)];
   const previousFleet = showcaseFleet[(activeFleetIndex - 1 + showcaseFleet.length) % Math.max(showcaseFleet.length, 1)];
   const nextFleet = showcaseFleet[(activeFleetIndex + 1) % Math.max(showcaseFleet.length, 1)];
-  const visibleShopProducts = Array.from(
-    { length: Math.min(5, shopProducts.length) },
-    (_, offset) => shopProducts[(activeShopIndex + offset) % shopProducts.length],
-  );
-
   useLayoutEffect(() => {
     const requestedSection = window.location.hash.slice(1);
     const searchParams = new URLSearchParams(window.location.search);
@@ -306,10 +288,14 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       >
         <div className="mx-auto flex h-[4.25rem] max-w-[92rem] items-center px-4 sm:h-[4.75rem] sm:px-8 lg:px-12">
           <button type="button" onClick={() => navigate("home")} aria-label="Go to Veltro home" className="relative shrink-0 lg:left-[-1cm]">
-            <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-10 w-auto sm:h-14" />
+            {storeCategory === "Apparel" ? (
+              <Image src={assetPath("/images/logo clothes store.png")} alt="Veltro clothing store" width={2164} height={727} priority className="h-8 w-auto sm:h-10" />
+            ) : (
+              <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-12 w-auto sm:h-14" />
+            )}
           </button>
 
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 lg:flex">
+          <nav className={`absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 ${storeCategory ? (menuOpen ? "lg:flex" : "lg:hidden") : "lg:flex"}`}>
             {navItems.map(([id, label]) => (
               <button key={id} type="button" onClick={() => navigate(id)} className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/66 transition hover:text-[#d7ff21]">
                 {label}
@@ -324,11 +310,12 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           ) : null}
           <button
             type="button"
-            onClick={() => storeCategory ? closeStore() : setMenuOpen((open) => !open)}
-            aria-label={storeCategory ? "Close store" : "Toggle navigation"}
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
             className={`size-11 place-items-center ${storeCategory ? "ml-auto grid" : "ml-auto grid lg:hidden"}`}
           >
-            {storeCategory || menuOpen ? <X /> : <Menu />}
+            <Menu />
           </button>
           {!storeCategory ? <HeaderCartButton onClick={openCart} className="lg:ml-5 lg:translate-x-[1cm]" /> : null}
         </div>
@@ -336,8 +323,8 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         {menuOpen ? (
           <nav className="border-t border-white/10 bg-[#090A0B] px-5 py-3 lg:hidden">
             {navItems.map(([id, label]) => (
-              <button key={id} type="button" onClick={() => navigate(id)} className="flex w-full items-center justify-between border-b border-white/8 py-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
-                {label}<ArrowRight size={15} className="text-[#d7ff21]" />
+              <button key={id} type="button" onClick={() => navigate(id)} className="mx-auto flex w-full max-w-[92rem] items-center justify-between border-b border-white/8 py-4 text-left text-xs font-semibold uppercase tracking-[0.18em] text-white/70 transition hover:text-white">
+                {label}<ArrowRight size={15} className={storeCategory ? "text-white" : "text-[#d7ff21]"} />
               </button>
             ))}
           </nav>
@@ -362,8 +349,8 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               <button type="button" onClick={() => navigate("fleet")} className="group flex h-12 w-full items-center justify-center gap-4 rounded-lg bg-[#d7ff21] px-7 text-[0.66rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white min-[430px]:w-auto min-[430px]:min-w-52 sm:text-[0.7rem] sm:tracking-[0.15em]">
                 Explore fleet <ArrowRight size={16} className="transition group-hover:translate-x-1" />
               </button>
-              <button type="button" onClick={() => navigate("experience")} className="flex h-12 items-center justify-center gap-3 px-3 text-[0.64rem] font-bold uppercase tracking-[0.13em] text-white/84 transition hover:text-[#d7ff21] min-[430px]:justify-start sm:text-[0.68rem]">
-                <span className="grid size-10 place-items-center rounded-full border border-white/45"><ArrowDown size={16} /></span> The experience
+              <button type="button" onClick={() => navigate("shop")} className="flex h-12 items-center justify-center gap-3 px-3 text-[0.64rem] font-bold uppercase tracking-[0.13em] text-white/84 transition hover:text-[#d7ff21] min-[430px]:justify-start sm:text-[0.68rem]">
+                <span className="grid size-10 place-items-center rounded-full border border-white/45"><ArrowDown size={16} /></span> Explore the shop
               </button>
             </div>
           </div>
@@ -478,77 +465,35 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       </section>
 
       <section id="shop" aria-label="Veltro shop and accessories" className="flex scroll-mt-[4.25rem] flex-col overflow-hidden bg-[#090A0B] sm:h-[calc(100svh-4.75rem)] sm:scroll-mt-[4.75rem]">
-        <div data-mobile-reveal className="w-full shrink-0 px-5 py-9 text-left sm:hidden">
+        <div data-mobile-reveal className="w-full shrink-0 px-5 py-9 text-left sm:px-8 sm:py-5 lg:px-12 lg:py-6">
           <p className="text-[0.58rem] font-bold uppercase tracking-[0.46em] text-white/55 sm:text-[0.65rem]">The shop</p>
-          <h2 className="font-fleet-heading mt-3 text-[clamp(2rem,5vw,4.4rem)] uppercase leading-[0.82] tracking-[-0.035em] text-white">
+          <h2 className="font-fleet-heading mt-3 text-[clamp(2rem,5vw,4.4rem)] uppercase leading-[0.82] tracking-[-0.035em] text-white sm:mt-2 sm:text-[clamp(2rem,4vw,3.6rem)]">
             Veltro <span className="text-[#d7ff21]">essentials.</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:min-h-0 sm:flex-1 sm:grid-cols-2 sm:grid-rows-2">
-        <article data-mobile-reveal data-image-slot="shop-collection" className="relative flex h-[55svh] min-h-[22rem] flex-col items-center justify-center overflow-hidden border-b border-white/15 bg-[#f2f3f3] px-2 py-5 text-center text-black sm:h-auto sm:min-h-0 sm:border-r sm:px-5 sm:py-4">
-          <button type="button" onClick={() => setActiveShopIndex((index) => (index - 1 + shopProducts.length) % shopProducts.length)} aria-label="Previous products" className="absolute left-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:left-4 sm:size-10"><ChevronLeft size={24} strokeWidth={1.4} /></button>
-          <button type="button" onClick={() => setActiveShopIndex((index) => (index + 1) % shopProducts.length)} aria-label="Next products" className="absolute right-0 top-[35%] z-10 grid size-8 place-items-center transition hover:text-[#93b000] sm:right-4 sm:size-10"><ChevronRight size={24} strokeWidth={1.4} /></button>
-          <div className="flex w-[82%] items-stretch justify-center gap-2 sm:w-[78%] sm:gap-2.5 lg:gap-4">
-            {visibleShopProducts.map(([file, alt], index) => (
-              <div key={`${file}-${index}`} className={`relative h-24 flex-1 overflow-hidden rounded-lg bg-white shadow-[0_8px_28px_rgba(0,0,0,.08)] sm:h-24 sm:rounded-xl lg:h-28 xl:h-32 ${index >= 3 ? "hidden sm:block" : ""}`}>
-                <Image src={`${assetPath(`/images/clothes shop/${file}`)}?v=2`} alt={alt} fill sizes="(max-width: 767px) 25vw, 10vw" className="object-contain p-1" />
-              </div>
-            ))}
-          </div>
-          <h2 className="mt-5 font-body text-[clamp(1.15rem,2.8vw,2.5rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] sm:mt-2 lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
-          <button type="button" onClick={() => openStore("Apparel")} className="mt-2 inline-flex items-center text-[0.68rem] font-medium transition hover:text-[#7d9400] sm:text-sm">Explore collection</button>
-        </article>
+        <div className="grid grid-cols-1 sm:min-h-0 sm:flex-1 sm:grid-cols-2">
+          <article data-mobile-reveal data-image-slot="shop-collection" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-black p-5 text-center sm:h-auto sm:min-h-0 sm:border-r sm:p-6 md:p-8">
+            <Image src={assetPath("/images/home banner mobile.png")} alt="Veltro apparel collection" fill sizes="100vw" quality={94} className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden" />
+            <Image src={assetPath("/images/home banner desktop.png")} alt="Veltro apparel collection" fill sizes="50vw" quality={94} className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block" />
+            <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_44%,rgba(0,0,0,.88)_100%)]" />
+            <button type="button" onClick={() => openStore("Apparel")} className="absolute inset-0 z-20" aria-label="Shop the Veltro apparel collection" />
+            <div className="pointer-events-none relative z-30 mb-2 sm:-mb-5">
+              <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Shop the collection</h2>
+              <span className="mt-2 inline-flex border border-white bg-white px-4 py-2 text-[0.58rem] font-extrabold uppercase tracking-[0.14em] text-black transition group-hover:bg-[#d7ff21] sm:mt-3 sm:text-[0.65rem]">Explore apparel</span>
+            </div>
+          </article>
 
-        <article data-mobile-reveal data-image-slot="veltro-accessories" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-black p-5 text-center sm:h-auto sm:min-h-0 sm:p-6 md:p-8">
-          <Image src={assetPath("/images/accessories mobile.png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="100vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden" />
-          <Image src={assetPath("/images/veltro accessories .png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="50vw" quality={92} className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block" />
-          <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgba(0,0,0,.9)_100%)]" />
-          <button type="button" onClick={() => openStore("Accessories")} className="absolute inset-0 z-20" aria-label="Explore Veltro's accessories" />
-          <div className="pointer-events-none relative z-30 mb-2 sm:-mb-5">
-            <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro&apos;s accessories</h2>
-            <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/65 transition group-hover:text-[#d7ff21] sm:mt-3 sm:text-xs">Explore collection</span>
-          </div>
-        </article>
-
-        {[
-          ["interior-accessories", Armchair, "Interior accessories"],
-          ["exterior-accessories", ShieldCheck, "Exterior accessories"],
-        ].map(([slot, Icon, title], index) => {
-          const TileIcon = Icon as typeof Armchair;
-          return (
-            <article data-mobile-reveal key={slot as string} data-image-slot={slot as string} className={`group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,.08),transparent_34%),linear-gradient(145deg,#111,#030303)] p-5 text-center sm:h-auto sm:min-h-0 md:p-7 ${index === 0 ? "sm:border-r" : ""}`}>
-              {index < 2 ? (
-                <>
-                  <Image
-                    src={assetPath(index === 0 ? "/images/interior mobile.png" : "/images/exterior mobile.png")}
-                    alt={index === 0 ? "Veltro premium interior accessories" : "Veltro premium exterior accessories"}
-                    fill
-                    sizes="100vw"
-                    quality={92}
-                    className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden"
-                  />
-                  <Image
-                    src={assetPath(index === 0 ? "/images/veltro-interior.png" : "/images/veltro-exterior.png")}
-                    alt={index === 0 ? "Veltro premium interior accessories" : "Veltro premium exterior accessories"}
-                    fill
-                    sizes="50vw"
-                    quality={92}
-                    className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_48%,rgba(0,0,0,.82)_100%)]" />
-                </>
-              ) : (
-                <TileIcon size={170} strokeWidth={0.55} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[58%] text-white/[0.065] transition duration-700 group-hover:scale-105 group-hover:text-[#d7ff21]/10" />
-              )}
-              <div className="relative z-10 mb-2 sm:-mb-5">
-                <h3 className="font-body text-[clamp(0.78rem,2.3vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.035em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">{title as string}</h3>
-                <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/42 sm:mt-3 sm:text-xs">Coming soon</span>
-              </div>
-            </article>
-          );
-        })}
-
+          <article data-mobile-reveal data-image-slot="veltro-accessories" className="group relative flex h-[55svh] min-h-[22rem] items-end justify-center overflow-hidden border-b border-white/15 bg-black p-5 text-center sm:h-auto sm:min-h-0 sm:p-6 md:p-8">
+            <Image src={assetPath("/images/accessories mobile.png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="100vw" quality={92} className="object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:hidden" />
+            <Image src={assetPath("/images/veltro accessories .png")} alt="Veltro helmet, beanie, racing gloves, and cap" fill sizes="50vw" quality={92} className="hidden object-cover object-center transition duration-700 group-hover:scale-[1.025] sm:block" />
+            <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_38%,rgba(0,0,0,.9)_100%)]" />
+            <button type="button" onClick={() => openStore("Accessories")} className="absolute inset-0 z-20" aria-label="Explore Veltro's accessories" />
+            <div className="pointer-events-none relative z-30 mb-2 sm:-mb-5">
+              <h2 className="font-body text-[clamp(0.9rem,2.35vw,2rem)] font-extrabold uppercase italic leading-none tracking-[-0.04em] text-white lg:text-[1.35rem] xl:text-[1.5rem]">Veltro&apos;s accessories</h2>
+              <span className="mt-2 inline-flex items-center text-[0.6rem] font-medium uppercase tracking-[0.12em] text-white/65 transition group-hover:text-[#d7ff21] sm:mt-3 sm:text-xs">Explore collection</span>
+            </div>
+          </article>
         </div>
       </section>
 
