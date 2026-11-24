@@ -48,7 +48,7 @@ export function SiteHeader({
     {
       id: "fleet",
       href: "/fleet",
-      label: "Fleet",
+      label: "Showroom",
       active: pathname?.startsWith("/fleet") || pathname?.startsWith("/cars"),
     },
     { id: "blogs", href: "/blogs", label: "Blogs", active: pathname?.startsWith("/blogs") },

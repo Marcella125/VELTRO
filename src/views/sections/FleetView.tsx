@@ -267,9 +267,9 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
       <div className="relative z-10 flex h-dvh flex-col overflow-x-hidden overflow-y-hidden">
         <div className="mx-auto flex w-full max-w-350 flex-1 flex-col overflow-x-hidden overflow-y-hidden px-5 pt-5 max-[390px]:px-4 sm:px-10 sm:pt-6">
           <header className={`relative z-40 shrink-0 ${embedded ? "hidden" : ""}`}>
-            <InternalPageHeader title="Fleet" isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleDockSelect} surfaceClassName="bg-black sm:bg-transparent" onLogoClick={() => navigateTo("/")} />
+            <InternalPageHeader title="Showroom" isDockOpen={isDockOpen} onOpenChange={setIsDockOpen} onSelect={handleDockSelect} surfaceClassName="bg-black sm:bg-transparent" onLogoClick={() => navigateTo("/")} />
           </header>
-          {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.5rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2rem]">Fleet<span className="text-[var(--brand-red)]">.</span></h2> : null}
+          {embedded ? <h2 className="flex h-16 shrink-0 items-end pb-2 font-display text-[1.5rem] font-black uppercase leading-none tracking-[-0.04em] text-white sm:h-20 sm:pb-3 sm:text-[2rem]">Showroom<span className="text-[var(--brand-red)]">.</span></h2> : null}
 
           <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto md:overflow-hidden">
             <section className="relative z-30 mt-3 shrink-0 pb-3 sm:mt-4">
@@ -392,7 +392,6 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
                                   className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03] max-[430px]:object-contain max-[430px]:object-bottom max-[430px]:px-0 max-[430px]:py-0"
                                 />
                                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.28)_0%,rgba(0,0,0,0.08)_34%,rgba(0,0,0,0.35)_100%)]" />
-
                                 <div className="absolute left-0 top-0 z-10 min-w-0 px-5 pt-4 max-[430px]:px-3 max-[430px]:pt-2.5 max-[390px]:px-2.75 max-[390px]:pt-2.25 md:px-6 md:pt-5">
                                   <div className="min-w-0">
                                     <p className="type-eyebrow text-white/62 max-[430px]:text-[0.46rem] max-[430px]:tracking-[0.1em] max-[390px]:text-[0.42rem]">
@@ -409,18 +408,13 @@ export function FleetView({ cars, embedded = false }: FleetViewProps) {
 
                                 <div className="absolute bottom-8 right-5 z-10 flex flex-col items-end text-right max-[430px]:bottom-2.25 max-[430px]:right-3 max-[390px]:bottom-2 max-[390px]:right-2.5 md:bottom-5 md:right-6">
                                   <span className="font-display text-[1.22rem] font-semibold leading-none text-white max-[430px]:text-[0.78rem] max-[390px]:text-[0.72rem] md:text-[1.34rem]">
-                                    {formatPrice(car.pricePerDay)}
+                                    {formatPrice(car.purchasePrice, car.currency)}
                                   </span>
                                   <span className="mt-0.5 font-display text-[0.68rem] uppercase tracking-[0.18em] text-white/62 max-[430px]:text-[0.42rem] max-[430px]:tracking-[0.1em] max-[390px]:text-[0.38rem] md:text-[0.74rem]">
-                                    Rent Per Day
+                                    Purchase Price
                                   </span>
                                 </div>
 
-                                <div className="absolute bottom-8 left-4 z-10 max-[430px]:bottom-2.25 max-[430px]:left-2.5 max-[390px]:bottom-2 max-[390px]:left-2.25 md:bottom-5 md:left-5">
-                                  <span className="font-display inline-flex items-center justify-center border border-[var(--brand-red)] bg-[var(--brand-red)] px-3 py-1.5 text-[0.52rem] font-medium uppercase tracking-[0.18em] text-white transition group-hover:brightness-110 max-[430px]:px-1.5 max-[430px]:py-0.75 max-[430px]:text-[0.35rem] max-[430px]:tracking-[0.1em] max-[390px]:px-1.25 max-[390px]:text-[0.32rem] md:px-3.5 md:text-[0.58rem]">
-                                    <span>Book This Vehicle</span>
-                                  </span>
-                                </div>
                               </div>
                             </button>
                           </article>

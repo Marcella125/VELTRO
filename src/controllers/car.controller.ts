@@ -4,7 +4,7 @@ import type { Car } from "@/models/car.model";
 
 type PublicCarRow = {
   id: string; slug: string; name: string; brand: string; year: number; bodyType: string;
-  pricePerDay: number; image: string; featured: number; status: Car["status"];
+  purchasePrice: number; pricePerDay: number; currency: string; image: string; featured: number; status: Car["status"];
   transmission: string; engine: string; horsepower: number; description: string;
   exteriorColor: string; interiorColor: string;
 };
@@ -12,7 +12,8 @@ type PublicCarRow = {
 function mapPublicCar(row: PublicCarRow): Car {
   return {
     id: row.id, slug: row.slug, name: row.name, brand: row.brand, year: row.year,
-    bodyType: row.bodyType, pricePerDay: Math.max(1, Number(row.pricePerDay)),
+    bodyType: row.bodyType, purchasePrice: Math.max(1, Number(row.purchasePrice)),
+    pricePerDay: Math.max(1, Number(row.pricePerDay)), currency: row.currency || "USD",
     image: row.image, featured: Boolean(row.featured), status: row.status,
     transmission: row.transmission, engine: row.engine, horsepower: row.horsepower,
     description: row.description, exteriorColor: row.exteriorColor, interiorColor: row.interiorColor,

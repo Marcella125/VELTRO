@@ -82,7 +82,7 @@ const detailOverrides: Record<string, { name: string; description: string; accel
   },
 };
 
-export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" }: CarDetailsProps) {
+export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Showroom" }: CarDetailsProps) {
   const override = detailOverrides[car.slug];
   const isLamborghini = car.slug.startsWith("lamborghini");
   const isPorsche = car.slug.startsWith("porsche");
@@ -104,6 +104,8 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
   const name = override?.name ?? car.name.replace(new RegExp(`^${car.brand}\\s*`, "i"), "");
   const description = override?.description ?? car.description ?? `${car.year} ${car.brand} ${name}, prepared for an exceptional drive.`;
   const rate = override?.rate ?? car.pricePerDay;
+  const purchasePrice = new Intl.NumberFormat("en-US", { style: "currency", currency: car.currency, maximumFractionDigits: 0 }).format(car.purchasePrice);
+  const purchaseWhatsappUrl = `https://wa.me/96170335113?text=${encodeURIComponent(`Hello, I'm interested in buying the ${car.year} ${car.brand} ${name}. Please share availability and purchase details.`)}`;
 
   const performance = [
     { icon: Lightning, value: `${car.horsepower || 0} HP`, label: "Power output", mobileLabel: "Power" },
@@ -134,7 +136,7 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
             <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} priority unoptimized className="h-10 w-auto sm:h-14" />
           </Link>
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-9 lg:flex">
-            {[[returnHref, "Fleet"], ["/#experience", "Experience"], ["/#shop", "Shop"], ["/#faq", "FAQs"], ["/#contact", "Contact"]].map(([href, label]) => (
+            {[[returnHref, "Showroom"], ["/#experience", "Experience"], ["/#shop", "Shop"], ["/#faq", "FAQs"], ["/#contact", "Contact"]].map(([href, label]) => (
               <Link key={label} href={href} className="text-[0.66rem] font-semibold uppercase tracking-[0.16em] text-white/66 transition hover:text-[#d7ff21]">{label}</Link>
             ))}
           </nav>
@@ -214,9 +216,16 @@ export function CarDetails({ car, returnHref = "/#fleet", returnLabel = "Fleet" 
             ))}
           </div>
 
-          <div className="mt-4 flex items-center gap-4 sm:mt-6">
-            <button type="button" onClick={() => setBookingOpen(true)} className="flex h-11 min-w-44 items-center justify-center gap-3 rounded-lg bg-[#d7ff21] px-6 text-[0.62rem] font-extrabold uppercase tracking-[0.12em] text-black transition hover:bg-white">Reserve now <ArrowRight size={15} /></button>
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white/78 drop-shadow-[0_1px_8px_rgba(0,0,0,.8)]">${rate.toLocaleString("en-US")} / day</span>
+          <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:mt-6 lg:w-[44rem] lg:grid-cols-[12rem_auto] lg:items-end lg:gap-5">
+            <div className="min-w-0 pt-0.5 sm:pt-0">
+              <p className="text-[0.44rem] font-bold uppercase tracking-[0.16em] text-white/48 sm:text-[0.5rem] sm:tracking-[0.2em]">Purchase price</p>
+              <strong className="mt-1 block text-[clamp(1.05rem,5vw,1.35rem)] font-extrabold tracking-[-0.04em] text-white sm:text-[clamp(1.15rem,2vw,1.75rem)]">{purchasePrice}</strong>
+              <span className="mt-2 block text-[0.45rem] font-semibold uppercase leading-4 tracking-[0.08em] text-white/58 sm:text-[0.58rem] sm:tracking-[0.11em]">Rental from ${rate.toLocaleString("en-US")} / day</span>
+            </div>
+            <div className="flex w-[9.65rem] flex-col gap-2 lg:w-auto lg:flex-row lg:items-center lg:gap-2.5">
+              <a href={purchaseWhatsappUrl} target="_blank" rel="noopener noreferrer" className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#d7ff21] px-3 text-[0.5rem] font-extrabold uppercase tracking-[0.08em] text-black transition hover:bg-white sm:h-11 sm:gap-3 sm:px-6 sm:text-[0.62rem] sm:tracking-[0.12em] lg:w-52">Discuss this car <ArrowRight size={14} /></a>
+              <button type="button" onClick={() => setBookingOpen(true)} className="flex h-10 w-full items-center justify-center rounded-lg border border-white/22 bg-black/20 px-3 text-[0.5rem] font-bold uppercase tracking-[0.09em] text-white transition hover:border-white/55 hover:bg-white/8 sm:h-11 sm:px-5 sm:text-[0.6rem] sm:tracking-[0.12em] lg:w-44">Rent this car</button>
+            </div>
           </div>
         </section>
 

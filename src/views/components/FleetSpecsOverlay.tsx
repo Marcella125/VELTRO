@@ -85,7 +85,7 @@ export function FleetSpecsOverlay({
   driveLabel,
   onClose,
   onLogoClick,
-  backLabel = "Go Back To Fleet",
+  backLabel = "Go Back To Showroom",
 }: FleetSpecsOverlayProps) {
   const [activeCategory, setActiveCategory] = useState<SpecCategory>("Performance");
   const power = powerLabel ?? getSpecValue(car, "Power") ?? "640 HP";
@@ -105,9 +105,10 @@ export function FleetSpecsOverlay({
   const design = getSpecValue(car, "Design") || "Aerodynamic body kit";
   const consumption = getSpecValue(car, "Consumption") || "13.7 L/100KM";
   const emissions = getSpecValue(car, "Emissions") || "311 g/km";
-  const dailyPrice = new Intl.NumberFormat("en-US").format(car.pricePerDay);
+  const purchasePrice = new Intl.NumberFormat("en-US", { style: "currency", currency: car.currency, maximumFractionDigits: 0 }).format(car.purchasePrice);
+  const purchaseWhatsappUrl = `https://wa.me/96170335113?text=${encodeURIComponent(`Hello, I'm interested in buying the ${car.year} ${displayBrand} ${displayName}. Please share more details.`)}`;
   const description =
-    `${displayBrand} ${displayName} blends dramatic presence, sharp dynamics, and premium driver focus.`; 
+    `${displayBrand} ${displayName} blends dramatic presence, sharp dynamics, and premium driver focus. Available to purchase, with rental options on request.`;
   const categoryContent: Record<
     SpecCategory,
     {
@@ -128,7 +129,7 @@ export function FleetSpecsOverlay({
       title: "Performance",
       subtitle: "Engineered To Thrill",
       description,
-      priceLabel: `$${dailyPrice} / day`,
+      priceLabel: purchasePrice,
       tiles: [
         { label: "Engine", value: engine, detail: "Naturally aspirated" },
         { label: "Max Power", value: power, detail: "Peak output" },
@@ -149,7 +150,7 @@ export function FleetSpecsOverlay({
       title: "Dynamics",
       subtitle: "Precision In Motion",
       description,
-      priceLabel: `$${dailyPrice} / day`,
+      priceLabel: purchasePrice,
       tiles: [
         { label: "0-60", value: acceleration, detail: "Immediate response" },
         { label: "Drivetrain", value: drivetrain, detail: "Traction balance" },
@@ -170,7 +171,7 @@ export function FleetSpecsOverlay({
       title: "Running Gear",
       subtitle: "Grip And Stopping Power",
       description,
-      priceLabel: `$${dailyPrice} / day`,
+      priceLabel: purchasePrice,
       tiles: [
         { label: "Wheels", value: wheels, detail: "Performance setup" },
         { label: "Tires", value: tires, detail: "High-grip compound" },
@@ -191,7 +192,7 @@ export function FleetSpecsOverlay({
       title: "Design & Comfort",
       subtitle: "Driver-Focused Luxury",
       description,
-      priceLabel: `$${dailyPrice} / day`,
+      priceLabel: purchasePrice,
       tiles: [
         { label: "Cabin", value: interior, detail: "Luxury finish" },
         { label: "Audio", value: audio, detail: "Immersive sound" },
@@ -212,7 +213,7 @@ export function FleetSpecsOverlay({
       title: "Efficiency",
       subtitle: "Operational Profile",
       description,
-      priceLabel: `$${dailyPrice} / day`,
+      priceLabel: purchasePrice,
       tiles: [
         { label: "Consumption", value: consumption, detail: "Combined estimate" },
         { label: "Emissions", value: emissions, detail: "CO2 output" },
@@ -358,12 +359,15 @@ export function FleetSpecsOverlay({
                   </div>
 
                   <PrimaryButton
-                    href="/contact"
+                    href={purchaseWhatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="mt-3 w-full"
                   >
-                    Check Availability
+                    Discuss This Car
                     <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" />
                   </PrimaryButton>
+                  <a href={`/cars/${car.slug}?from=fleet`} className="mt-2 flex h-10 w-full items-center justify-center border border-white/15 text-[0.58rem] font-medium uppercase tracking-[0.14em] text-white/65 transition hover:border-white/35 hover:text-white">View rental option</a>
                 </div>
               </div>
             </div>
@@ -442,12 +446,15 @@ export function FleetSpecsOverlay({
                   <span>{drivetrain}</span>
                 </p>
                 <PrimaryButton
-                  href="/contact"
+                  href={purchaseWhatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-4 w-full max-w-[15rem]"
                 >
-                  <span>Check Availability</span>
+                  <span>Discuss This Car</span>
                   <Image src={assetPath("/icons/whatsapp.svg")} alt="" width={14} height={14} className="h-3.5 w-3.5" />
                 </PrimaryButton>
+                <a href={`/cars/${car.slug}?from=fleet`} className="mt-2 inline-flex h-9 w-full max-w-[15rem] items-center justify-center border border-white/15 font-display text-[0.56rem] uppercase tracking-[0.15em] text-white/58 transition hover:border-white/35 hover:text-white">Rental options</a>
               </div>
             </div>
           </section>

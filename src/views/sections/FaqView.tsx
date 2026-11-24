@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,8 +10,12 @@ import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 const faqs = [
   {
-    q: "How do I make a reservation?",
-    a: "You can make a reservation through our website or by contacting the Veltro team directly. We confirm availability, timing, and final delivery details before handover.",
+    q: "How do I buy a car from Veltro?",
+    a: "Open any vehicle to review its price and specifications, then contact our showroom team directly on WhatsApp. We confirm availability, condition, payment, and handover details personally.",
+  },
+  {
+    q: "Can I rent a car instead of buying it?",
+    a: "Yes. Selected showroom vehicles are available to rent. Use the rental option on the vehicle page to submit your preferred dates and driver details.",
   },
   {
     q: "What documents do I need to rent a car?",

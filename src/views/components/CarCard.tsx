@@ -29,9 +29,9 @@ export function CarCard({ car }: CarCardProps) {
       </div>
       <div className="mt-6 h-32 rounded-xl border border-red-900/30 bg-radial-gradient(circle_at_top,rgba(220,38,38,0.35),transparent_65%)"></div>
       <div className="mt-6 flex items-center justify-between text-sm text-zinc-400">
-        <span className="text-zinc-200">{formatPrice(car.pricePerDay)}</span>
+        <span className="text-zinc-200">{formatPrice(car.purchasePrice, car.currency)}</span>
         <span className="text-xs uppercase tracking-[0.2em] text-red-400">
-          Per day
+          Purchase price
         </span>
       </div>
       <Link

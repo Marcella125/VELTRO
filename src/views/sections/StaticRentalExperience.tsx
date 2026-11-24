@@ -21,7 +21,7 @@ import { StoreModal, type StoreCategory, type StoreStep } from "@/views/componen
 import { HeaderCartButton } from "@/views/components/HeaderCartButton";
 
 const navItems = [
-  ["fleet", "Fleet"],
+  ["fleet", "Showroom"],
   ["experience", "Experience"],
   ["shop", "Shop"],
   ["faq", "FAQs"],
@@ -34,7 +34,7 @@ const storeCategories: readonly StoreCategory[] = ["All", "Accessories", "Interi
 const storeSteps: readonly StoreStep[] = ["shop", "cart", "checkout"];
 
 const faqs = [
-  ["What do I need to book?", "A valid driving licence and identity document. Our concierge confirms any vehicle-specific requirements before payment."],
+  ["Can I buy a car directly from Veltro?", "Yes. Every vehicle displays its purchase price, and our showroom team can confirm availability, condition, and purchase details directly on WhatsApp."],
   ["Can the car be delivered?", "Yes. Delivery and collection can be arranged across Beirut and selected destinations in Lebanon."],
   ["Is insurance included?", "Every rental includes clear insurance terms. Your exact coverage and excess are shared before the booking is confirmed."],
   ["What is the minimum rental age?", "Age requirements vary by vehicle. Our concierge will confirm the minimum age and driving-experience requirements for your selected car."],
@@ -332,22 +332,22 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       </header>
 
       <section id="home" className="relative flex min-h-[100svh] scroll-mt-20 items-center overflow-hidden pt-20 sm:items-end">
-        <Image src={assetPath("/images/home-hero-mobile-v2.png")} alt="Veltro luxury car rental in Beirut" fill priority sizes="100vw" quality={92} className="object-cover object-center sm:hidden" />
-        <Image src={assetPath("/images/Home bg.png")} alt="Veltro luxury car rental banner" fill priority sizes="100vw" quality={92} className="hidden object-cover object-center sm:block" />
+        <Image src={assetPath("/images/home-hero-mobile-v2.png")} alt="Veltro automotive showroom in Beirut" fill priority sizes="100vw" quality={92} className="object-cover object-center sm:hidden" />
+        <Image src={assetPath("/images/Home bg.png")} alt="Veltro luxury automotive showroom" fill priority sizes="100vw" quality={92} className="hidden object-cover object-center sm:block" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,4,5,.96)_0%,rgba(3,4,5,.77)_30%,rgba(3,4,5,.08)_68%,rgba(3,4,5,.12)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,.25)_0%,transparent_44%,rgba(2,3,4,.88)_100%)]" />
 
         <div className="relative z-10 mx-auto w-full max-w-[92rem] -translate-y-16 px-5 sm:translate-y-0 sm:px-8 sm:pb-14 sm:pt-28 lg:px-12 lg:pb-16 lg:pt-32">
           <div data-mobile-reveal className="mx-auto max-w-[47rem] text-center">
             <p className="mb-6 flex items-center justify-center gap-4 text-[0.62rem] font-semibold uppercase tracking-[0.38em] text-white/76 sm:text-[0.72rem]">
-              Luxury car rental
+              Luxury automotive showroom
             </p>
             <h1 className="font-hero text-[clamp(1.65rem,calc(4.35vw-4px),3.65rem)] font-bold uppercase italic leading-[0.76] tracking-[-0.08em] text-[#f2eee7] drop-shadow-2xl">
-              Drive the<br /><span className="text-[#d7ff21]">extraordinary.</span>
+              Own the<br /><span className="text-[#d7ff21]">extraordinary.</span>
             </h1>
             <div className="mt-7 flex flex-col items-stretch justify-center gap-3 min-[430px]:flex-row min-[430px]:items-center sm:gap-4">
               <button type="button" onClick={() => navigate("fleet")} className="group flex h-12 w-full items-center justify-center gap-4 rounded-lg bg-[#d7ff21] px-7 text-[0.66rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white min-[430px]:w-auto min-[430px]:min-w-52 sm:text-[0.7rem] sm:tracking-[0.15em]">
-                Explore fleet <ArrowRight size={16} className="transition group-hover:translate-x-1" />
+                Explore showroom <ArrowRight size={16} className="transition group-hover:translate-x-1" />
               </button>
               <button type="button" onClick={() => navigate("shop")} className="flex h-12 items-center justify-center gap-3 px-3 text-[0.64rem] font-bold uppercase tracking-[0.13em] text-white/84 transition hover:text-[#d7ff21] min-[430px]:justify-start sm:text-[0.68rem]">
                 <span className="grid size-10 place-items-center rounded-full border border-white/45"><ArrowDown size={16} /></span> Explore the shop
@@ -362,11 +362,11 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
       <section ref={fleetSectionRef} id="fleet" className="font-body relative h-[calc(100svh-4.25rem)] min-h-[35rem] scroll-mt-[4.25rem] overflow-hidden bg-[#090A0B] py-7 sm:h-[calc(100svh-4.75rem)] sm:min-h-[37rem] sm:scroll-mt-20 sm:py-8">
         <div className="relative z-10 mx-auto flex h-full min-h-0 max-w-[100rem] flex-col px-5 sm:px-8 lg:px-12">
           <div ref={fleetIntroRef} className="text-center">
-            <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Our fleet</p>
+            <p className="text-[0.62rem] font-bold uppercase tracking-[0.46em] text-white/72 sm:text-[0.7rem]">Our showroom</p>
             <h2 className="font-fleet-heading mt-3 text-[clamp(2rem,5vw,4.8rem)] uppercase leading-[0.82] tracking-[-0.035em] text-[#f2eee7] sm:mt-4">
               Iconic <span className="text-[#d7ff21]">machines.</span>
             </h2>
-            <p className="mt-3 text-[0.52rem] font-semibold uppercase tracking-[0.4em] text-white/55 sm:text-[0.6rem]">A curated selection of exceptional cars.</p>
+            <p className="mt-3 text-[0.52rem] font-semibold uppercase tracking-[0.4em] text-white/55 sm:text-[0.6rem]">Exceptional cars to buy, with selected rentals available.</p>
           </div>
 
           {activeFleet ? (
@@ -409,6 +409,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
                 <h3 className="font-body mt-2 text-[clamp(1.55rem,3.4vw,3.3rem)] font-extrabold uppercase italic leading-none tracking-[-0.045em] text-[#f2eee7]">
                   {activeFleet.name.replace(new RegExp(`^${activeFleet.brand}\\s*`, "i"), "")}
                 </h3>
+                <p className="mt-2 text-[0.7rem] font-extrabold uppercase tracking-[0.12em] text-white">{new Intl.NumberFormat("en-US", { style: "currency", currency: activeFleet.currency, maximumFractionDigits: 0 }).format(activeFleet.purchasePrice)}</p>
                 <Link href={`/cars/${activeFleet.slug}?from=home`} className="group mx-auto mt-4 flex h-11 w-fit min-w-52 items-center justify-center gap-4 rounded-lg bg-[#d7ff21] px-7 text-[0.64rem] font-extrabold uppercase tracking-[0.13em] text-black transition hover:bg-white sm:text-[0.68rem] sm:tracking-[0.15em]">
                   View details <ArrowRight size={16} className="transition group-hover:translate-x-1" />
                 </Link>
@@ -429,10 +430,10 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
 
           <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:gap-5">
               {[
-                [CarFront, "Premium fleet", "A curated selection of high-performance and luxury vehicles."],
-                [MapPinned, "Drive Beirut", "Experience Lebanon's most iconic roads and scenic destinations."],
-                [Headset, "Dedicated concierge", "A simple, personalized booking experience from start to finish."],
-                [Gem, "A complete experience", "More than a rental, a premium journey built around performance, service, and style."],
+                [CarFront, "Cars to own", "A curated showroom of high-performance and luxury vehicles available to purchase."],
+                [MapPinned, "Flexible rentals", "Selected cars remain available to rent for memorable drives across Lebanon."],
+                [Headset, "Dedicated concierge", "Speak directly with our team about purchasing, renting, delivery, or vehicle details."],
+                [Gem, "The Veltro world", "Cars, apparel, accessories, and personal service brought together in one destination."],
               ].map(([Icon, title, copy], index) => {
                 const CardIcon = Icon as typeof CarFront;
                 return (
@@ -527,9 +528,9 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
               <p className="mt-4 text-[0.68rem] font-bold uppercase tracking-[0.3em] text-[#d7ff21]">Concept</p>
             </div>
             <div className="max-w-md space-y-4 text-[0.74rem] leading-5 text-white/62 sm:mt-6 sm:text-[0.72rem] lg:text-[0.8rem] lg:leading-6">
-              <p>A future flagship envisioned to bring the complete Veltro world together under one roof: luxury car rental, personal service, apparel, and automotive accessories.</p>
-              <p>The ground floor becomes an immersive showroom where clients can discover the fleet, meet the concierge team, and begin their rental journey. Above it, a dedicated retail space presents Veltro apparel and accessories in a premium environment.</p>
-              <p>Bold architecture, dark materials, warm lighting, and Veltro&apos;s signature accents connect automotive performance with fashion and hospitality, creating a destination rather than a traditional showroom.</p>
+              <p>A destination where clients can purchase exceptional cars, access selected rentals, and discover Veltro apparel and automotive accessories under one roof.</p>
+              <p>The ground floor is an immersive automotive showroom: explore each car, review its specifications and price, then speak directly with our team about buying or renting it. Above, a dedicated retail space presents Veltro apparel and accessories.</p>
+              <p>Bold architecture, dark materials, warm lighting, and Veltro&apos;s signature accents connect automotive performance with fashion and personal service.</p>
             </div>
 
             <div className="mt-7 grid grid-cols-2 gap-4 border-t border-white/12 pt-5">
@@ -548,7 +549,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
                     maskSize: "contain",
                   }}
                 />
-                <div><strong className="block text-[0.58rem] uppercase tracking-[0.1em] text-white">Ground floor</strong><span className="mt-1 block text-[0.6rem] leading-4 text-white/46">Car rental showroom</span></div>
+                <div><strong className="block text-[0.58rem] uppercase tracking-[0.1em] text-white">Ground floor</strong><span className="mt-1 block text-[0.6rem] leading-4 text-white/46">Car sales &amp; rental showroom</span></div>
               </div>
               <div className="flex items-start gap-3">
                 <Shirt size={23} strokeWidth={1.35} className="mt-0.5 shrink-0 text-[#d7ff21]" />
@@ -563,9 +564,9 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
         <Image src={assetPath("/images/faq bg.png")} alt="" fill sizes="100vw" quality={92} aria-hidden="true" className="object-cover object-center" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/55" />
         <div data-mobile-reveal className="relative z-10 mx-auto w-full max-w-[92rem] px-5 text-center sm:px-8 lg:px-12">
-          <p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Start your journey</p>
-          <DisplayTitle className="mx-auto mt-5 max-w-4xl !text-[clamp(2.35rem,3.8vw,3.7rem)] !leading-[0.84] sm:mt-6">Your next drive<br /><span className="text-[#d7ff21]">starts here.</span></DisplayTitle>
-          <p className="mx-auto mt-5 max-w-[32rem] text-[0.78rem] leading-6 text-white/55 sm:mt-6 sm:text-sm">Tell us where you want to go. Our concierge will match the right car to the moment.</p>
+          <p data-scroll-text className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-white/65">Visit the showroom</p>
+          <DisplayTitle className="mx-auto mt-5 max-w-4xl !text-[clamp(2.35rem,3.8vw,3.7rem)] !leading-[0.84] sm:mt-6">Your next car<br /><span className="text-[#d7ff21]">starts here.</span></DisplayTitle>
+          <p className="mx-auto mt-5 max-w-[32rem] text-[0.78rem] leading-6 text-white/55 sm:mt-6 sm:text-sm">Ask about purchasing, renting, availability, or any vehicle specification directly with our showroom team.</p>
           <a href="https://wa.me/96170335113" className="mx-auto mt-7 flex h-13 w-fit min-w-60 items-center justify-center gap-4 rounded-lg bg-[#d7ff21] px-8 text-[0.66rem] font-extrabold uppercase tracking-[0.15em] text-black shadow-[0_12px_40px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white sm:min-w-64">Talk to concierge <ArrowRight size={16} /></a>
         </div>
       </section>
@@ -577,7 +578,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
           <div data-mobile-reveal className="grid gap-7 border-b border-white/10 pb-7 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.7fr_1fr] lg:gap-12 lg:pb-9">
             <div>
               <Image src={assetPath("/icons/veltro_logo.svg")} alt="Veltro" width={680} height={136} unoptimized className="h-8 w-auto sm:h-10" />
-              <p className="mt-3 max-w-sm text-[0.68rem] leading-5 text-white/48 sm:text-[0.72rem]">Beirut&apos;s premium luxury car rental experience. Iconic machines, personal service, and every detail handled.</p>
+              <p className="mt-3 max-w-sm text-[0.68rem] leading-5 text-white/48 sm:text-[0.72rem]">Beirut&apos;s destination for exceptional cars, selected rentals, Veltro apparel, and personal showroom service.</p>
             </div>
 
             <div>
@@ -601,7 +602,7 @@ export function StaticRentalExperience({ cars }: { cars: Car[] }) {
 
           <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 pt-4 text-[0.54rem] uppercase tracking-[0.14em] text-white/30 sm:grid-cols-[auto_1fr_auto]">
             <p className="col-span-2 sm:col-span-1">© 2026 Veltro. All rights reserved.</p>
-            <p>Luxury car rental · Beirut, Lebanon</p>
+            <p>Automotive showroom · Beirut, Lebanon</p>
             <button
               type="button"
               onClick={() => jumpTo("home")}

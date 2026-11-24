@@ -166,7 +166,9 @@ const evoSpecCar: Car = {
   brand: "Lamborghini",
   year: 2023,
   bodyType: "Spyder",
+  purchasePrice: 995000,
   pricePerDay: 1600,
+  currency: "USD",
   image: "lambo-specs",
   featured: true,
   specs: [

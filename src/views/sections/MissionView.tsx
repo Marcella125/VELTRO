@@ -2,14 +2,13 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { assetPath } from "@/lib/asset-path";
 import { InternalPageHeader } from "@/views/components/InternalPageHeader";
 import { PageFooterNote } from "@/views/components/PageFooterNote";
 
 const missionHighlights = [
-  { number: "01", label: "Premium Fleet" },
+  { number: "01", label: "Curated Showroom" },
   { number: "02", label: "Exceptional Service" },
   { number: "03", label: "Trust & Reliability" },
   { number: "04", label: "Passion Driven" },

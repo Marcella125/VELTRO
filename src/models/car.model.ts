@@ -10,7 +10,9 @@ export type Car = {
   brand: string;
   year: number;
   bodyType: string;
+  purchasePrice: number;
   pricePerDay: number;
+  currency: string;
   image: string;
   featured: boolean;
   status?: "Available" | "Reserved" | "Unavailable" | "Maintenance" | "Coming Soon";

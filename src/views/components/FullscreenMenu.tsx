@@ -15,7 +15,7 @@ type FullscreenMenuProps = {
 
 const menuEntries = [
   { id: "home", order: "01", label: "Home" },
-  { id: "fleet", order: "02", label: "Fleet" },
+  { id: "fleet", order: "02", label: "Showroom" },
   { id: "blogs", order: "03", label: "Blogs" },
   { id: "mission", order: "04", label: "Mission" },
   { id: "faq", order: "05", label: "FAQ'S" },

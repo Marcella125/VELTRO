@@ -82,7 +82,6 @@ function initialize(db: DatabaseSync) {
   if (!count) seed(db);
   db.prepare("UPDATE cars SET status = 'Unavailable', published = 0 WHERE status = 'Sold'").run();
   db.prepare("UPDATE cars SET listed_price = ROUND(listed_price / 300) WHERE listed_price > 10000").run();
-  db.prepare("UPDATE cars SET minimum_price = ROUND(minimum_price / 300) WHERE minimum_price > 10000").run();
 
   const marketPricingVersion = "lebanon-market-pricing-v1";
   const pricingApplied = db.prepare("SELECT value FROM settings WHERE key = ?").get(marketPricingVersion);
@@ -102,6 +101,30 @@ function initialize(db: DatabaseSync) {
       marketRates.forEach(([slug, rate]) => updateDailyRate.run(rate, slug));
       db.prepare("UPDATE settings SET value = 'USD', updated_at = CURRENT_TIMESTAMP WHERE key = 'currency'").run();
       settingInsert.run(marketPricingVersion, new Date().toISOString());
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+  }
+
+  const showroomPricingVersion = "showroom-sale-pricing-v1";
+  const showroomPricingApplied = db.prepare("SELECT value FROM settings WHERE key = ?").get(showroomPricingVersion);
+  if (!showroomPricingApplied) {
+    const updateSalePrice = db.prepare("UPDATE cars SET minimum_price = ?, currency = 'USD', updated_at = CURRENT_TIMESTAMP WHERE slug = ?");
+    const showroomPrices: Array<[string, number]> = [
+      ["lamborghini-evo-spyder", 995000],
+      ["porsche-911-carrera-4s", 530000],
+      ["ferrari-296-gtb", 1210000],
+      ["lamborghini-huracan-sto", 1100000],
+      ["mercedes-amg-gtr", 405000],
+      ["bmw-m8-competition", 555000],
+    ];
+
+    db.exec("BEGIN");
+    try {
+      showroomPrices.forEach(([slug, price]) => updateSalePrice.run(price, slug));
+      settingInsert.run(showroomPricingVersion, new Date().toISOString());
       db.exec("COMMIT");
     } catch (error) {
       db.exec("ROLLBACK");
@@ -256,7 +279,8 @@ function addHistory(carId: string, action: string, details: string, createdBy: s
 export function getPublicInventory() {
   const db = getDatabase();
   return db.prepare(`SELECT id, slug, display_name AS name, brand, year, body_type AS bodyType,
-    listed_price AS pricePerDay, cover_image AS image, featured, engine, horsepower, transmission,
+    CASE WHEN minimum_price > 0 THEN minimum_price WHEN owner_price > 0 THEN owner_price ELSE listed_price END AS purchasePrice,
+    listed_price AS pricePerDay, currency, cover_image AS image, featured, engine, horsepower, transmission,
     exterior_color AS exteriorColor, interior_color AS interiorColor, description, status
     FROM cars WHERE published = 1 AND deleted_at IS NULL AND status != 'Sold' ORDER BY display_order, created_at DESC`).all();
 }

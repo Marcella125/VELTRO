@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Veltro",
-  description: "Luxury vehicle rentals for discerning drivers.",
+  description: "A luxury automotive showroom for exceptional cars, selected rentals, and Veltro apparel.",
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },

@@ -21,7 +21,7 @@ type TopBarDockProps = {
 export const topBarDockItems: DockItem[] = [
   { id: "home", label: "Home", icon: assetPath("/icons/Home.svg"), iconColor: "#ffffff" },
   { id: "blogs", label: "Blogs", icon: assetPath("/icons/Acceleration.svg"), iconColor: "#ffffff" },
-  { id: "fleet", label: "Fleet", icon: assetPath("/icons/fleet.svg"), iconColor: "#ffffff" },
+  { id: "fleet", label: "Showroom", icon: assetPath("/icons/fleet.svg"), iconColor: "#ffffff" },
   { id: "mission", label: "Mission", icon: assetPath("/icons/mission.svg"), iconColor: "#ffffff" },
   { id: "contact", label: "Contact", icon: assetPath("/icons/contactus.svg"), iconColor: "#ffffff" },
   { id: "faq", label: "FAQ", icon: assetPath("/icons/FAQ.svg"), iconColor: "#ffffff" },

@@ -38,11 +38,11 @@ export function Hero({ cars, tagline }: HeroProps) {
               href="/fleet"
               className="inline-flex items-center gap-3 rounded-full border border-red-600/60 bg-red-600/10 px-6 py-3 text-xs uppercase tracking-[0.3em] text-red-200 transition hover:bg-red-600/20"
             >
-              Reserve now
+              Explore showroom
               <span>-&gt;</span>
             </Link>
             <span className="text-xs uppercase tracking-[0.25em] text-zinc-500">
-              Chauffeur optional
+              Selected rentals available
             </span>
           </div>
         </motion.div>
